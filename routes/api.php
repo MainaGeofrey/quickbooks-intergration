@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\quickBooks\customer\CustomerController;
+use App\Http\Controllers\Auth\QBAuthController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
 /*
@@ -22,14 +24,15 @@ Route::get('/', function () {
 
 Route::group(['middleware' => ['auth:api']], function ()   {
 	Route::prefix('v1')->group(function () {
-		Route::prefix('profiles')->group(function () {
-
+		Route::prefix('customer')->group(function () {
+            Route::post('create', [CustomerController ::class, 'store'])->name('customer.create');
         });
     });
 
 });
 
 Route::post('tokens', [RegisteredUserController ::class, 'apiStore'])->name('tokens');
+Route::post('qb_tokens', [QBAuthController ::class, 'getToken'])->name('qb_tokens');
 
 Route::fallback(function (){
     return response()->json([

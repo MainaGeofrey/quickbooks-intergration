@@ -99,7 +99,7 @@ class RegisteredUserController extends Controller
             ]);
             $token = ApiToken::create([
                 'user_id' => $user->id,
-                'token' => hash('sha256', $token),
+                'api_token' => hash('sha256', $token),
             ]);
             DB::commit();
         } catch (\Throwable $th) {
@@ -107,6 +107,6 @@ class RegisteredUserController extends Controller
             return response()->json(["message"=>" User creation failed", "code"=>422]);
 
         }
-        return response()->json(["token"=>$token->token, "code"=>200]);
+        return response()->json(["token"=>$token->api_token, "code"=>200]);
     }
 }

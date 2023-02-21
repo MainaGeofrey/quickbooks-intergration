@@ -15,7 +15,7 @@ class ApiToken extends Model
 
     protected $fillable = [
         'user_id',
-        'token',
+        'api_token',
         'expires_at',
         'last_used_at',
     ];

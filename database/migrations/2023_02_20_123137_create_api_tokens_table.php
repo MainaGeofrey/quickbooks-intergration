@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('api_tokens', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->string('token', 64)->unique();
+            $table->string('api_token', 64)->unique();
             $table->text('abilities')->nullable();
             $table->timestamp('last_used_at')->nullable();
             $table->timestamp('expires_at')->nullable();

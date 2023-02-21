@@ -73,7 +73,7 @@ return [
 
         'api_tokens' => [
             'driver' => 'database',
-            'table' => 'users',
+            'table' => 'api_tokens',
          ],
     ],
 
