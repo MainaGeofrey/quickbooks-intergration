@@ -88,7 +88,7 @@ class RegisteredUserController extends Controller
            return response()->json(["errors"=>$errors, "code"=>422]);
         }
 
-        $token = Str::random(60);
+        $token_str = Str::random(60);
         DB::beginTransaction();
         try {
             $user = User::create([
@@ -97,9 +97,9 @@ class RegisteredUserController extends Controller
                 'email'      => $request->email,
                 'password'   => Hash::make($request->password),
             ]);
-            $token = ApiToken::create([
+            ApiToken::create([
                 'user_id' => $user->id,
-                'api_token' => hash('sha256', $token),
+                'api_token' => hash('sha256', $token_str),
             ]);
             DB::commit();
         } catch (\Throwable $th) {
@@ -107,6 +107,6 @@ class RegisteredUserController extends Controller
             return response()->json(["message"=>" User creation failed", "code"=>422]);
 
         }
-        return response()->json(["token"=>$token->api_token, "code"=>200]);
+        return response()->json(["token"=>$token_str, "code"=>200]);
     }
 }

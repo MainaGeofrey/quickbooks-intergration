@@ -27,12 +27,14 @@ Route::group(['middleware' => ['auth:api']], function ()   {
 		Route::prefix('customer')->group(function () {
             Route::post('create', [CustomerController ::class, 'store'])->name('customer.create');
         });
+
+        Route::post('qb_tokens', [QBAuthController ::class, 'getToken'])->name('qb_tokens');
     });
 
 });
 
 Route::post('tokens', [RegisteredUserController ::class, 'apiStore'])->name('tokens');
-Route::post('qb_tokens', [QBAuthController ::class, 'getToken'])->name('qb_tokens');
+
 
 Route::fallback(function (){
     return response()->json([

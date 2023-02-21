@@ -2,7 +2,7 @@
 namespace App\Services;
 use QuickBooksOnline\API\Facades\Customer;
 
-use App\Services\DataServices;
+
 
 //session_start();
 class CustomerServices {
@@ -29,8 +29,8 @@ class CustomerServices {
             "Suffix" => "Jr",
             "Balance" => "500",
             "FullyQualifiedName" => "Student 000",
-            "CompanyName" => "STUDENT 000",
-            "DisplayName" => "Student000",
+            "CompanyName" => "STUDENT 888",
+            "DisplayName" => "Student888",
             "PrimaryPhone" => [
                 "FreeFormNumber" => "(555) 555-500"
             ],

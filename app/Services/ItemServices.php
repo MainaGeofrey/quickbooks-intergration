@@ -1,9 +1,9 @@
 <?php
-//namespace App\Services;
+namespace App\Services;
 use QuickBooksOnline\API\Facades\Customer;
 use QuickBooksOnline\API\Facades\Payment;
 
-include '../../DataServiceHelper.php';
+
 
 //session_start();
 class ItemServices {
@@ -15,7 +15,7 @@ class ItemServices {
     }
     public function store(){
         $payment = Payment::create([
-            "TotalAmt"=> 22200000.00, 
+            "TotalAmt"=> 22200000.00,
             "CustomerRef" => [
               "value" => 66
             ],
