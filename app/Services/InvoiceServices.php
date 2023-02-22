@@ -1,10 +1,10 @@
 <?php
-//namespace App\Services;
+namespace App\Services;
+use App\Services\DataServiceHelper;
+use Illuminate\Support\Facades\Log;
 use QuickBooksOnline\API\Facades\Customer;
 use QuickBooksOnline\API\Facades\Invoice;
 use QuickBooksOnline\API\Facades\Payment;
-
-include '../../DataServiceHelper.php';
 
 //session_start();
 class InvoiceServices {
@@ -14,24 +14,35 @@ class InvoiceServices {
         $dataService = new DataServiceHelper();
         $this->dataService = $dataService->getDataService();
     }
-    public function store(){
+    public function store($data){
         $payment = Invoice::create([
-            "Line"=> [
+            "Line" => [
                 [
-                    "DetailType"=> "SalesItemLineDetail", 
-                    "Amount" => 100.0, 
-                    "SalesItemLineDetail" => [
-                      "ItemRef" => [
-                        "name" => "Services", 
-                        "value" =>"1"
-
-                      ]
+                  "Description" => "Sewing Service for Alex",
+                  "Amount" => 150.00,
+                  "DetailType" => "SalesItemLineDetail",
+                  "SalesItemLineDetail" => [
+                    "ItemRef" => [
+                      "value" => 1,
+                      "name" => "Services"
                     ]
+                  ]
+                ],
+                [
+                  "Description" => "Discount for Alex",
+                  "Amount" => -10.00,
+                  "DetailType" => "SalesItemLineDetail",
+                  "SalesItemLineDetail" => [
+                    "ItemRef" => [
+                      "value" => 2,
+                      "name" => "Services"
+                    ]
+                  ]
                 ]
-                ], 
+                    ],
                 "CustomerRef" => [
-                  "value" => "68",
-                  "name" => "Student456" 
+                  "value" => "73",
+                  "name" => "Student100"
                 ]
         ]);
 
@@ -41,9 +52,14 @@ class InvoiceServices {
     }
 
 
-    public function show(){
-        $result = $this->dataService->Query("SELECT * FROM Invoice WHERE DisplayName = 'Student456'");
+    public function show($data){
+        $id = json_decode($data->id, true);
+
+        Log::info("SELECT * FROM Invoice WHERE CustomerRef = $data->id");
+        $result = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = $data->id");
         $result = json_encode($result, JSON_PRETTY_PRINT);
-        print_r($result);
+       // print_r($result);
+
+        return $result;
      }
 }

@@ -10,6 +10,7 @@ class CustomerServices {
     protected $dataService;
     public function __construct(){
         $dataService = new DataServiceHelper();
+
         $this->dataService = $dataService->getDataService();
     }
     public function store(){
@@ -27,10 +28,10 @@ class CustomerServices {
             "MiddleName" => "Student",
             "FamilyName" => "Student",
             "Suffix" => "Jr",
-            "Balance" => "500",
-            "FullyQualifiedName" => "Student 000",
-            "CompanyName" => "STUDENT 888",
-            "DisplayName" => "Student888",
+            //"Balance" => "500",
+            "FullyQualifiedName" => "Student 800",
+            "CompanyName" => "STUDENT 800",
+            "DisplayName" => "Student800",
             "PrimaryPhone" => [
                 "FreeFormNumber" => "(555) 555-500"
             ],

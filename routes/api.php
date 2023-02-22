@@ -3,7 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\quickBooks\customer\CustomerController;
+use App\Http\Controllers\Api\quickBooks\payment\PaymentController;
 use App\Http\Controllers\Auth\QBAuthController;
+use App\Http\Controllers\Api\quickBooks\invoice\InvoiceController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
 /*
@@ -26,6 +28,18 @@ Route::group(['middleware' => ['auth:api']], function ()   {
 	Route::prefix('v1')->group(function () {
 		Route::prefix('customer')->group(function () {
             Route::post('create', [CustomerController ::class, 'store'])->name('customer.create');
+            Route::post('show', [CustomerController ::class, 'show'])->name('customer.show');
+        });
+
+        Route::prefix('invoice')->group(function () {
+
+            Route::post('create', [InvoiceController ::class, 'store'])->name('invoice.create');
+            Route::post('show', [InvoiceController ::class, 'show'])->name('invoice.show');
+        });
+
+        Route::prefix('payment')->group(function () {
+            Route::post('create', [PaymentController ::class, 'store'])->name('payment.create');
+            Route::post('batchPay', [PaymentController ::class, 'batchPay'])->name('payment.batchPay');
         });
 
         Route::post('qb_tokens', [QBAuthController ::class, 'getToken'])->name('qb_tokens');

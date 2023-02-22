@@ -16,7 +16,6 @@ class CustomerController extends Controller
         $this->customer = new CustomerServices();
     }
     public function store(Request $request){
-        Log::info("co");
         $this->customer->store();
     }
 }

@@ -14,7 +14,7 @@ class QBAuthService {
 
         // Store the url in PHP Session Object;
         $_SESSION['authUrl'] = $authUrl;
-
+print_r($_SERVER);
         //set the access token using the auth object
         $parseUrl = $this->parseAuthRedirectUrl($_SERVER['QUERY_STRING']);
 
