@@ -47,11 +47,13 @@ class CustomerServices {
     }
 
 
-    public function show(){
-       $result = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = 'Student000'");
-       $result = json_encode($result, JSON_PRETTY_PRINT);
-       print_r($result);
-    }
+    public function show($data){
+        $result = $this->dataService->Query("SELECT * FROM Customer WHERE Id = '$data->id' ");
+        $result = json_encode($result, JSON_PRETTY_PRINT);
+        print_r($result);
+
+        return $result;
+     }
 
     public function getCompanyInfo()
     {

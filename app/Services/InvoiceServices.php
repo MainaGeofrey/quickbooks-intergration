@@ -53,12 +53,9 @@ class InvoiceServices {
 
 
     public function show($data){
-        $id = json_decode($data->id, true);
-
-        Log::info("SELECT * FROM Invoice WHERE CustomerRef = $data->id");
-        $result = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = $data->id");
+        $result = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$data->id' ");
         $result = json_encode($result, JSON_PRETTY_PRINT);
-       // print_r($result);
+        //print_r($result);
 
         return $result;
      }

@@ -17,7 +17,7 @@ class PaymentController extends Controller
     }
     public function store(Request $request){
         try {
-            $this->payment->store();
+            $this->payment->store($request);
         } catch (\Throwable $th) {
             //throw $th;
             //Log::error($th->getMessage());

@@ -15,7 +15,7 @@ class PaymentServices {
         $this->invoiceServices = new InvoiceServices();
         $this->dataService = $dataService->getDataService();
     }
-    public function store(){
+    public function store($data){
         try {
             $payment = Payment::create([
                 "CustomerRef"=>
@@ -29,7 +29,7 @@ class PaymentServices {
                     "Amount"=> 100.00,
                     "LinkedTxn" => [
                     [
-                        "TxnId" => 178,
+                        "TxnId" => $data["invoice_id"],
                         "TxnType"=> "Invoice"
                     ]]
                 ]]
@@ -54,10 +54,14 @@ class PaymentServices {
         $invoices = $this->invoiceServices->show($data);
         $invoices = json_decode($invoices, true);
         foreach($invoices as $invoice){
-            Log::info($invoice);
+            Log::info($invoice["Id"]);
+            $data["invoice_id"] = $invoice["Id"];
+            $this->store($data);
             print_r($invoice);
             break;
         }
+
+        //TODO make payments in batches instead of one at a time
 
 
      }
