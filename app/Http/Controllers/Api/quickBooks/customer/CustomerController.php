@@ -16,7 +16,7 @@ class CustomerController extends Controller
         $this->customer = new CustomerServices();
     }
     public function store(Request $request){
-        $this->customer->store();
+        $this->customer->store($request);
     }
 
     public function show(Request $request){

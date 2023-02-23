@@ -23,7 +23,7 @@ class DataServiceHelper {
                 'scope' => $config['oauth_scope'],
                 'baseUrl' => "development",
 
-                'accessTokenKey' => $_SESSION["access_token"],
+                'accessTokenKey' => $_SESSION["access_token"] ,
                 'QBORealmID' => $config['QBORealmID'],
                 "expires_in"=> $_SESSION["expires_in"],
             ));

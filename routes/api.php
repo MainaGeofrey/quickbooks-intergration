@@ -27,6 +27,7 @@ Route::get('/', function () {
 Route::group(['middleware' => ['auth:api']], function ()   {
 	Route::prefix('v1')->group(function () {
 		Route::prefix('customer')->group(function () {
+            Route::post('getAll', [CustomerController ::class, 'index'])->name('customer.getAll');
             Route::post('create', [CustomerController ::class, 'store'])->name('customer.create');
             Route::post('show', [CustomerController ::class, 'show'])->name('customer.show');
         });

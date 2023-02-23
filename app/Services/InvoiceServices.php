@@ -23,7 +23,7 @@ class InvoiceServices {
                   "DetailType" => "SalesItemLineDetail",
                   "SalesItemLineDetail" => [
                     "ItemRef" => [
-                      "value" => 1,
+                      "value" => 32,
                       "name" => "Services"
                     ]
                   ]
@@ -34,14 +34,14 @@ class InvoiceServices {
                   "DetailType" => "SalesItemLineDetail",
                   "SalesItemLineDetail" => [
                     "ItemRef" => [
-                      "value" => 2,
+                      "value" => 42,
                       "name" => "Services"
                     ]
                   ]
                 ]
                     ],
                 "CustomerRef" => [
-                  "value" => "73",
+                  "value" => "76",
                   "name" => "Student100"
                 ]
         ]);
@@ -55,7 +55,7 @@ class InvoiceServices {
     public function show($data){
         $result = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$data->id' ");
         $result = json_encode($result, JSON_PRETTY_PRINT);
-        //print_r($result);
+        print_r($result);
 
         return $result;
      }
