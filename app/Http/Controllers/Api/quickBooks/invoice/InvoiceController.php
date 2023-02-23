@@ -18,11 +18,15 @@ class InvoiceController extends Controller
 
     }
     public function store(Request $request){
-        $this->invoice->store($request);
+        $data = $this->invoice->store($request);
+
+        return response()->json($data);
     }
 
     public function show(Request $request){
-        $this->invoice->show($request);
+        $data = $this->invoice->show($request);
+
+        return response()->json($data);
     }
 
 

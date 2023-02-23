@@ -14,19 +14,24 @@ class DataServiceHelper {
     {
         $config = config("quickbooks");
 
+        //TODO refresh token only after 1 hr
         if(array_key_exists('expires_in', $_SESSION  ) &&strtotime($_SESSION["expires_in"]) < date('Y-m-d H:i:s') ) {
-            $dataService = DataService::Configure(array(
-                'auth_mode' => 'oauth2',
-                'ClientID' => $config['client_id'],
-                'ClientSecret' =>  $config['client_secret'],
-                'RedirectURI' => $config['oauth_redirect_uri'],
-                'scope' => $config['oauth_scope'],
-                'baseUrl' => "development",
+            $newAccessTokenObj = $this->refreshToken($config);
+            // $config = include('/../../config/quickbooks.php');
+             $dataService = DataService::Configure(array(
+                 'auth_mode' => 'oauth2',
+                 'ClientID' => $config['client_id'],
+                 'ClientSecret' =>  $config['client_secret'],
+                 'RedirectURI' => $config['oauth_redirect_uri'],
+                 'scope' => $config['oauth_scope'],
+                 'baseUrl' => "development",
 
-                'accessTokenKey' => $_SESSION["access_token"],
-                'QBORealmID' => $config['QBORealmID'],
-                "expires_in"=> $_SESSION["expires_in"],
-            ));
+                 'accessTokenKey' => $newAccessTokenObj->getAccessToken(),
+                 'QBORealmID' => $config['QBORealmID'],
+                 "expires_in"=>  $newAccessTokenObj->getAccessTokenExpiresAt()
+             ));
+             $_SESSION["access_token"] = $newAccessTokenObj->getAccessToken();
+             $_SESSION["expires_in"] = $newAccessTokenObj->getAccessTokenExpiresAt();
         }
         else{
         // Create SDK instance

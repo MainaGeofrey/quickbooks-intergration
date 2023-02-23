@@ -27,19 +27,21 @@ Route::get('/', function () {
 Route::group(['middleware' => ['auth:api']], function ()   {
 	Route::prefix('v1')->group(function () {
 		Route::prefix('customer')->group(function () {
+            Route::get('all', [CustomerController ::class, 'index'])->name('customer.all');
             Route::post('create', [CustomerController ::class, 'store'])->name('customer.create');
             Route::post('show', [CustomerController ::class, 'show'])->name('customer.show');
         });
 
         Route::prefix('invoice')->group(function () {
-
+            Route::get('get', [InvoiceController ::class, 'index'])->name('invoice.all');
             Route::post('create', [InvoiceController ::class, 'store'])->name('invoice.create');
             Route::post('show', [InvoiceController ::class, 'show'])->name('invoice.show');
         });
 
         Route::prefix('payment')->group(function () {
+            Route::get('all', [PaymentController ::class, 'index'])->name('payment.all');
             Route::post('create', [PaymentController ::class, 'store'])->name('payment.create');
-            Route::post('batchPay', [PaymentController ::class, 'batchPay'])->name('payment.batchPay');
+            //Route::post('payInvoices', [PaymentController ::class, 'payInvoices'])->name('payment.payInvoices');
         });
 
         Route::post('qb_tokens', [QBAuthController ::class, 'getToken'])->name('qb_tokens');
