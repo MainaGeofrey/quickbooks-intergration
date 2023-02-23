@@ -15,6 +15,12 @@ class CustomerController extends Controller
     public function __construct(){
         $this->customer = new CustomerServices();
     }
+
+    public function index(){
+        $data = $this->customer->index();
+
+        return response()->json($data);
+    }
     public function store(Request $request){
         $data = $this->customer->store($request);
 

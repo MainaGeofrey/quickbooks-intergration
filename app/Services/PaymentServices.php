@@ -9,29 +9,37 @@ use QuickBooksOnline\API\Facades\Payment;
 class PaymentServices {
 
     protected $dataService;
-    protected $invoiceServices;
+    //protected $invoiceServices;
     public function __construct(){
         $dataService = new DataServiceHelper();
-        $this->invoiceServices = new InvoiceServices();
+        //$this->invoiceServices = new InvoiceServices();
         $this->dataService = $dataService->getDataService();
     }
 
 
     public function index(){
 
-        Log::info("mm");
+
         return  $this->dataService->Query("SELECT * FROM Payment ");
     }
     public function store($data){
+        $id = $data->data["CustomerRef"]["Id"];
+        //TODO query all open invoices
+        $invoices = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$id' ");
+
         try {
+            if($invoices){
+                $payment = $this->payInvoices($data, $invoices);
+            }
+            else{
             $payment = Payment::create([
                 "CustomerRef"=>
                 [
-                    "value" => 73,
-                    "name" => "Student100"
+                    "value" => $id,
+                    //"name" => $data->data["CustomerRef"]["DisplayName"],
                 ],
-                "TotalAmt" => 100.00,
-                "Line" => [
+                "TotalAmt" => $data->data["TotalAmt"],
+              /*  "Line" => [
                 [
                     "Amount"=> 100.00,
                     "LinkedTxn" => [
@@ -39,16 +47,15 @@ class PaymentServices {
                         "TxnId" => $data["invoice_id"],
                         "TxnType"=> "Invoice"
                     ]]
-                ]]
+                ]] */
             ]);
+            }
         } catch (\Throwable $th) {
             throw $th;
         }
 
 
-        $result = $this->dataService->Add($payment);
-        $result = json_encode($result, JSON_PRETTY_PRINT);
-        print_r($result);
+        return $this->dataService->Add($payment);
     }
 
     public function show(){
@@ -56,7 +63,7 @@ class PaymentServices {
      }
 
      public function payBatch($data){
-        $invoices = $this->invoiceServices->show($data);
+        //$invoices = $this->invoiceServices->show($data);
         $invoices = json_decode($invoices, true);
         foreach($invoices as $invoice){
             Log::info($invoice["Id"]);
@@ -68,6 +75,41 @@ class PaymentServices {
 
         //TODO make payments in batches instead of one at a time
 
+
+     }
+     public function payInvoices($data,$invoices){
+        //$invoices = $this->invoiceServices->show($data);
+        //$invoices = json_decode($invoices, true);
+        $lineItems = [];
+        foreach($invoices as $invoice){
+            print_r($invoice->Id);
+            $lineItem =
+                [
+                    //TODO pay amount specific to each Invoice//sum of all invoice Line Items
+                    "Amount"=> $data->data["TotalAmt"],
+                    "LinkedTxn" => [
+                    [
+                        "TxnId" => $invoice->Id,
+                        "TxnType"=> "Invoice"
+                    ]]
+                ];
+                array_push($lineItems,$lineItem);
+        }
+
+
+        $payment = Payment::create([
+            "CustomerRef"=>
+            [
+                "value" => $data->data["CustomerRef"]["Id"],
+                //"name" => $data->data["DisplayName"],
+            ],
+            "TotalAmt" => $data->data["TotalAmt"],
+            "Line" => $lineItem
+        ]);
+
+        //TODO make payments in batches instead of one at a time
+
+        return $payment;
 
      }
 }

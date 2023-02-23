@@ -15,8 +15,11 @@ class CustomerServices {
         $this->dataService = $dataService->getDataService();
     }
 
-    public function index($data){
+    public function index(){
+        $result = $this->dataService->Query("SELECT * FROM Customer ");
 
+
+        return $result;
     }
     public function store($data){
         $customer = Customer::create([

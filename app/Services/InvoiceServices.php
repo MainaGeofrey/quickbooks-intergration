@@ -32,6 +32,7 @@ class InvoiceServices {
 
 
     public function show($data){
+        //Query Open Invoices
         $result = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$data->id' ");
         //$result = json_encode($result, JSON_PRETTY_PRINT);
         //print_r($result);

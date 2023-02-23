@@ -36,11 +36,5 @@ class PaymentController extends Controller
     }
 
 
-    public function payMultipleInvoices(Request $request){
-        try {
-            $this->payment->payBatch($request);
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
-    }
+
 }
