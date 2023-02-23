@@ -16,10 +16,15 @@ class CustomerController extends Controller
         $this->customer = new CustomerServices();
     }
     public function store(Request $request){
-        $this->customer->store($request);
+        $data = $this->customer->store($request);
+
+        return response()->json($data);
     }
 
     public function show(Request $request){
-        $this->customer->show($request);
+        $data = $this->customer->show($request);
+
+
+        return response()->json($data);
     }
 }

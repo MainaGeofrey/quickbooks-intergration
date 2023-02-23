@@ -15,6 +15,13 @@ class PaymentServices {
         $this->invoiceServices = new InvoiceServices();
         $this->dataService = $dataService->getDataService();
     }
+
+
+    public function index(){
+
+        Log::info("mm");
+        return  $this->dataService->Query("SELECT * FROM Payment ");
+    }
     public function store($data){
         try {
             $payment = Payment::create([
@@ -45,9 +52,7 @@ class PaymentServices {
     }
 
     public function show(){
-        $result = $this->dataService->Query("SELECT * FROM Payment WHERE DisplayName = 'Student456'");
-        $result = json_encode($result, JSON_PRETTY_PRINT);
-        print_r($result);
+        return  $this->dataService->Query("SELECT * FROM Payment WHERE DisplayName = 'Student456'");
      }
 
      public function payBatch($data){

@@ -63,15 +63,14 @@ class CustomerServices {
 
 
         $result = $this->dataService->Add($customer);
-        $result = json_encode($result, JSON_PRETTY_PRINT);
-        print_r($result);
+
+        return $result;
     }
 
 
     public function show($data){
         $result = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$data->DisplayName' ");
-        $result = json_encode($result, JSON_PRETTY_PRINT);
-        print_r($result);
+
 
         return $result;
      }
@@ -81,7 +80,7 @@ class CustomerServices {
 
         $companyInfo = $this->dataService->getCompanyInfo();
 
-        print_r($companyInfo);
+
         return $companyInfo;
     }
 

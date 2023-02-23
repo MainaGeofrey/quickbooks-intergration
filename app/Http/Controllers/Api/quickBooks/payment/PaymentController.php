@@ -15,17 +15,28 @@ class PaymentController extends Controller
     public function __construct(){
         $this->payment = new PaymentServices();
     }
+
+
+    public function index(){
+        $data = $this->payment->index();
+
+        return response()->json($data);
+    }
     public function store(Request $request){
         try {
-            $this->payment->store($request);
+            $data = $this->payment->store($request);
+
+            return response()->json($data);
         } catch (\Throwable $th) {
             //throw $th;
             //Log::error($th->getMessage());
+
+            return response()->json(["code" => 422, "message" => $th->getMessage()]);
         }
     }
 
 
-    public function batchPay(Request $request){
+    public function payMultipleInvoices(Request $request){
         try {
             $this->payment->payBatch($request);
         } catch (\Throwable $th) {

@@ -39,8 +39,9 @@ Route::group(['middleware' => ['auth:api']], function ()   {
         });
 
         Route::prefix('payment')->group(function () {
+            Route::post('payments', [PaymentController ::class, 'index'])->name('payments');
             Route::post('create', [PaymentController ::class, 'store'])->name('payment.create');
-            Route::post('batchPay', [PaymentController ::class, 'batchPay'])->name('payment.batchPay');
+            Route::post('payMultiple', [PaymentController ::class, 'payMultipleInvoices'])->name('payment.payMultiple');
         });
 
         Route::post('qb_tokens', [QBAuthController ::class, 'getToken'])->name('qb_tokens');
