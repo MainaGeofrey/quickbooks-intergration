@@ -48,7 +48,7 @@ Route::group(['middleware' => ['auth:api']], function ()   {
     });
 
 });
-
+Route::get('all', [PaymentController ::class, 'index'])->name('payment.all');
 Route::post('tokens', [RegisteredUserController ::class, 'apiStore'])->name('tokens');
 
 
