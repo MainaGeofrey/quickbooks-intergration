@@ -32,37 +32,36 @@ class PaymentServices {
         try {
             if($invoices){
                 $payment = $this->payInvoices($data, $invoices);
-               //$payment = $this->paySingleInvoice($data, $invoices);
+               //$this->paySingleInvoice($data, $invoices);
 
+               return response()->json($payment);
 
-
-               // return response()->json($payment);
             }
             else{
-            $payment = Payment::create([
-                "CustomerRef"=>
-                [
-                    "value" => $id,
-                    //"name" => $data->data["CustomerRef"]["DisplayName"],
-                ],
-                "TotalAmt" => $data->data["TotalAmt"],
-              /*  "Line" => [
-                [
-                    "Amount"=> 100.00,
-                    "LinkedTxn" => [
+                $payment = Payment::create([
+                    "CustomerRef"=>
                     [
-                        "TxnId" => $data["invoice_id"],
-                        "TxnType"=> "Invoice"
-                    ]]
-                ]] */
-            ]);
+                        "value" => $id,
+                        //"name" => $data->data["CustomerRef"]["DisplayName"],
+                    ],
+                    "TotalAmt" => $data->data["TotalAmt"],
+                /*  "Line" => [
+                    [
+                        "Amount"=> 100.00,
+                        "LinkedTxn" => [
+                        [
+                            "TxnId" => $data["invoice_id"],
+                            "TxnType"=> "Invoice"
+                        ]]
+                    ]] */
+                ]);
+
+                return $this->dataService->Add($payment);
             }
         } catch (\Throwable $th) {
             throw $th;
         }
 
-
-        return $this->dataService->Add($payment);
     }
 
     public function show(){
@@ -70,35 +69,13 @@ class PaymentServices {
      }
 
 
-    public function paySingleInvoice($data, $invoices){
-        foreach($invoices as $invoice){
-            $payment = Payment::create([
-                "CustomerRef"=>
-                [
-                    "value" => $data->data["CustomerRef"]["Id"],
-                    //"name" => $data->data["CustomerRef"]["DisplayName"],
-                ],
-                //"TotalAmt" => $data->data["TotalAmt"],
-                "Line" => [
-                [
-                    "Amount"=> $data->data["TotalAmt"],
-                    "LinkedTxn" => [
-                    [
-                        "TxnId" => $invoice->Id,
-                        "TxnType"=> "Invoice"
-                    ]]
-                ]]
-            ]);
-        }
 
-        return $payment;
-    }
      public function payInvoices($data,$invoices){
         //$invoices = $this->invoiceServices->show($data);
         //$invoices = json_decode($invoices, true);
         $lineItems = [];
         foreach($invoices as $invoice){
-            print_r($invoice->Id);
+            //print_r($invoice->Id);
             $lineItem =
                 [[
                     //TODO pay amount specific to each Invoice//sum of all invoice Line Items
@@ -124,16 +101,18 @@ class PaymentServices {
 
        // Log::info(count($lineItems));
 
-       $str = $this->generateRandomString();
-       Log::info($str);
 
+       if(count($invoices) > 1){
+        $str = $this->generateRandomString();
         $batch = $this->dataService->CreateNewBatch();
         $batch->AddEntity($payment,$str, "Create");
         $batch->ExecuteWithRequestID("ThisIsMyFirstBatchRequest");
 
+        return $payment;
+       }
         //TODO make payments in batches instead of one at a time
 
-        return $payment;
+        return $this->dataService->Add($payment);
 
      }
 
