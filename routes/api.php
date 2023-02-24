@@ -24,7 +24,7 @@ Route::get('/', function () {
             'message' => 'API resource found here!'
 ],404);});
 
-//Route::group(['middleware' => ['auth:api']], function ()   {
+Route::group(['middleware' => ['auth:api']], function ()   {
 
 	Route::prefix('v1')->group(function () {
 		Route::prefix('customer')->group(function () {
@@ -48,7 +48,7 @@ Route::get('/', function () {
         Route::post('qb_tokens', [QBAuthController ::class, 'getToken'])->name('qb_tokens');
     });
 
-//});
+});
 
 Route::post('tokens', [RegisteredUserController ::class, 'apiStore'])->name('tokens');
 
