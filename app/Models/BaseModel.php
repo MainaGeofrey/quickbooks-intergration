@@ -9,7 +9,7 @@ use OwenIt\Auditing\Auditable as AuditableTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use  Illuminate\Support\Str;
-class BaseModel extends Model implements Auditable
+class BaseModel extends Model implements 
 {
     use HasFactory;
     use AuditableTrait;
