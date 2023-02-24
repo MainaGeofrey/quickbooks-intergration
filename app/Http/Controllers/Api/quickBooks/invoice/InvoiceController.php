@@ -15,7 +15,9 @@ class InvoiceController extends Controller
     }
 
     public function index(){
+        $data = $this->invoice->index();
 
+        return response()->json($data);
     }
     public function store(Request $request){
         $data = $this->invoice->store($request);

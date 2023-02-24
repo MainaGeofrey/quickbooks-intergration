@@ -62,21 +62,7 @@ class PaymentServices {
         return  $this->dataService->Query("SELECT * FROM Payment WHERE DisplayName = 'Student456'");
      }
 
-     public function payBatch($data){
-        //$invoices = $this->invoiceServices->show($data);
-        $invoices = json_decode($invoices, true);
-        foreach($invoices as $invoice){
-            Log::info($invoice["Id"]);
-            $data["invoice_id"] = $invoice["Id"];
-            $this->store($data);
-            print_r($invoice);
-            break;
-        }
 
-        //TODO make payments in batches instead of one at a time
-
-
-     }
      public function payInvoices($data,$invoices){
         //$invoices = $this->invoiceServices->show($data);
         //$invoices = json_decode($invoices, true);

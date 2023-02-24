@@ -14,6 +14,12 @@ class InvoiceServices {
         $dataService = new DataServiceHelper();
         $this->dataService = $dataService->getDataService();
     }
+
+    public function index(){
+
+
+        return  $this->dataService->Query("SELECT * FROM Invoice ");
+    }
     public function store($data){
         $payment = Invoice::create([
             "Line" => $data->data['Line'],
