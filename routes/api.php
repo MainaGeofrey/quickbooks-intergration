@@ -24,7 +24,8 @@ Route::get('/', function () {
             'message' => 'API resource found here!'
 ],404);});
 
-Route::group(['middleware' => ['auth:api']], function ()   {
+//Route::group(['middleware' => ['auth:api']], function ()   {
+
 	Route::prefix('v1')->group(function () {
 		Route::prefix('customer')->group(function () {
             Route::get('all', [CustomerController ::class, 'index'])->name('customer.all');
@@ -33,7 +34,7 @@ Route::group(['middleware' => ['auth:api']], function ()   {
         });
 
         Route::prefix('invoice')->group(function () {
-            Route::get('get', [InvoiceController ::class, 'index'])->name('invoice.all');
+            Route::get('all', [InvoiceController ::class, 'index'])->name('invoice.all');
             Route::post('create', [InvoiceController ::class, 'store'])->name('invoice.create');
             Route::post('show', [InvoiceController ::class, 'show'])->name('invoice.show');
         });
@@ -47,8 +48,8 @@ Route::group(['middleware' => ['auth:api']], function ()   {
         Route::post('qb_tokens', [QBAuthController ::class, 'getToken'])->name('qb_tokens');
     });
 
-});
-Route::get('all', [PaymentController ::class, 'index'])->name('payment.all');
+//});
+
 Route::post('tokens', [RegisteredUserController ::class, 'apiStore'])->name('tokens');
 
 
