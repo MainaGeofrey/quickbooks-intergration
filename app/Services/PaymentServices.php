@@ -27,6 +27,7 @@ class PaymentServices {
         //TODO query all open invoices
         $invoices = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$id' ");
 
+        Log::info(count($invoices));
         try {
             if($invoices){
                 $payment = $this->payInvoices($data, $invoices);
@@ -80,6 +81,7 @@ class PaymentServices {
                     ]]
                 ];
                 array_push($lineItems,$lineItem);
+
         }
 
 
@@ -93,9 +95,44 @@ class PaymentServices {
             "Line" => $lineItem
         ]);
 
+        $batch = $this->dataService->CreateNewBatch();
+        $batch->AddEntity($payment,"Payments", "Create");
+        $batch->ExecuteWithRequestID("ThisIsMyFirstBatchRequest");
+
         //TODO make payments in batches instead of one at a time
 
-        return $payment;
+        return $batch;
 
+     }
+
+
+     public function pay($data, $invoices){
+        //$invoices = $this->invoiceServices->show($data);
+        //$invoices = json_decode($invoices, true);
+        foreach($invoices as $invoice){
+            Log::info($invoice->Id);
+            $payment = Payment::create([
+                "CustomerRef"=>
+                [
+                    "value" => $data->data["CustomerRef"]["Id"],
+                    //"name" => $data->data["CustomerRef"]["DisplayName"],
+                ],
+                "TotalAmt" => $data->data["TotalAmt"],
+                "Line" => [
+                [
+                    "Amount"=> 1000.00,
+                    "LinkedTxn" => [
+                    [
+                        "TxnId" => $invoice->Id,
+                        "TxnType"=> "Invoice"
+                    ]]
+                ]]
+            ]);
+        }
+
+        //TODO make payments in batches instead of one at a time
+
+
+        return $payment;
      }
 }
