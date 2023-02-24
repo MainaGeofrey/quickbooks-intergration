@@ -96,7 +96,7 @@ class PaymentServices {
         ]);
 
         $batch = $this->dataService->CreateNewBatch();
-        $batch->AddEntity($payment,"Payments", "Create");
+        $batch->AddEntity($payment,$data->data["PaymentName"], "Create");
         $batch->ExecuteWithRequestID("ThisIsMyFirstBatchRequest");
 
         //TODO make payments in batches instead of one at a time
