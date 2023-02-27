@@ -9,8 +9,10 @@ use QuickBooksOnline\API\Facades\Customer;
 class CustomerServices {
 
     protected $dataService;
-    public function __construct(){
-        $dataService = new DataServiceHelper();
+    protected $data;
+    public function __construct($data){
+        $this->data = $data;
+        $dataService = new DataServiceHelper($this->data);
 
         $this->dataService = $dataService->getDataService();
     }
@@ -24,11 +26,11 @@ class CustomerServices {
     public function store($data){
         $customer = Customer::create([
             "BillAddr" => [
-                "Line1" => "1238 Main Street",
-                "City" => "Mountain View",
-                "Country" => "USA",
-                "CountrySubDivisionCode" => "CA",
-                "PostalCode" => "940042"
+                "Line1" => $data->data['BillAddr']['Line1'],
+                "City" =>  $data->data['BillAddr']['City'],
+                //"Country" => "USA",
+                //"CountrySubDivisionCode" => "CA",
+                "PostalCode" =>  $data->data['BillAddr']['PostalCode'],
             ],
             //"CustomField" => $data->data['CustomField'],
             //"Organization" => $data->data['Organization'],
@@ -46,11 +48,11 @@ class CustomerServices {
             //"UserId" => $data->data['UserId'],
             //"Active" => $data->data['Active'],
             "PrimaryPhone" => [
-                "FreeFormNumber" => "(555) 555-500"
+                "FreeFormNumber" =>  $data->data['PrimaryPhone']['FreeFormNumber'],
             ],
             //"AlternatePhone" => $data->data['AlternatePhone'],
             "PrimaryEmailAddr" => [
-                "Address" => "jdrew@myemail.com"
+                "Address" => $data->data['PrimaryEmailAddr']['Address'],
             ],
             //"WebAddr" => $data->data['WebAddr'],
             //"OtherContactInfo" => $data->data['OtherContactInfo'],

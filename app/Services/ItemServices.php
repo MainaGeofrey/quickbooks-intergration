@@ -10,8 +10,11 @@ use QuickBooksOnline\API\Facades\Payment;
 class ItemServices {
 
     protected $dataService;
-    public function __construct(){
-        $dataService = new DataServiceHelper();
+    protected $data;
+    public function __construct($data){
+        $this->data = $data;
+        $dataService = new DataServiceHelper($this->data);
+
         $this->dataService = $dataService->getDataService();
     }
     public function store(){
