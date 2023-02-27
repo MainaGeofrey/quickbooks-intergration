@@ -8,12 +8,12 @@ use QuickBooksOnline\API\Facades\Payment;
 
 //session_start();
 class PaymentServices {
-
     protected $dataService;
-    //protected $invoiceServices;
-    public function __construct(){
-        $dataService = new DataServiceHelper();
-        //$this->invoiceServices = new InvoiceServices();
+    protected $data;
+    public function __construct($data){
+        $this->data = $data;
+        $dataService = new DataServiceHelper($this->data);
+
         $this->dataService = $dataService->getDataService();
     }
 
@@ -24,9 +24,14 @@ class PaymentServices {
         return  $this->dataService->Query("SELECT * FROM Payment ");
     }
     public function store($data){
-        $id = $data->data["CustomerRef"]["Id"];
+        $name = $data->data["AccountName"];
+        Log::info($name);
+        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
+        $id = $customer[0]->Id;
         //TODO query all open invoices
         $invoices = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$id' ");
+        Log::info($invoices);
+        $data["id"] = $id;
 
         //Log::info(count($invoices));
         try {
@@ -64,11 +69,23 @@ class PaymentServices {
 
     }
 
-    public function show(){
-        return  $this->dataService->Query("SELECT * FROM Payment WHERE DisplayName = 'Student456'");
-     }
+    public function show($data){
+        $name = $data->data["AccountName"];
+        if( $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ")){
+            $payments =  $this->dataService->Query("SELECT * FROM Payment WHERE DisplayName = $name");
+            if ($payments) {
 
+                return $payments;
+            }
+            else{
+                return response()->json(["message" => "No Payment found"]);
+            }
+        }
+        else{
+            return response()->json(["message" => "Account by name . $name  . Not Found"]);
+        }
 
+    }
 
      public function payInvoices($data,$invoices){
         //$invoices = $this->invoiceServices->show($data);
@@ -90,7 +107,7 @@ class PaymentServices {
                $payment = Payment::create([
                 "CustomerRef"=>
                 [
-                    "value" => $data->data["CustomerRef"]["Id"],
+                    "value" => $data["id"],
                     //"name" => $data->data["DisplayName"],
                 ],
                 "TotalAmt" => $data->data["TotalAmt"],

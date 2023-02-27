@@ -10,8 +10,11 @@ use QuickBooksOnline\API\Facades\Payment;
 class InvoiceServices {
 
     protected $dataService;
-    public function __construct(){
-        $dataService = new DataServiceHelper();
+    protected $data;
+    public function __construct($data){
+        $this->data = $data;
+        $dataService = new DataServiceHelper($this->data);
+
         $this->dataService = $dataService->getDataService();
     }
 
@@ -21,10 +24,15 @@ class InvoiceServices {
         return  $this->dataService->Query("SELECT * FROM Invoice ");
     }
     public function store($data){
+        $name = $data->data["AccountName"];
+        Log::info($name);
+        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
+        $id = $customer[0]->Id;
+
         $payment = Invoice::create([
             "Line" => $data->data['Line'],
                 "CustomerRef" => [
-                  "value" => $data->data["CustomerRef"]["Id"],
+                  "value" => $id,
                   //"name" => $data->data["CustomerRef"]["DisplayName"]
                 ]
         ]);
