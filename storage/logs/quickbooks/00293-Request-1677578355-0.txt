@@ -1,0 +1,18 @@
+REQUEST URI FOR SEQUENCE ID 00293
+==================================
+https://sandbox-quickbooks.api.intuit.com/v3/company/4620816365281741020/query?minorversion=68
+
+REQUEST HEADERS
+================
+Authorization: Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..K8bJdg5BEWUALxb0tdcGGA.gqQBP71NAiph2Is7Le967zAYHswIgOSNxl-d1bN3a3Z4_r1yJINGTlGgXTDWjW6478p4Vx7frLKhFdyFxaBT_n76bH-t65pUkJS5MldSnMY9ewBcRf-I5CKfWCsxGTttPUKSxEZYdTwbf9-OT-v8QD1oYKz-WcS_CG0NKmH7KGEGgDI2VV6NPf2DwldMpxjDemwcbIOGRfiygArxaT5NOkIpIDtT49xA2GcSzwgMI3hDSRo1xPr0oBzcNEY0pV9OCSynHKijF6JoLStmSzqgOCXnRk3sjKpdo4Q4AaJtAlZsdD-UhfLYOqWxryUFHc0ZYqBN-jL-Vr-KYtyl8DFHROhiZkj7-9VHu1GnstRFT6Qo_2uy3x9XmvOq_FModF17ubUYd6q4Sz5PaxJW6OVdvfjuL29qiWeTA6Lh673cCqIeEjFG74cUPU83PTHPaL4bY-qpq1vDLcmXH_iJPMm01S0O2DVoVTht4z2yZ3CuPpPTiMHX5NsslvjpJnRbFHpukiP2_jA0I_D0f-Sz036aFg95pI7B1Bo1A495eIz8E3Id2ICTdxm_2de9gIH5AMGvIYOa4jObixtPKWJVpcWr_Gn4cJCvDsTmsm5LJgxeQgHuwR0xA9Hcf91uWqZnLvyYS2sVg4BG6EUkdW0jHM7RTtTe9iAnvfWx60GEyn-eb6id4zITrtLQ0fh9HU3PlXs5DaiSOhiiVMepBwFCjp4x1xs9dDhCbXlLIR48oEF3AV_WCNHXIy5DTic_O2eDnPEt6YBEiUUvl266a-aJ4KC945x83YpQUWN-7w8Dnw_TpORd8N2fxqpStnZsxIspYCcKQ5VqZesOFVWt2kfYBm5HnYuVn64eRuodgq_jFhNPg8QqqM7zAfIjOIQryLiv1szz.0bcGfjJodV18tqqBNC3pog
+host: sandbox-quickbooks.api.intuit.com
+user-agent: V3PHPSDK6.1.1
+accept: */*
+connection: close
+content-type: application/text
+content-length: 46
+
+REQUEST BODY
+=============
+SELECT * FROM Invoice WHERE CustomerRef = '67'
+

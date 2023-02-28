@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use QuickBooksOnline\API\Facades\Customer;
 
 
@@ -24,6 +25,31 @@ class CustomerServices {
         return $result;
     }
     public function store($data){
+        $validator = Validator::make($data->data, [
+            'AccountName' => 'required|string',
+            //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
+            //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
+
+        ]);
+
+        if($validator->fails()){
+
+            return response()->json(["message" => "Please provide the AccountName", "code" => 422]);
+        }
+        $name = $data->data["AccountName"];
+        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
+
+
+        if($customer){
+
+            //TODO Customer update
+            Log::info("CUSTOMER EXISTS");
+            //Log::info("LogCustomer | customer request updated successfully  ".__METHOD__."|".json_encode($customer)."|Customer Created|".json_encode($this->data));
+            return response()->json(["message" => "Account by name $name Exists", "code" => 422]);
+        }
+
+
+        Log::info("LogCustomer | customer request  ".__METHOD__."|".json_encode($data->data).json_encode($this->data));
         $customer = Customer::create([
             "BillAddr" => [
                 "Line1" => $data->data['BillAddr']['Line1'],
@@ -43,7 +69,7 @@ class CustomerServices {
             "Balance" => $data->data['Balance'],
             "FullyQualifiedName" => $data->data['FullyQualifiedName'],
             "CompanyName" => $data->data['CompanyName'],
-            "DisplayName" => $data->data['DisplayName'],
+            "DisplayName" => $data->data['AccountName'],
             "PrintOnCheckName" => $data->data['PrintOnCheckName'],
             //"UserId" => $data->data['UserId'],
             //"Active" => $data->data['Active'],
@@ -68,11 +94,23 @@ class CustomerServices {
 
 
         $result = $this->dataService->Add($customer);
+        $customer = $this->customerResponse($result);
+        Log::info("LogCustomer | customer request created successfully  ".__METHOD__."|".json_encode($customer)."|Customer Created|".json_encode($this->data));
 
-        return $result;
+        return $customer;
     }
 
+    public function customerResponse($data){
+        $customer = [];
 
+        $customer["CustomerId"] = $data->Id;
+        $customer["AccountName"] = $data->DisplayName;
+        $customer["MetaData"] = $data->MetaData;
+        //$payment["UnappliedAmount"] = $data->TotalAmt;
+        $customer["CustomerBalance"] = $data->Balance;
+
+        return $customer;
+    }
     public function show($data){
         $result = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$data->DisplayName' ");
 

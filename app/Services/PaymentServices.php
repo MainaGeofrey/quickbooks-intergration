@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use QuickBooksOnline\API\Facades\Customer;
 use QuickBooksOnline\API\Facades\Payment;
@@ -24,20 +25,38 @@ class PaymentServices {
         return  $this->dataService->Query("SELECT * FROM Payment ");
     }
     public function store($data){
+        $validator = Validator::make($data->data, [
+            'AccountName' => 'required|string',
+            //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
+            //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
+
+        ]);
+
+        if($validator->fails()){
+
+            return response()->json(["message" => "Please provide the AccountName", "code" => 422]);
+        }
+
+        Log::info("LogPayment | payment request  ".__METHOD__."|".json_encode($data->data).json_encode($this->data));
         $name = $data->data["AccountName"];
-        Log::info($name);
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
+        if(!$customer){
+            return response()->json(["message" => "Account by name $name Not Found", "code" => 404]);
+        }
         $id = $customer[0]->Id;
         //TODO query all open invoices
         $invoices = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$id' ");
-        Log::info($invoices);
         $data["id"] = $id;
+        $data["name"] = $name;
 
         //Log::info(count($invoices));
         try {
             if($invoices){
                 $payment = $this->payInvoices($data, $invoices);
                //$this->paySingleInvoice($data, $invoices);
+
+               $payment = $this->paymentResponse($payment,$name);
+               Log::info("LogPayment | payment request created successfully  ".__METHOD__."|".json_encode($payment)."|Payment Created|".json_encode($this->data));
 
                return response()->json($payment);
 
@@ -47,7 +66,7 @@ class PaymentServices {
                     "CustomerRef"=>
                     [
                         "value" => $id,
-                        //"name" => $data->data["CustomerRef"]["DisplayName"],
+                        "name" => $name,
                     ],
                     "TotalAmt" => $data->data["TotalAmt"],
                 /*  "Line" => [
@@ -61,7 +80,12 @@ class PaymentServices {
                     ]] */
                 ]);
 
-                return $this->dataService->Add($payment);
+                $payment = $this->dataService->Add($payment);
+
+                $payment = $this->paymentResponse($payment,$name);
+                Log::info("LoPayment | payment request created successfully  ".__METHOD__."|".json_encode($payment)."|Payment Created|".json_encode($this->data));
+
+                return response()->json($payment);
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -78,13 +102,26 @@ class PaymentServices {
                 return $payments;
             }
             else{
-                return response()->json(["message" => "No Payment found"]);
+                return response()->json(["message" => "No Payment found for account $name", "code" => 404]);
             }
         }
         else{
-            return response()->json(["message" => "Account by name . $name  . Not Found"]);
+            return response()->json(["message" => "Account by name $name Not Found", "code" => 404]);
         }
 
+    }
+
+    public function paymentResponse($data, $name){
+        $payment = [];
+        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
+
+        $payment["PaymentId"] = $data->Id;
+        $payment["AccountName"] = $name;
+        $payment["MetaData"] = $data->MetaData;
+        //$payment["UnappliedAmount"] = $data->TotalAmt;
+        $payment["CustomerBalance"] = $customer[0]->Balance;
+
+        return $payment;
     }
 
      public function payInvoices($data,$invoices){
@@ -108,7 +145,7 @@ class PaymentServices {
                 "CustomerRef"=>
                 [
                     "value" => $data["id"],
-                    //"name" => $data->data["DisplayName"],
+                    "name" => $data["name"],
                 ],
                 "TotalAmt" => $data->data["TotalAmt"],
                 "Line" => $lineItem
