@@ -24,14 +24,17 @@ class PaymentServices {
         return  $this->dataService->Query("SELECT * FROM Payment ");
     }
     public function store($data){
+        Log::info("LogPayment | payment request  ".__METHOD__."|".json_encode($data->data).json_encode($this->data));
         $name = $data->data["AccountName"];
-        Log::info($name);
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
+        if(!$customer){
+            return response()->json(["message" => "Account by name $name Not Found", "code" => 404]);
+        }
         $id = $customer[0]->Id;
         //TODO query all open invoices
         $invoices = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$id' ");
-        Log::info($invoices);
         $data["id"] = $id;
+        $data["name"] = $name;
 
         //Log::info(count($invoices));
         try {
@@ -39,6 +42,7 @@ class PaymentServices {
                 $payment = $this->payInvoices($data, $invoices);
                //$this->paySingleInvoice($data, $invoices);
 
+               Log::info("LoPayment | payment request created successfully  ".__METHOD__."|".json_encode($payment)."|Payment Created|".json_encode($this->data));
                return response()->json($payment);
 
             }
@@ -47,7 +51,7 @@ class PaymentServices {
                     "CustomerRef"=>
                     [
                         "value" => $id,
-                        //"name" => $data->data["CustomerRef"]["DisplayName"],
+                        "name" => $name,
                     ],
                     "TotalAmt" => $data->data["TotalAmt"],
                 /*  "Line" => [
@@ -61,6 +65,7 @@ class PaymentServices {
                     ]] */
                 ]);
 
+                Log::info("LoPayment | payment request created successfully  ".__METHOD__."|".json_encode($payment)."|Payment Created|".json_encode($this->data));
                 return $this->dataService->Add($payment);
             }
         } catch (\Throwable $th) {
@@ -78,11 +83,11 @@ class PaymentServices {
                 return $payments;
             }
             else{
-                return response()->json(["message" => "No Payment found"]);
+                return response()->json(["message" => "No Payment found for account $name", "code" => 404]);
             }
         }
         else{
-            return response()->json(["message" => "Account by name . $name  . Not Found"]);
+            return response()->json(["message" => "Account by name $name Not Found", "code" => 404]);
         }
 
     }
@@ -108,7 +113,7 @@ class PaymentServices {
                 "CustomerRef"=>
                 [
                     "value" => $data["id"],
-                    //"name" => $data->data["DisplayName"],
+                    "name" => $data["name"],
                 ],
                 "TotalAmt" => $data->data["TotalAmt"],
                 "Line" => $lineItem
