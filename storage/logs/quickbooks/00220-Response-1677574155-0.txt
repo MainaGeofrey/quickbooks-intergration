@@ -1,0 +1,69 @@
+RESPONSE URI FOR SEQUENCE ID 00220
+==================================
+https://sandbox-quickbooks.api.intuit.com/v3/company/4620816365281741020/customer?minorversion=68
+
+RESPONSE HEADERS
+================
+date: Tue, 28 Feb 2023 08:49:15 GMT
+content-type: application/xml;charset=UTF-8
+content-length: 1318
+intuit_tid: 1-63fdc00b-0d66b18705d6bfcb6c1a3a5d
+x-spanid: 9f7e8e40-128c-4180-a812-37163999d353
+x-amzn-trace-id: Root=1-63fdc00b-0d66b18705d6bfcb6c1a3a5d
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+qbo-version: 1999.159
+service-time: total=146, db=79
+expires: 0
+cache-control: max-age=0, no-cache, no-store, must-revalidate, private
+x-envoy-upstream-service-time: 203
+strict-transport-security: max-age=31536000
+server: envoy
+
+RESPONSE BODY
+=============
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<IntuitResponse xmlns="http://schema.intuit.com/finance/v3" time="2023-02-28T00:49:15.351-08:00">
+  <Customer domain="QBO" sparse="false">
+    <Id>103</Id>
+    <SyncToken>0</SyncToken>
+    <MetaData>
+      <CreateTime>2023-02-28T00:49:15-08:00</CreateTime>
+      <LastUpdatedTime>2023-02-28T00:49:15-08:00</LastUpdatedTime>
+    </MetaData>
+    <Title>Mr</Title>
+    <GivenName>Student</GivenName>
+    <MiddleName>Student</MiddleName>
+    <FamilyName>Student</FamilyName>
+    <Suffix>Jr</Suffix>
+    <FullyQualifiedName>Student40095</FullyQualifiedName>
+    <CompanyName>STUDENT 800</CompanyName>
+    <DisplayName>Student40095</DisplayName>
+    <PrintOnCheckName>STUDENT 800</PrintOnCheckName>
+    <Active>true</Active>
+    <PrimaryPhone>
+      <FreeFormNumber>(555) 555-800</FreeFormNumber>
+    </PrimaryPhone>
+    <PrimaryEmailAddr>
+      <Address>jimu@myemail.com</Address>
+    </PrimaryEmailAddr>
+    <DefaultTaxCodeRef>2</DefaultTaxCodeRef>
+    <Taxable>true</Taxable>
+    <BillAddr>
+      <Id>221</Id>
+      <Line1>1238 NAI</Line1>
+      <City>KANA</City>
+      <PostalCode>940042</PostalCode>
+    </BillAddr>
+    <Notes>Here are other details.</Notes>
+    <Job>false</Job>
+    <BillWithParent>false</BillWithParent>
+    <Balance>0</Balance>
+    <BalanceWithJobs>0</BalanceWithJobs>
+    <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+    <PreferredDeliveryMethod>Print</PreferredDeliveryMethod>
+    <IsProject>false</IsProject>
+  </Customer>
+</IntuitResponse>
+
+

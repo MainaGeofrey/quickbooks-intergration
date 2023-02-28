@@ -42,7 +42,9 @@ class PaymentServices {
                 $payment = $this->payInvoices($data, $invoices);
                //$this->paySingleInvoice($data, $invoices);
 
-               Log::info("LoPayment | payment request created successfully  ".__METHOD__."|".json_encode($payment)."|Payment Created|".json_encode($this->data));
+               $payment = $this->paymentResponse($payment,$name);
+               Log::info("LogPayment | payment request created successfully  ".__METHOD__."|".json_encode($payment)."|Payment Created|".json_encode($this->data));
+
                return response()->json($payment);
 
             }
@@ -65,8 +67,12 @@ class PaymentServices {
                     ]] */
                 ]);
 
+                $payment = $this->dataService->Add($payment);
+
+                $payment = $this->paymentResponse($payment,$name);
                 Log::info("LoPayment | payment request created successfully  ".__METHOD__."|".json_encode($payment)."|Payment Created|".json_encode($this->data));
-                return $this->dataService->Add($payment);
+
+                return response()->json($payment);
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -90,6 +96,19 @@ class PaymentServices {
             return response()->json(["message" => "Account by name $name Not Found", "code" => 404]);
         }
 
+    }
+
+    public function paymentResponse($data, $name){
+        $payment = [];
+        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
+
+        $payment["PaymentId"] = $data->Id;
+        $payment["AccountName"] = $name;
+        $payment["MetaData"] = $data->MetaData;
+        //$payment["UnappliedAmount"] = $data->TotalAmt;
+        $payment["CustomerBalance"] = $customer[0]->Balance;
+
+        return $payment;
     }
 
      public function payInvoices($data,$invoices){

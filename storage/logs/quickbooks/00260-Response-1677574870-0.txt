@@ -1,0 +1,30 @@
+RESPONSE URI FOR SEQUENCE ID 00260
+==================================
+https://sandbox-quickbooks.api.intuit.com/v3/company/4620816365281741020/customer?minorversion=68
+
+RESPONSE HEADERS
+================
+date: Tue, 28 Feb 2023 09:01:10 GMT
+content-type: application/xml
+content-length: 337
+intuit_tid: 1-63fdc2d6-0a66e3c72c2d43f56fc321bf
+x-spanid: 80941577-e382-41b9-9270-8c3f38987fb8
+x-amzn-trace-id: Root=1-63fdc2d6-0a66e3c72c2d43f56fc321bf
+x-content-type-options: nosniff
+x-envoy-upstream-service-time: 100
+strict-transport-security: max-age=31536000
+server: envoy
+
+RESPONSE BODY
+=============
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<IntuitResponse xmlns="http://schema.intuit.com/finance/v3" time="2023-02-28T01:01:10.741-08:00">
+  <Fault type="ValidationFault">
+    <Error code="6240">
+      <Message>Duplicate Name Exists Error</Message>
+      <Detail>The name supplied already exists. : null</Detail>
+    </Error>
+  </Fault>
+</IntuitResponse>
+
+
