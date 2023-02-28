@@ -39,13 +39,16 @@ class PaymentServices {
 
         Log::info("LogPayment | payment request  ".__METHOD__."|".json_encode($data->data).json_encode($this->data));
         $name = $data->data["account_name"];
-        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
+        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name'  ");
         if(!$customer){
             return response()->json(["message" => "Account by name $name Not Found", "code" => 404]);
         }
         $id = $customer[0]->Id;
         //TODO query all open invoices
-        $invoices = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$id' ");
+        $invoices = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$id' and Balance > '0' ");
+        if(!$invoices){
+            return response()->json(["message" => "Error We do not have any invoices to apply this payment", "code" => 404]);
+        }
         $data["id"] = $id;
         $data["name"] = $name;
 
@@ -139,46 +142,55 @@ class PaymentServices {
         //$invoices = $this->invoiceServices->show($data);
         //$invoices = json_decode($invoices, true);
         $lineItems = [];
-        foreach($invoices as $invoice){
-            //print_r($invoice->Id);
-            $lineItem =
-                [[
-                    //TODO pay amount specific to each Invoice//sum of all invoice Line Items
-                    "Amount"=> $data->data["amount"],
-                    "LinkedTxn" => [
-                    [
-                        "TxnId" => $invoice->Id,
-                        "TxnType"=> "Invoice"
-                    ]]
-                ]];
-               // array_push($lineItems,$lineItem);
-               $payment = Payment::create([
-                "CustomerRef"=>
-                [
-                    "value" => $data["id"],
-                    "name" => $data["name"],
-                ],
-                "Line" => $lineItem,
-                "TotalAmt" => $data->data["amount"],
-                "PaymentRefNum" => $data->data["reference_number"],
-                "TxnDate" => $data->data["date_time"],
-                "PrivateNote" => $data->data["remarks"],
-                "CustomField" => $data->data["mobile_number"]
-            ]);
 
+
+
+        $payment_amount = $data->data["amount"];
+		$paid_amount = $payment_amount;
+
+		foreach ($invoices as $key =>$invoice) {
+            $payment_amount_for_invoice = min($payment_amount, $invoice->Balance); // make sure payment doesn't exceed amount due
+                $lineItems[] = [
+                                "Amount"=> $payment_amount_for_invoice,
+                                "LinkedTxn" => [
+                                [
+                                    "TxnId" => $invoice->Id,
+                                    "TxnType"=> "Invoice"
+                                ]]
+                            ];
+            $payment_amount -= $payment_amount_for_invoice;
+            if ($payment_amount <= 0) {
+                break;
+            }
         }
 
-       // Log::info(count($lineItems));
+        $payment = Payment::create([
+            "CustomerRef"=>
+            [
+                "value" => $data["id"],
+                "name" => $data["name"],
+            ],
+            "Line" => $lineItems,
+            "TotalAmt" => $data->data["amount"],
+            "PaymentRefNum" => $data->data["reference_number"],
+            "TxnDate" => $data->data["date_time"],
+            "PrivateNote" => $data->data["remarks"],
+            "CustomField" => $data->data["mobile_number"]
+        ]);
 
 
-       if(count($invoices) > 1){
+
+        Log::info(count($lineItems));
+
+
+     /*  if(count($invoices) > 1){
         $str = $this->generateRandomString();
         $batch = $this->dataService->CreateNewBatch();
         $batch->AddEntity($payment,$str, "Create");
         $batch->ExecuteWithRequestID("ThisIsMyFirstBatchRequest");
 
         return $payment;
-       }
+       }  */
         //TODO make payments in batches instead of one at a time
 
         return $this->dataService->Add($payment);

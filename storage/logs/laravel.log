@@ -1797,3 +1797,29 @@
 [2023-02-28 12:57:30] local.INFO: AB11686304479HmMl5nWo1C2BBo4AJ9TTPVCNSbj9hZv80qLct  
 [2023-02-28 12:57:30] local.INFO: QB_ACCESS_TOKEN_VALID  
 [2023-02-28 12:57:30] local.INFO: DATA SERVICE OBJECT CREATED SUCCESSFULLY  
+[2023-02-28 14:39:48] local.INFO: QB_TOKEN_EXPIRED  
+[2023-02-28 14:39:50] local.INFO: QB_ACCESS_TOKEN_UPDATED  
+[2023-02-28 14:39:50] local.INFO: DATA SERVICE OBJECT CREATED SUCCESSFULLY  
+[2023-02-28 14:39:50] local.INFO: LogPayment | payment request  App\Services\PaymentServices::store|{"account_name":"Student40090","mobile_number":"0734512465","amount":"160.0","reference_number":"QXP00167X","date_time":"2023-02-27T05:22:50-08:00","remarks":"Modern remarks."}{"user_id":12}  
+[2023-02-28 14:40:05] local.INFO: QB_ACCESS_TOKEN_VALID  
+[2023-02-28 14:40:05] local.INFO: DATA SERVICE OBJECT CREATED SUCCESSFULLY  
+[2023-02-28 14:40:05] local.INFO: LogInvoice | invoice request  App\Services\InvoiceServices::store|{"Line":[{"Description":"Sewing Service for Alex","Amount":"150.00","DetailType":"SalesItemLineDetail","SalesItemLineDetail":{"ItemRef":"1","Qty":"2"}},{"Description":"Discount for Alex","Amount":"10.00","DetailType":"SalesItemLineDetail","SalesItemLineDetail":{"ItemRef":"2","Qty":"10"}}],"AccountNumber":"Student40090"}{"user_id":12}  
+[2023-02-28 14:40:11] local.INFO: LogInvoice | invoice request created successfully  App\Services\InvoiceServices::store|{"invoice_id":"378","account_name":"Student40090","created_time":"2023-02-28T06:40:09-08:00"}|Invoice Created|{"user_id":12}  
+[2023-02-28 14:40:36] local.INFO: QB_ACCESS_TOKEN_VALID  
+[2023-02-28 14:40:36] local.INFO: DATA SERVICE OBJECT CREATED SUCCESSFULLY  
+[2023-02-28 14:40:38] local.INFO: LogCustomer | customer request  App\Services\CustomerServices::store|{"Title":"Mr","GivenName":"Student","MiddleName":"Student","FamilyName":"Student","Suffix":"Jr","FullyQualifiedName":"Student400","CompanyName":"STUDENT 800","AccountName":"Student50007","PrintOnCheckName":"STUDENT 800","PrimaryPhone":{"FreeFormNumber":"(555) 555-800"},"PrimaryEmailAddr":{"Address":"jimu@myemail.com"},"DefaultTaxCodeRef":"2","BillAddr":{"Line1":"1238 NAI","City":"KANA","PostalCode":"940042"},"Notes":"Here are other details.","Balance":"0"}{"user_id":12}  
+[2023-02-28 14:40:40] local.INFO: LogCustomer | customer request created successfully  App\Services\CustomerServices::store|{"CustomerId":"118","AccountName":"Student50007","MetaData":{"CreatedByRef":null,"CreateTime":"2023-02-28T06:40:39-08:00","LastModifiedByRef":null,"LastUpdatedTime":"2023-02-28T06:40:39-08:00","LastChangedInQB":null,"Synchronized":null},"CustomerBalance":"0"}|Customer Created|{"user_id":12}  
+[2023-02-28 14:40:56] local.INFO: QB_ACCESS_TOKEN_VALID  
+[2023-02-28 14:40:56] local.INFO: DATA SERVICE OBJECT CREATED SUCCESSFULLY  
+[2023-02-28 14:40:56] local.INFO: LogInvoice | invoice request  App\Services\InvoiceServices::store|{"Line":[{"Description":"Sewing Service for Alex","Amount":"150.00","DetailType":"SalesItemLineDetail","SalesItemLineDetail":{"ItemRef":"1","Qty":"2"}},{"Description":"Discount for Alex","Amount":"10.00","DetailType":"SalesItemLineDetail","SalesItemLineDetail":{"ItemRef":"2","Qty":"10"}}],"AccountNumber":"Student50007"}{"user_id":12}  
+[2023-02-28 14:41:03] local.INFO: LogInvoice | invoice request created successfully  App\Services\InvoiceServices::store|{"invoice_id":"379","account_name":"Student50007","created_time":"2023-02-28T06:41:01-08:00"}|Invoice Created|{"user_id":12}  
+[2023-02-28 14:41:25] local.INFO: QB_ACCESS_TOKEN_VALID  
+[2023-02-28 14:41:25] local.INFO: DATA SERVICE OBJECT CREATED SUCCESSFULLY  
+[2023-02-28 14:41:25] local.INFO: LogPayment | payment request  App\Services\PaymentServices::store|{"account_name":"Student50007","mobile_number":"0734512465","amount":"320.0","reference_number":"QXP00167X","date_time":"2023-02-27T05:22:50-08:00","remarks":"Modern remarks."}{"user_id":12}  
+[2023-02-28 14:41:32] local.INFO: LogPayment | payment request created successfully  App\Services\PaymentServices::store|{"account_number":"Student50007","reference_number":"QXP00167X","mobile_number":null,"amount":"320.00","payer_transaction_id":"","remarks":"Modern remarks.","date_time":"2023-02-27"}|Payment Created|{"user_id":12}  
+[2023-02-28 14:44:24] local.INFO: QB_ACCESS_TOKEN_VALID  
+[2023-02-28 14:44:24] local.INFO: DATA SERVICE OBJECT CREATED SUCCESSFULLY  
+[2023-02-28 14:44:24] local.INFO: LogPayment | payment request  App\Services\PaymentServices::store|{"account_name":"Student50007","mobile_number":"0734512465","amount":"320.0","reference_number":"QXP00167X","date_time":"2023-02-27T05:22:50-08:00","remarks":"Modern remarks."}{"user_id":12}  
+[2023-02-28 14:44:55] local.INFO: QB_ACCESS_TOKEN_VALID  
+[2023-02-28 14:44:55] local.INFO: DATA SERVICE OBJECT CREATED SUCCESSFULLY  
+[2023-02-28 14:44:55] local.INFO: LogPayment | payment request  App\Services\PaymentServices::store|{"account_name":"Student50007","mobile_number":"0734512465","amount":"320.0","reference_number":"QXP00167X","date_time":"2023-02-27T05:22:50-08:00","remarks":"Modern remarks."}{"user_id":12}  
