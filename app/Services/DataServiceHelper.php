@@ -26,7 +26,7 @@ class DataServiceHelper {
         $config = config("quickbooks");
 
         $qb_token = QBConfig::where("user_id", $this->data["user_id"])->first();
-        Log::info($qb_token->refresh_token);
+        //Log::info($qb_token->refresh_token);
         if($qb_token){
             //
            // Log::info("QB_TOKEN");
