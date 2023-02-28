@@ -34,7 +34,7 @@ class PaymentServices {
 
         if($validator->fails()){
 
-            return response()->json(["message" => "Please provide the AccountName", "code" => 422]);
+            return response()->json(["message" => "Please provide the AccountNumber", "code" => 422]);
         }
 
         Log::info("LogPayment | payment request  ".__METHOD__."|".json_encode($data->data).json_encode($this->data));
@@ -99,7 +99,7 @@ class PaymentServices {
     }
 
     public function show($data){
-        $name = $data->data["AccountName"];
+        $name = $data->data["AccountNumber"];
         if( $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ")){
             $payments =  $this->dataService->Query("SELECT * FROM Payment WHERE DisplayName = $name");
             if ($payments) {
