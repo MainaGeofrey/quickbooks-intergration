@@ -95,7 +95,7 @@ class DataServiceHelper {
                         "access_token" => $access_token,
                         "refresh_token" => $refresh_token,
                         "expires_in" => $expires_in,
-                        "realm_id" => $config["QBORealmID"],
+                        "QBORealmID" => $config["QBORealmID"],
                         "client_id" => $config["client_id"],
                         "client_secret" => $config["client_secret"],
 
