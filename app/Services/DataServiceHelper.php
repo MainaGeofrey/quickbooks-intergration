@@ -36,7 +36,7 @@ class DataServiceHelper {
             if( $date1 < $date2 ) {
                 //token is expired
                 Log::info("QB_TOKEN_EXPIRED");
-                $config["refresh_token"] = $qb_token->refresh_token;
+               // $config["refresh_token"] = $qb_token->refresh_token;
                 $newAccessTokenObj = $this->refreshToken($config);
 
 

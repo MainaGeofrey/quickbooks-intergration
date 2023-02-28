@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use QuickBooksOnline\API\Facades\Customer;
 use QuickBooksOnline\API\Facades\Payment;
@@ -24,6 +25,18 @@ class PaymentServices {
         return  $this->dataService->Query("SELECT * FROM Payment ");
     }
     public function store($data){
+        $validator = Validator::make($data->data, [
+            'AccountName' => 'required|string',
+            //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
+            //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
+
+        ]);
+
+        if($validator->fails()){
+
+            return response()->json(["message" => "Please provide the AccountName", "code" => 422]);
+        }
+
         Log::info("LogPayment | payment request  ".__METHOD__."|".json_encode($data->data).json_encode($this->data));
         $name = $data->data["AccountName"];
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
