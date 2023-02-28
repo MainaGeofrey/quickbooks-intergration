@@ -29,7 +29,7 @@ class PaymentController extends Controller
         try {
             $data = $this->payment->store($request);
 
-            return response()->json($data);
+            return $data;
         } catch (\Throwable $th) {
             //throw $th;
             //Log::error($th->getMessage());

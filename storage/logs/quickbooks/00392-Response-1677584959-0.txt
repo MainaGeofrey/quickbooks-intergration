@@ -1,0 +1,47 @@
+RESPONSE URI FOR SEQUENCE ID 00392
+==================================
+https://sandbox-quickbooks.api.intuit.com/v3/company/4620816365281741020/batch?requestid=ThisIsMyFirstBatchRequest&minorversion=68
+
+RESPONSE HEADERS
+================
+date: Tue, 28 Feb 2023 11:49:19 GMT
+content-type: application/xml;charset=UTF-8
+content-length: 755
+intuit_tid: 1-63fdea3f-79876ab474e7f5f12b668a1c
+x-spanid: 87cd5de4-a5aa-4d24-a0f2-f7f208e9c259
+x-amzn-trace-id: Root=1-63fdea3f-79876ab474e7f5f12b668a1c
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+qbo-version: 1999.159
+service-time: total=276, db=115
+expires: 0
+cache-control: max-age=0, no-cache, no-store, must-revalidate, private
+x-envoy-upstream-service-time: 311
+strict-transport-security: max-age=31536000
+server: envoy
+
+RESPONSE BODY
+=============
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<IntuitResponse xmlns="http://schema.intuit.com/finance/v3" time="2023-02-28T03:49:19.113-08:00">
+  <BatchItemResponse bId="0f1e58126w">
+    <Payment domain="QBO" sparse="false">
+      <Id>373</Id>
+      <SyncToken>0</SyncToken>
+      <MetaData>
+        <CreateTime>2023-02-28T03:49:19-08:00</CreateTime>
+        <LastUpdatedTime>2023-02-28T03:49:19-08:00</LastUpdatedTime>
+      </MetaData>
+      <TxnDate>2023-02-28</TxnDate>
+      <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+      <CustomerRef name="Student40090">98</CustomerRef>
+      <DepositToAccountRef>4</DepositToAccountRef>
+      <PaymentRefNum>MPESA</PaymentRefNum>
+      <TotalAmt>160.00</TotalAmt>
+      <UnappliedAmt>160.00</UnappliedAmt>
+      <ProcessPayment>false</ProcessPayment>
+    </Payment>
+  </BatchItemResponse>
+</IntuitResponse>
+
+
