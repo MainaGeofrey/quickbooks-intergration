@@ -68,11 +68,11 @@ class InvoiceServices {
         $invoice = [];
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
 
-        $invoice["InvoiceId"] = $data->Id;
-        $invoice["AccountName"] = $name;
-        $invoice["MetaData"] = $data->MetaData;
-        //$payment["UnappliedAmount"] = $data->TotalAmt;
-        $invoice["CustomerBalance"] = $customer[0]->Balance;
+        $invoice["invoice_id"] = $data->Id;
+        $invoice["account_name"] = $name;
+        $invoice["created_time"] = $data->MetaData->CreateTime;
+        $payment["amount"] = $data->TotalAmt;
+
 
         return $invoice;
     }

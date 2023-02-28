@@ -26,6 +26,7 @@ class DataServiceHelper {
         $config = config("quickbooks");
 
         $qb_token = QBConfig::where("user_id", $this->data["user_id"])->first();
+        Log::info($qb_token->refresh_token);
         if($qb_token){
             //
            // Log::info("QB_TOKEN");
@@ -36,7 +37,7 @@ class DataServiceHelper {
             if( $date1 < $date2 ) {
                 //token is expired
                 Log::info("QB_TOKEN_EXPIRED");
-               // $config["refresh_token"] = $qb_token->refresh_token;
+                $config["refresh_token"] = $qb_token->refresh_token;
                 $newAccessTokenObj = $this->refreshToken($config);
 
 
@@ -53,6 +54,8 @@ class DataServiceHelper {
                                 "expires_in" => $expires_in,
 
                             ]);
+
+
                         }
                         catch(\Exception $exception){
                             Log::info("QB_ACCESS_DATABASE_UPDATE".$exception->getMessage());

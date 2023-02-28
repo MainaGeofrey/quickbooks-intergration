@@ -26,7 +26,7 @@ class PaymentServices {
     }
     public function store($data){
         $validator = Validator::make($data->data, [
-            'AccountName' => 'required|string',
+            'account_name' => 'required|string',
             //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
             //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
 
@@ -38,7 +38,7 @@ class PaymentServices {
         }
 
         Log::info("LogPayment | payment request  ".__METHOD__."|".json_encode($data->data).json_encode($this->data));
-        $name = $data->data["AccountName"];
+        $name = $data->data["account_name"];
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
         if(!$customer){
             return response()->json(["message" => "Account by name $name Not Found", "code" => 404]);
@@ -68,7 +68,12 @@ class PaymentServices {
                         "value" => $id,
                         "name" => $name,
                     ],
-                    "TotalAmt" => $data->data["TotalAmt"],
+                    "TotalAmt" => $data->data["amount"],
+                    "PaymentRefNum" => $data->data["reference_number"],
+                    "TxnDate" => $data->data["date_time"],
+                    "PrivateNote" => $data->data["remarks"],
+                    "CustomField" => $data->data["mobile_number"]
+
                 /*  "Line" => [
                     [
                         "Amount"=> 100.00,
@@ -115,11 +120,17 @@ class PaymentServices {
         $payment = [];
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
 
-        $payment["PaymentId"] = $data->Id;
-        $payment["AccountName"] = $name;
-        $payment["MetaData"] = $data->MetaData;
-        //$payment["UnappliedAmount"] = $data->TotalAmt;
-        $payment["CustomerBalance"] = $customer[0]->Balance;
+        //$payment["PaymentId"] = $data->Id;
+        $payment["account_number"] = $name;
+        $payment["reference_number"] = $data->PaymentRefNum;
+        $payment["mobile_number"] = $data->CustomField;
+        $payment["amount"] = $data->TotalAmt;
+        $payment["mobile_number"] = $data->CustomField;
+        $payment["payer_transaction_id"] = "";
+        $payment["remarks"] = $data->PrivateNote;
+        $payment["date_time"] = $data->TxnDate;
+       // $payment["remarks"] = $data->PrivateNote;
+        //$payment["CustomerBalance"] = $customer[0]->Balance;
 
         return $payment;
     }
@@ -133,7 +144,7 @@ class PaymentServices {
             $lineItem =
                 [[
                     //TODO pay amount specific to each Invoice//sum of all invoice Line Items
-                    "Amount"=> $data->data["TotalAmt"],
+                    "Amount"=> $data->data["amount"],
                     "LinkedTxn" => [
                     [
                         "TxnId" => $invoice->Id,
@@ -147,8 +158,12 @@ class PaymentServices {
                     "value" => $data["id"],
                     "name" => $data["name"],
                 ],
-                "TotalAmt" => $data->data["TotalAmt"],
-                "Line" => $lineItem
+                "Line" => $lineItem,
+                "TotalAmt" => $data->data["amount"],
+                "PaymentRefNum" => $data->data["reference_number"],
+                "TxnDate" => $data->data["date_time"],
+                "PrivateNote" => $data->data["remarks"],
+                "CustomField" => $data->data["mobile_number"]
             ]);
 
         }
