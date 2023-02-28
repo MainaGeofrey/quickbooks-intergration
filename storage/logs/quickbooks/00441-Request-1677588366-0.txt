@@ -1,0 +1,18 @@
+REQUEST URI FOR SEQUENCE ID 00441
+==================================
+https://sandbox-quickbooks.api.intuit.com/v3/company/4620816365281741020/query?minorversion=68
+
+REQUEST HEADERS
+================
+Authorization: Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..1qOkXaFE9QXS6Uu9DZSURg.90vSYfXkJnlRC5_9f9LV-CbAWYNsS2iI9IEabPBpy3hpW3DGKQ1Am2E9lOIhudHwpmHebAU18Cuvhoaloyc97q9BBr43RUtGyAdLepLYCMwoejqqotDPnJ0r0koFDQ8ZrFgH3pcP8PJsJr-VmmMOa3qC2B4hcIo6MhT9iFbl2TPg4y8CFw8Y-6KvZmqw5gKUAXhvjvYnD8k3XlYZBtLZX7iIhxOpgMp4C8HtdXrzdjk_9RXxJzp6OR-mruYENtRKU3RAfhmFS8Czcvl8Zx0Pzr9gDUCJD8O4NwwAES45nQ7bhbcArKru_DnQpNurY726_SzDGC4uoBbapOMVULbUtN4xiZvlAb9ojAw8okvKLdMtyPhFia4VMGEbJ9TDxZwGDQ3riiwKuzntrtrSiVe1lqOpuZQ3_rS7CYzQuSzYaFwpDZSbCBFk9DKX5fFrnqE8BnxUJuPJvgUegSTcR4y81ptuLF5H3gprv-9SxLf9Nk9wUNMJfgYm6N4w3jQFq16Rl9qi8Viqb5Y-TdVmxAvZfJfXjK0uDFP8Z49iGytagp-zTa0da73MpVvol5g22cgytiOK_vZjuayeBApMGtM9BgcBOa9FZZdLtHUv9C3iGZoNMDbHDZbca3QN6o27jm8g6ArwKUwk9DNcW3vRsM7Amp6tJ025vgO4KH9rkXh_2K8_vfYbBjR5a8KHTk0fo3AMteI-O0kW0wFMq_bkN0m3pd9_rUCXedGMGDLFoJcgUNyHAfJXA8sZyJlw8KjlDqSYUCPxDIn_TUyz-jrsaXQuSsI9hXwgqO2OACEUHGghyGa-Sb7mJ19B0iVZtZ0ifHF0b_bvZ9fJOmBkrfXA8a4o228k8g19yYslngSEPf6eW85fbXnoEXECskXHl_wl9Hi3.oAR4HYp137XzEc2GUQrugw
+host: sandbox-quickbooks.api.intuit.com
+user-agent: V3PHPSDK6.1.1
+accept: */*
+connection: close
+content-type: application/text
+content-length: 57
+
+REQUEST BODY
+=============
+SELECT * FROM Customer WHERE DisplayName = 'Student50006'
+

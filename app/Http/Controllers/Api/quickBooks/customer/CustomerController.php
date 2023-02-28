@@ -15,6 +15,7 @@ class CustomerController extends Controller
     protected $data;
 
     public function __construct(Request $request){
+        print_r($request->bearerToken());
         $this->data["user_id"] = Utils::getApiUser($request);
         $this->customer = new CustomerServices($this->data);
     }
