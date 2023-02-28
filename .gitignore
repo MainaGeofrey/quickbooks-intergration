@@ -51,6 +51,7 @@ Thumbs.db
 
 
 /storage/*.key
+
 /vendor
 .env
 .env.backup
