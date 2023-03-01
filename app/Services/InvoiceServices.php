@@ -67,21 +67,27 @@ class InvoiceServices {
 
         $id = $customer[0]->Id;
 
-        $invoice = Invoice::create([
-            "Line" => $data['Line'],
-                "CustomerRef" => [
-                  "value" => $id,
-                  //"name" => $data->data["CustomerRef"]["DisplayName"]
-                ]
-        ]);
+        try {
+            $invoice = Invoice::create([
+                "Line" => $data['Line'],
+                    "CustomerRef" => [
+                    "value" => $id,
+                    //"name" => $data->data["CustomerRef"]["DisplayName"]
+                    ]
+            ]);
 
-        $result = $this->dataService->Add($invoice);
-        $invoice = $this->invoiceResponse($result,$name);
-        Log::info("LogInvoice | invoice request created successfully  ".__METHOD__."|".json_encode($invoice)."|Invoice Created|".json_encode($this->data));
-       // $result = json_encode($result, JSON_PRETTY_PRINT);
-       // print_r($result);
+            $result = $this->dataService->Add($invoice);
+            //$invoice = $this->invoiceResponse($result,$name);
+            Log::info("LogInvoice | invoice request created successfully  ".__METHOD__."|".json_encode($invoice)."|Invoice Created|".json_encode($this->data));
+            // $result = json_encode($result, JSON_PRETTY_PRINT);
+            // print_r($result);
 
-        return $invoice;
+            return ["invoice_id" => $result->Id,"status" =>true, "code" => 200];
+        } catch (\Throwable $th) {
+            //throw $th;
+
+            return ["message" => $th->getMessage(),"status" =>false, "code" => 200];
+        }
     }
 
     public function invoiceResponse($data, $name){

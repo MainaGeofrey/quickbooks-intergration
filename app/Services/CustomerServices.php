@@ -50,56 +50,65 @@ class CustomerServices {
 
 
         Log::info("LogCustomer | customer request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
-        $customer = Customer::create([
-            "BillAddr" => [
-                "Line1" => $data['BillAddr']['Line1']?? null,
-                "City" =>  $data['BillAddr']['City']?? null,
-                //"Country" => "USA",
-                //"CountrySubDivisionCode" => "CA",
-                "PostalCode" =>  $data['BillAddr']['PostalCode']?? null,
-            ]?? null,
-            //"CustomField" => $data->data['CustomField'],
-            //"Organization" => $data->data['Organization'],
-            "Notes" => $data['Notes']?? null,
-            "Title" => $data['Title']?? null,
-            "GivenName" => $data['GivenName']?? null,
-            "MiddleName" => $data['MiddleName']?? null,
-            "FamilyName" => $data['FamilyName']?? null,
-            "Suffix" => $data['Suffix']?? null,
-            "Balance" => $data['Balance']?? null,
-            "FullyQualifiedName" => $data['FullyQualifiedName']?? null,
-            "CompanyName" => $data['CompanyName']?? null,
-            "DisplayName" => $data['AccountName'],
-            "PrintOnCheckName" => $data['PrintOnCheckName']?? null,
-            //"UserId" => $data->data['UserId'],
-            //"Active" => $data->data['Active'],
-            "PrimaryPhone" => [
-                "FreeFormNumber" =>  $data['PhoneNumber']?? null,
-            ]?? null,
-            //"AlternatePhone" => $data->data['AlternatePhone'],
-            "PrimaryEmailAddr" => [
-                "Address" => $data['EmailAddr']?? null,
-            ]?? null,
-            //"WebAddr" => $data->data['WebAddr'],
-            //"OtherContactInfo" => $data->data['OtherContactInfo'],
-            "DefaultTaxCodeRef" => $data['DefaultTaxCodeRef']?? null,
-            //"ShipAddr" => $data->data['ShipAddr'],
-            //"OtherAddr" => $data->data['OtherAddr'],
-           // "ContactName" => $data->data['ContactName'],
-            //"AltContactName" => $data->data['AltContactName'],
-           // "CreditLimit" => $data->data['CreditLimit'],
-            //"SecondaryTaxIdentifier" => $data->data['SecondaryTaxIdentifier'],
-            //"ClientCompanyId" => $data->data['ClientCompanyId'],
-        ]);
+
+        try{
+            $customer = Customer::create([
+                "BillAddr" => [
+                    "Line1" => $data['BillAddr']['Line1']?? null,
+                    "City" =>  $data['BillAddr']['City']?? null,
+                    //"Country" => "USA",
+                    //"CountrySubDivisionCode" => "CA",
+                    "PostalCode" =>  $data['BillAddr']['PostalCode']?? null,
+                ]?? null,
+                //"CustomField" => $data->data['CustomField'],
+                //"Organization" => $data->data['Organization'],
+                "Notes" => $data['Notes']?? null,
+                "Title" => $data['Title']?? null,
+                "GivenName" => $data['GivenName']?? null,
+                "MiddleName" => $data['MiddleName']?? null,
+                "FamilyName" => $data['FamilyName']?? null,
+                "Suffix" => $data['Suffix']?? null,
+                "Balance" => $data['Balance']?? null,
+                "FullyQualifiedName" => $data['FullyQualifiedName']?? null,
+                "CompanyName" => $data['CompanyName']?? null,
+                "DisplayName" => $data['AccountName'],
+                "PrintOnCheckName" => $data['PrintOnCheckName']?? null,
+                //"UserId" => $data->data['UserId'],
+                //"Active" => $data->data['Active'],
+                "PrimaryPhone" => [
+                    "FreeFormNumber" =>  $data['PhoneNumber']?? null,
+                ]?? null,
+                //"AlternatePhone" => $data->data['AlternatePhone'],
+                "PrimaryEmailAddr" => [
+                    "Address" => $data['EmailAddr']?? null,
+                ]?? null,
+                //"WebAddr" => $data->data['WebAddr'],
+                //"OtherContactInfo" => $data->data['OtherContactInfo'],
+                "DefaultTaxCodeRef" => $data['DefaultTaxCodeRef']?? null,
+                //"ShipAddr" => $data->data['ShipAddr'],
+                //"OtherAddr" => $data->data['OtherAddr'],
+            // "ContactName" => $data->data['ContactName'],
+                //"AltContactName" => $data->data['AltContactName'],
+            // "CreditLimit" => $data->data['CreditLimit'],
+                //"SecondaryTaxIdentifier" => $data->data['SecondaryTaxIdentifier'],
+                //"ClientCompanyId" => $data->data['ClientCompanyId'],
+            ]);
 
 
-        $result = $this->dataService->Add($customer);
+            $result = $this->dataService->Add($customer);
 
 
-        $customer = $this->customerResponse($result);
-        Log::info("LogCustomer | customer request created successfully  ".__METHOD__."|".json_encode($customer)."|Customer Created|".json_encode($this->data));
+            $customer = $this->customerResponse($result);
+            Log::info("LogCustomer | customer request created successfully  ".__METHOD__."|".json_encode($customer)."|Customer Created|".json_encode($this->data));
 
-        return $customer;
+
+            return ["customer_id" => $result->Id,"status" =>true, "code" => 200];
+        } catch (\Throwable $th) {
+        //throw $th;
+
+            return ["message" => $th->getMessage(),"status" =>false, "code" => 200];
+        }
+
     }
 
     public function customerResponse($data){
