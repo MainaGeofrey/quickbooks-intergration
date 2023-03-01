@@ -25,8 +25,12 @@ class PaymentServices {
         return  $this->dataService->Query("SELECT * FROM Payment ");
     }
     public function store($data){
-        $validator = Validator::make($data->data, [
+        $validator = Validator::make($data->all(), [
             'account_name' => 'required|string',
+            'reference_number' => 'required|string',
+            'date_time' => 'required|string',
+            'amount' =>  'required|numeric|gt:0'
+            //'mobile_number' => 'required|string',
             //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
             //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
 
@@ -34,11 +38,11 @@ class PaymentServices {
 
         if($validator->fails()){
 
-            return response()->json(["message" => "Please provide the AccountNumber", "code" => 422]);
+            return ["message" => $validator->errors()->getMessages(), "code" => 422];
         }
 
-        Log::info("LogPayment | payment request  ".__METHOD__."|".json_encode($data->data).json_encode($this->data));
-        $name = $data->data["account_name"];
+        Log::info("LogPayment | payment request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
+        $name = $data["account_name"];
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name'  ");
         if(!$customer){
             return response()->json(["message" => "Account by name $name Not Found", "code" => 404]);
@@ -71,11 +75,11 @@ class PaymentServices {
                         "value" => $id,
                         "name" => $name,
                     ],
-                    "TotalAmt" => $data->data["amount"],
-                    "PaymentRefNum" => $data->data["reference_number"],
-                    "TxnDate" => $data->data["date_time"],
-                    "PrivateNote" => $data->data["remarks"],
-                    "CustomField" => $data->data["mobile_number"]
+                    "TotalAmt" => $data["amount"],
+                    "PaymentRefNum" => $data["reference_number"],
+                    "TxnDate" => $data["date_time"],
+                    "PrivateNote" => $data["remarks"],
+                    "CustomField" => $data["mobile_number"]
 
                 /*  "Line" => [
                     [
@@ -102,7 +106,7 @@ class PaymentServices {
     }
 
     public function show($data){
-        $name = $data->data["AccountNumber"];
+        $name = $data["AccountNumber"];
         if( $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ")){
             $payments =  $this->dataService->Query("SELECT * FROM Payment WHERE DisplayName = $name");
             if ($payments) {
@@ -145,7 +149,7 @@ class PaymentServices {
 
 
 
-        $payment_amount = $data->data["amount"];
+        $payment_amount = $data["amount"];
 		$paid_amount = $payment_amount;
 
 		foreach ($invoices as $key =>$invoice) {
@@ -171,16 +175,16 @@ class PaymentServices {
                 "name" => $data["name"],
             ],
             "Line" => $lineItems,
-            "TotalAmt" => $data->data["amount"],
-            "PaymentRefNum" => $data->data["reference_number"],
-            "TxnDate" => $data->data["date_time"],
-            "PrivateNote" => $data->data["remarks"],
-            "CustomField" => $data->data["mobile_number"]
+            "TotalAmt" => $data["amount"],
+            "PaymentRefNum" => $data["reference_number"],
+            "TxnDate" => $data["date_time"],
+            "PrivateNote" => $data["remarks"],
+            "CustomField" => $data["mobile_number"]
         ]);
 
 
 
-        Log::info(count($lineItems));
+        //Log::info(count($lineItems));
 
 
      /*  if(count($invoices) > 1){

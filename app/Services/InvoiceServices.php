@@ -25,8 +25,10 @@ class InvoiceServices {
         return  $this->dataService->Query("SELECT * FROM Invoice ");
     }
     public function store($data){
-        $validator = Validator::make($data->data, [
+        $validator = Validator::make($data->all(), [
             'AccountNumber' => 'required|string',
+            "Line"    => "required|array|min:1",
+            //"Line.*"  => "required|array|min:3",
             //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
             //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
 
@@ -34,12 +36,30 @@ class InvoiceServices {
 
         if($validator->fails()){
 
-            return response()->json(["message" => "Please provide the AccountNumber", "code" => 422]);
+            return ["message" => $validator->errors()->getMessages(), "code" => 422];
         }
 
 
-        Log::info("LogInvoice | invoice request  ".__METHOD__."|".json_encode($data->data).json_encode($this->data));
-        $name = $data->data["AccountNumber"];
+      /*  foreach($data->Line as $key => $value){
+            $line_validator = Validator::make($value, [
+                'Description' => 'required|string',
+                'Amount' =>  'required|numeric|gt:0',
+                'DetailType' => 'required|string',
+                "SalesItemLineDetail"    => "required|array|min:1",
+                //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
+                //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
+
+            ]);
+
+            if($line_validator->errors()){
+
+                return ["message" => $line_validator->errors(), "code" => 422];
+            }
+
+        } */
+
+        Log::info("LogInvoice | invoice request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
+        $name = $data["AccountNumber"];
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
         if(!$customer){
             return response()->json(["message" => "Account by name $name Not Found", "code" => 404]);
@@ -48,7 +68,7 @@ class InvoiceServices {
         $id = $customer[0]->Id;
 
         $invoice = Invoice::create([
-            "Line" => $data->data['Line'],
+            "Line" => $data['Line'],
                 "CustomerRef" => [
                   "value" => $id,
                   //"name" => $data->data["CustomerRef"]["DisplayName"]
