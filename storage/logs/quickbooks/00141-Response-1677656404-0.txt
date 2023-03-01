@@ -1,0 +1,73 @@
+RESPONSE URI FOR SEQUENCE ID 00141
+==================================
+https://sandbox-quickbooks.api.intuit.com/v3/company/4620816365281741020/query?minorversion=68
+
+RESPONSE HEADERS
+================
+date: Wed, 01 Mar 2023 07:40:03 GMT
+content-type: application/xml;charset=UTF-8
+content-length: 1497
+intuit_tid: 1-63ff0153-7c9d61a430a6b7d81091ee57
+x-spanid: 1d9f2fe2-0369-4fb9-b927-b8a8173b3cf0
+x-amzn-trace-id: Root=1-63ff0153-7c9d61a430a6b7d81091ee57
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+qbo-version: 1999.160
+service-time: total=28, db=12
+expires: 0
+cache-control: max-age=0, no-cache, no-store, must-revalidate, private
+x-envoy-upstream-service-time: 57
+strict-transport-security: max-age=31536000
+server: envoy
+
+RESPONSE BODY
+=============
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<IntuitResponse xmlns="http://schema.intuit.com/finance/v3" time="2023-02-28T23:40:03.974-08:00">
+  <QueryResponse startPosition="1" maxResults="1">
+    <Customer domain="QBO" sparse="false">
+      <Id>120</Id>
+      <SyncToken>0</SyncToken>
+      <MetaData>
+        <CreateTime>2023-02-28T22:45:47-08:00</CreateTime>
+        <LastUpdatedTime>2023-02-28T23:39:44-08:00</LastUpdatedTime>
+      </MetaData>
+      <Title>Mr</Title>
+      <GivenName>Student</GivenName>
+      <MiddleName>Student</MiddleName>
+      <FamilyName>Student</FamilyName>
+      <Suffix>Jr</Suffix>
+      <FullyQualifiedName>Student50010</FullyQualifiedName>
+      <CompanyName>STUDENT 800</CompanyName>
+      <DisplayName>Student50010</DisplayName>
+      <PrintOnCheckName>STUDENT 800</PrintOnCheckName>
+      <Active>true</Active>
+      <V4IDPseudonym>0020989a3f24c537704b8187d207f01c08fe4d</V4IDPseudonym>
+      <PrimaryPhone>
+        <FreeFormNumber>(555) 555-800</FreeFormNumber>
+      </PrimaryPhone>
+      <PrimaryEmailAddr>
+        <Address>jimu@myemail.com</Address>
+      </PrimaryEmailAddr>
+      <DefaultTaxCodeRef>2</DefaultTaxCodeRef>
+      <Taxable>true</Taxable>
+      <BillAddr>
+        <Id>249</Id>
+        <Line1>1238 NAI</Line1>
+        <City>KANA</City>
+        <PostalCode>940042</PostalCode>
+      </BillAddr>
+      <Notes>Here are other details.</Notes>
+      <Job>false</Job>
+      <BillWithParent>false</BillWithParent>
+      <Balance>1200.00</Balance>
+      <BalanceWithJobs>1200.00</BalanceWithJobs>
+      <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+      <PreferredDeliveryMethod>Print</PreferredDeliveryMethod>
+      <IsProject>false</IsProject>
+      <ClientEntityId>0</ClientEntityId>
+    </Customer>
+  </QueryResponse>
+</IntuitResponse>
+
+

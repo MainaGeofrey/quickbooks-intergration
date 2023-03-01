@@ -1,0 +1,67 @@
+RESPONSE URI FOR SEQUENCE ID 00015
+==================================
+https://sandbox-quickbooks.api.intuit.com/v3/company/4620816365281741020/payment?minorversion=68
+
+RESPONSE HEADERS
+================
+date: Wed, 01 Mar 2023 07:08:48 GMT
+content-type: application/xml;charset=UTF-8
+content-length: 1071
+intuit_tid: 1-63fefa00-2d6f0bde6eb909840b7371a4
+x-spanid: 0ee1cc79-64bc-433f-a3e0-9a61621e155f
+x-amzn-trace-id: Root=1-63fefa00-2d6f0bde6eb909840b7371a4
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+qbo-version: 1999.160
+service-time: total=412, db=169
+expires: 0
+cache-control: max-age=0, no-cache, no-store, must-revalidate, private
+x-envoy-upstream-service-time: 443
+strict-transport-security: max-age=31536000
+server: envoy
+
+RESPONSE BODY
+=============
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<IntuitResponse xmlns="http://schema.intuit.com/finance/v3" time="2023-02-28T23:08:48.693-08:00">
+  <Payment domain="QBO" sparse="false">
+    <Id>386</Id>
+    <SyncToken>0</SyncToken>
+    <MetaData>
+      <CreateTime>2023-02-28T23:08:48-08:00</CreateTime>
+      <LastUpdatedTime>2023-02-28T23:08:48-08:00</LastUpdatedTime>
+    </MetaData>
+    <TxnDate>2023-02-27</TxnDate>
+    <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+    <PrivateNote>Modern remarks.</PrivateNote>
+    <Line>
+      <Amount>160.00</Amount>
+      <LinkedTxn>
+        <TxnId>384</TxnId>
+        <TxnType>Invoice</TxnType>
+      </LinkedTxn>
+      <LineEx>
+        <NameValue>
+          <Name>txnId</Name>
+          <Value>384</Value>
+        </NameValue>
+        <NameValue>
+          <Name>txnOpenBalance</Name>
+          <Value>160.00</Value>
+        </NameValue>
+        <NameValue>
+          <Name>txnReferenceNumber</Name>
+          <Value>1129</Value>
+        </NameValue>
+      </LineEx>
+    </Line>
+    <CustomerRef name="Student50010">120</CustomerRef>
+    <DepositToAccountRef>4</DepositToAccountRef>
+    <PaymentRefNum>QXP00167X</PaymentRefNum>
+    <TotalAmt>2000.00</TotalAmt>
+    <UnappliedAmt>1840.00</UnappliedAmt>
+    <ProcessPayment>false</ProcessPayment>
+  </Payment>
+</IntuitResponse>
+
+
