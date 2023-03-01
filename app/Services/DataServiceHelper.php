@@ -7,6 +7,7 @@ use App\Helpers\Utils;
 
 use App\Models\QBConfig;
 use DateTime;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use QuickBooksOnline\API\Core\OAuth\OAuth2\OAuth2LoginHelper;
 use QuickBooksOnline\API\DataService\DataService;
@@ -38,6 +39,7 @@ class DataServiceHelper {
                 //token is expired
                 Log::info("QB_TOKEN_EXPIRED");
                 $config["refresh_token"] = $qb_token->refresh_token;
+                Log::info($config["refresh_token"]);
                 $newAccessTokenObj = $this->refreshToken($config);
 
 
@@ -49,15 +51,20 @@ class DataServiceHelper {
 
                         try{
                             Log::info("QB_ACCESS_TOKEN_UPDATED_DB_SAVE");
-                            QBConfig::create([
+                          /*  QBConfig::create([
                                 "user_id" => $this->data['user_id'],
                                 "access_token" => $access_token,
                                 "refresh_token" => $refresh_token,
                                 "expires_in" => $expires_in,
-                                "QBORealmID" => $config["QBORealmID"],
+                                "realm_id" => $config["QBORealmID"],
                                 "client_id" => $config["client_id"],
                                 "client_secret" => $config["client_secret"],
 
+                            ]); */
+                            DB::table('q_b_tokens')->where('user_id', $this->data['user_id'])->update([
+                                'access_token' => $access_token,
+                                'refresh_token' => $refresh_token,
+                                'expires_in' => $expires_in,
                             ]);
 
 
@@ -100,7 +107,7 @@ class DataServiceHelper {
                         "access_token" => $access_token,
                         "refresh_token" => $refresh_token,
                         "expires_in" => $expires_in,
-                        "QBORealmID" => $config["QBORealmID"],
+                        "realm_id" => $config["QBORealmID"],
                         "client_id" => $config["client_id"],
                         "client_secret" => $config["client_secret"],
 
