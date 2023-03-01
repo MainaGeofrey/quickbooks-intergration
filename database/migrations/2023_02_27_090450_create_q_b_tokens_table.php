@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer("user_id");
             $table->text("access_token");
             $table->text("refresh_token");
-            $table->string('QBORealmID');
+            $table->string('realm_id');
             $table->string('client_id');
             $table->string('client_secret');
             $table->string("expires_in")->timestamps();
