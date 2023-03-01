@@ -1,0 +1,18 @@
+REQUEST URI FOR SEQUENCE ID 00112
+==================================
+https://sandbox-quickbooks.api.intuit.com/v3/company/4620816365281741020/query?minorversion=68
+
+REQUEST HEADERS
+================
+Authorization: Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..PLrBr4xxWiPVsTSAuImy8w.iToLXZi_l40J4ZtMDI52DlZ10e-HngAGdSLaslbt4eb0_mag0o63R3sW3uufV29YrBucB0CSXpdHny2HLqWetXMxDlhDIfMkPSGPrusqyTCi_s10abm7wYs3kjb3qGxU0Q9ybFAiR5yAfg7ESdQh3YVOYQqfzl0x2JnbwTVMdU40JQHgg0iazi5-hW8uHK43A32t2jNcR0RVEP8D82OwM8sWsXr3qCIT023_whoMc1l3R3zwDq6kAiiRPPhCyC4dK_p9qup5Z6PfyKTZb69hH2ikkvCsmpoxLKnO7Xhs3fu2INTfCFXp9g0ZqDnVIkajX-4uZnq0PKH5BH8H9gs3thrJ9oX1rNsEEhLvN4I2HEmRfXkNaDJImWHt8P2Ue0H94Q2_affq_xQQ83Hj8yPrP838GfdA1p6oXChWmWwwYv4kWbilErBKaGO746_nJK_pM_W_MPBnVjVWAR-SLUwdXwkqsrZ3BWl_urf5iIdtj5d4hRBQmYkuBYGl8CPDHGZKYsfkiE_ebRpAgzOCvuheoID9QxTpx-PFg0NCw8Tzd6rEbkJXNuPSeACuM0m1LWGqaLr5WCgBzshYTIYkK5pfrqbP6LKYVsK0dcTuxjZi1hGs_Qeg7OYTG1xL69KQG4gc8HBabNqSLzEX-r3sOp_wFbnJwbuMSjjcAM0fLHcTP-mz9H4MfZ6Bfw7jZbG6B6r5S3Iu7z7APloIsHm5VPAWZ7fwU-xB6l2-JrIlaYvJi7ONfhJQNcU8SOg7SRWjKYVM9_suDOU6aEqMHoKE9BA4Ej9Ez6Z3fuq03Ham3moJgjcEQ2n7odvJ-wR68N2c8HBb2p5K0rWjCOT44NxvVUDYbJmWuZ0MLtiQPPQ_tCldlO5Fzh071dVzQq1QvfJqVsBt.qvN9FBnSI0LRqM2lfOwfqg
+host: sandbox-quickbooks.api.intuit.com
+user-agent: V3PHPSDK6.1.1
+accept: */*
+connection: close
+content-type: application/text
+content-length: 65
+
+REQUEST BODY
+=============
+SELECT * FROM Invoice WHERE CustomerRef = '135' and Balance > '0'
+

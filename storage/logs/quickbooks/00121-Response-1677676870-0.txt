@@ -1,0 +1,30 @@
+RESPONSE URI FOR SEQUENCE ID 00121
+==================================
+https://sandbox-quickbooks.api.intuit.com/v3/company/4620816365281741020/query?minorversion=68
+
+RESPONSE HEADERS
+================
+date: Wed, 01 Mar 2023 13:21:10 GMT
+content-type: application/xml;charset=UTF-8
+content-length: 185
+intuit_tid: 1-63ff5146-56d847a55f03e07a72049f1d
+x-spanid: 122ddda1-7359-4f0c-a07b-ce6220a8f132
+x-amzn-trace-id: Root=1-63ff5146-56d847a55f03e07a72049f1d
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+qbo-version: 1999.160
+service-time: total=198, db=30
+expires: 0
+cache-control: max-age=0, no-cache, no-store, must-revalidate, private
+x-envoy-upstream-service-time: 227
+strict-transport-security: max-age=31536000
+server: envoy
+
+RESPONSE BODY
+=============
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<IntuitResponse xmlns="http://schema.intuit.com/finance/v3" time="2023-03-01T05:21:10.082-08:00">
+  <QueryResponse/>
+</IntuitResponse>
+
+

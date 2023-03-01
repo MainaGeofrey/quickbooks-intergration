@@ -1,0 +1,996 @@
+RESPONSE URI FOR SEQUENCE ID 00015
+==================================
+https://sandbox-quickbooks.api.intuit.com/v3/company/4620816365281741020/query?minorversion=68
+
+RESPONSE HEADERS
+================
+date: Wed, 01 Mar 2023 08:54:26 GMT
+content-type: application/xml;charset=UTF-8
+intuit_tid: 1-63ff12c1-06d1d0d177d8f3c926c415ae
+x-spanid: bab185f6-5eb5-4413-88d9-3a053b0c5b47
+x-amzn-trace-id: Root=1-63ff12c1-06d1d0d177d8f3c926c415ae
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+qbo-version: 1999.160
+service-time: total=511, db=126
+expires: 0
+cache-control: max-age=0, no-cache, no-store, must-revalidate, private
+x-envoy-upstream-service-time: 545
+strict-transport-security: max-age=31536000
+server: envoy
+
+RESPONSE BODY
+=============
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<IntuitResponse xmlns="http://schema.intuit.com/finance/v3" time="2023-03-01T00:54:25.636-08:00">
+  <QueryResponse startPosition="1" maxResults="13" totalCount="13">
+    <Invoice domain="QBO" sparse="false">
+      <Id>410</Id>
+      <SyncToken>0</SyncToken>
+      <MetaData>
+        <CreateTime>2023-03-01T00:10:25-08:00</CreateTime>
+        <LastModifiedByRef>9130356042979196</LastModifiedByRef>
+        <LastUpdatedTime>2023-03-01T00:10:25-08:00</LastUpdatedTime>
+      </MetaData>
+      <CustomField>
+        <DefinitionId>1</DefinitionId>
+        <Name>Crew #</Name>
+        <Type>StringType</Type>
+      </CustomField>
+      <DocNumber>1153</DocNumber>
+      <TxnDate>2023-03-01</TxnDate>
+      <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+      <Line>
+        <Id>1</Id>
+        <LineNum>1</LineNum>
+        <Description>Sewing Service for Alex</Description>
+        <Amount>150.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Services">1</ItemRef>
+          <Qty>2</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Id>2</Id>
+        <LineNum>2</LineNum>
+        <Description>Discount for Alex</Description>
+        <Amount>10.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Hours">2</ItemRef>
+          <Qty>10</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Amount>160.00</Amount>
+        <DetailType>SubTotalLineDetail</DetailType>
+        <SubTotalLineDetail/>
+      </Line>
+      <TxnTaxDetail>
+        <TotalTax>0</TotalTax>
+      </TxnTaxDetail>
+      <CustomerRef name="Student50010">120</CustomerRef>
+      <BillAddr>
+        <Id>249</Id>
+        <Line1>1238 NAI</Line1>
+        <City>KANA</City>
+        <PostalCode>940042</PostalCode>
+      </BillAddr>
+      <FreeFormAddress>false</FreeFormAddress>
+      <ShipFromAddr>
+        <Id>278</Id>
+        <Line1>123 Sierra Way</Line1>
+        <Line2>San Pablo, CA  87999</Line2>
+      </ShipFromAddr>
+      <DueDate>2023-03-31</DueDate>
+      <TotalAmt>160.00</TotalAmt>
+      <ApplyTaxAfterDiscount>false</ApplyTaxAfterDiscount>
+      <PrintStatus>NeedToPrint</PrintStatus>
+      <EmailStatus>NotSet</EmailStatus>
+      <Balance>160.00</Balance>
+      <AllowIPNPayment>false</AllowIPNPayment>
+      <AllowOnlinePayment>false</AllowOnlinePayment>
+      <AllowOnlineCreditCardPayment>false</AllowOnlineCreditCardPayment>
+      <AllowOnlineACHPayment>false</AllowOnlineACHPayment>
+    </Invoice>
+    <Invoice domain="QBO" sparse="false">
+      <Id>409</Id>
+      <SyncToken>0</SyncToken>
+      <MetaData>
+        <CreateTime>2023-02-28T23:56:52-08:00</CreateTime>
+        <LastModifiedByRef>9130356042979196</LastModifiedByRef>
+        <LastUpdatedTime>2023-02-28T23:56:52-08:00</LastUpdatedTime>
+      </MetaData>
+      <CustomField>
+        <DefinitionId>1</DefinitionId>
+        <Name>Crew #</Name>
+        <Type>StringType</Type>
+      </CustomField>
+      <DocNumber>1152</DocNumber>
+      <TxnDate>2023-02-28</TxnDate>
+      <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+      <Line>
+        <Id>1</Id>
+        <LineNum>1</LineNum>
+        <Description>Sewing Service for Alex</Description>
+        <Amount>150.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Services">1</ItemRef>
+          <Qty>2</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Id>2</Id>
+        <LineNum>2</LineNum>
+        <Description>Discount for Alex</Description>
+        <Amount>10.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Hours">2</ItemRef>
+          <Qty>10</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Amount>160.00</Amount>
+        <DetailType>SubTotalLineDetail</DetailType>
+        <SubTotalLineDetail/>
+      </Line>
+      <TxnTaxDetail>
+        <TotalTax>0</TotalTax>
+      </TxnTaxDetail>
+      <CustomerRef name="Student50010">120</CustomerRef>
+      <BillAddr>
+        <Id>249</Id>
+        <Line1>1238 NAI</Line1>
+        <City>KANA</City>
+        <PostalCode>940042</PostalCode>
+      </BillAddr>
+      <FreeFormAddress>false</FreeFormAddress>
+      <ShipFromAddr>
+        <Id>273</Id>
+        <Line1>123 Sierra Way</Line1>
+        <Line2>San Pablo, CA  87999</Line2>
+      </ShipFromAddr>
+      <DueDate>2023-03-30</DueDate>
+      <TotalAmt>160.00</TotalAmt>
+      <ApplyTaxAfterDiscount>false</ApplyTaxAfterDiscount>
+      <PrintStatus>NeedToPrint</PrintStatus>
+      <EmailStatus>NotSet</EmailStatus>
+      <Balance>160.00</Balance>
+      <AllowIPNPayment>false</AllowIPNPayment>
+      <AllowOnlinePayment>false</AllowOnlinePayment>
+      <AllowOnlineCreditCardPayment>false</AllowOnlineCreditCardPayment>
+      <AllowOnlineACHPayment>false</AllowOnlineACHPayment>
+    </Invoice>
+    <Invoice domain="QBO" sparse="false">
+      <Id>408</Id>
+      <SyncToken>0</SyncToken>
+      <MetaData>
+        <CreateTime>2023-02-28T23:53:51-08:00</CreateTime>
+        <LastModifiedByRef>9130356042979196</LastModifiedByRef>
+        <LastUpdatedTime>2023-02-28T23:53:51-08:00</LastUpdatedTime>
+      </MetaData>
+      <CustomField>
+        <DefinitionId>1</DefinitionId>
+        <Name>Crew #</Name>
+        <Type>StringType</Type>
+      </CustomField>
+      <DocNumber>1151</DocNumber>
+      <TxnDate>2023-02-28</TxnDate>
+      <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+      <Line>
+        <Id>1</Id>
+        <LineNum>1</LineNum>
+        <Description>Sewing Service for Alex</Description>
+        <Amount>150.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Services">1</ItemRef>
+          <Qty>2</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Id>2</Id>
+        <LineNum>2</LineNum>
+        <Description>Discount for Alex</Description>
+        <Amount>10.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Hours">2</ItemRef>
+          <Qty>10</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Amount>160.00</Amount>
+        <DetailType>SubTotalLineDetail</DetailType>
+        <SubTotalLineDetail/>
+      </Line>
+      <TxnTaxDetail>
+        <TotalTax>0</TotalTax>
+      </TxnTaxDetail>
+      <CustomerRef name="Student50010">120</CustomerRef>
+      <BillAddr>
+        <Id>249</Id>
+        <Line1>1238 NAI</Line1>
+        <City>KANA</City>
+        <PostalCode>940042</PostalCode>
+      </BillAddr>
+      <FreeFormAddress>false</FreeFormAddress>
+      <ShipFromAddr>
+        <Id>272</Id>
+        <Line1>123 Sierra Way</Line1>
+        <Line2>San Pablo, CA  87999</Line2>
+      </ShipFromAddr>
+      <DueDate>2023-03-30</DueDate>
+      <TotalAmt>160.00</TotalAmt>
+      <ApplyTaxAfterDiscount>false</ApplyTaxAfterDiscount>
+      <PrintStatus>NeedToPrint</PrintStatus>
+      <EmailStatus>NotSet</EmailStatus>
+      <Balance>160.00</Balance>
+      <AllowIPNPayment>false</AllowIPNPayment>
+      <AllowOnlinePayment>false</AllowOnlinePayment>
+      <AllowOnlineCreditCardPayment>false</AllowOnlineCreditCardPayment>
+      <AllowOnlineACHPayment>false</AllowOnlineACHPayment>
+    </Invoice>
+    <Invoice domain="QBO" sparse="false">
+      <Id>407</Id>
+      <SyncToken>0</SyncToken>
+      <MetaData>
+        <CreateTime>2023-02-28T23:50:46-08:00</CreateTime>
+        <LastModifiedByRef>9130356042979196</LastModifiedByRef>
+        <LastUpdatedTime>2023-02-28T23:50:46-08:00</LastUpdatedTime>
+      </MetaData>
+      <CustomField>
+        <DefinitionId>1</DefinitionId>
+        <Name>Crew #</Name>
+        <Type>StringType</Type>
+      </CustomField>
+      <DocNumber>1150</DocNumber>
+      <TxnDate>2023-02-28</TxnDate>
+      <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+      <Line>
+        <Id>1</Id>
+        <LineNum>1</LineNum>
+        <Description>Sewing Service for Alex</Description>
+        <Amount>150.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Services">1</ItemRef>
+          <Qty>2</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Id>2</Id>
+        <LineNum>2</LineNum>
+        <Description>Discount for Alex</Description>
+        <Amount>10.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Hours">2</ItemRef>
+          <Qty>10</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Amount>160.00</Amount>
+        <DetailType>SubTotalLineDetail</DetailType>
+        <SubTotalLineDetail/>
+      </Line>
+      <TxnTaxDetail>
+        <TotalTax>0</TotalTax>
+      </TxnTaxDetail>
+      <CustomerRef name="Student50010">120</CustomerRef>
+      <BillAddr>
+        <Id>249</Id>
+        <Line1>1238 NAI</Line1>
+        <City>KANA</City>
+        <PostalCode>940042</PostalCode>
+      </BillAddr>
+      <FreeFormAddress>false</FreeFormAddress>
+      <ShipFromAddr>
+        <Id>271</Id>
+        <Line1>123 Sierra Way</Line1>
+        <Line2>San Pablo, CA  87999</Line2>
+      </ShipFromAddr>
+      <DueDate>2023-03-30</DueDate>
+      <TotalAmt>160.00</TotalAmt>
+      <ApplyTaxAfterDiscount>false</ApplyTaxAfterDiscount>
+      <PrintStatus>NeedToPrint</PrintStatus>
+      <EmailStatus>NotSet</EmailStatus>
+      <Balance>160.00</Balance>
+      <AllowIPNPayment>false</AllowIPNPayment>
+      <AllowOnlinePayment>false</AllowOnlinePayment>
+      <AllowOnlineCreditCardPayment>false</AllowOnlineCreditCardPayment>
+      <AllowOnlineACHPayment>false</AllowOnlineACHPayment>
+    </Invoice>
+    <Invoice domain="QBO" sparse="false">
+      <Id>406</Id>
+      <SyncToken>0</SyncToken>
+      <MetaData>
+        <CreateTime>2023-02-28T23:48:31-08:00</CreateTime>
+        <LastModifiedByRef>9130356042979196</LastModifiedByRef>
+        <LastUpdatedTime>2023-02-28T23:48:31-08:00</LastUpdatedTime>
+      </MetaData>
+      <CustomField>
+        <DefinitionId>1</DefinitionId>
+        <Name>Crew #</Name>
+        <Type>StringType</Type>
+      </CustomField>
+      <DocNumber>1149</DocNumber>
+      <TxnDate>2023-02-28</TxnDate>
+      <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+      <Line>
+        <Id>1</Id>
+        <LineNum>1</LineNum>
+        <Description>Sewing Service for Alex</Description>
+        <Amount>150.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Services">1</ItemRef>
+          <Qty>2</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Id>2</Id>
+        <LineNum>2</LineNum>
+        <Description>Discount for Alex</Description>
+        <Amount>10.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Hours">2</ItemRef>
+          <Qty>10</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Amount>160.00</Amount>
+        <DetailType>SubTotalLineDetail</DetailType>
+        <SubTotalLineDetail/>
+      </Line>
+      <TxnTaxDetail>
+        <TotalTax>0</TotalTax>
+      </TxnTaxDetail>
+      <CustomerRef name="Student50010">120</CustomerRef>
+      <BillAddr>
+        <Id>249</Id>
+        <Line1>1238 NAI</Line1>
+        <City>KANA</City>
+        <PostalCode>940042</PostalCode>
+      </BillAddr>
+      <FreeFormAddress>false</FreeFormAddress>
+      <ShipFromAddr>
+        <Id>270</Id>
+        <Line1>123 Sierra Way</Line1>
+        <Line2>San Pablo, CA  87999</Line2>
+      </ShipFromAddr>
+      <DueDate>2023-03-30</DueDate>
+      <TotalAmt>160.00</TotalAmt>
+      <ApplyTaxAfterDiscount>false</ApplyTaxAfterDiscount>
+      <PrintStatus>NeedToPrint</PrintStatus>
+      <EmailStatus>NotSet</EmailStatus>
+      <Balance>160.00</Balance>
+      <AllowIPNPayment>false</AllowIPNPayment>
+      <AllowOnlinePayment>false</AllowOnlinePayment>
+      <AllowOnlineCreditCardPayment>false</AllowOnlineCreditCardPayment>
+      <AllowOnlineACHPayment>false</AllowOnlineACHPayment>
+    </Invoice>
+    <Invoice domain="QBO" sparse="false">
+      <Id>405</Id>
+      <SyncToken>0</SyncToken>
+      <MetaData>
+        <CreateTime>2023-02-28T23:39:44-08:00</CreateTime>
+        <LastModifiedByRef>9130356042979196</LastModifiedByRef>
+        <LastUpdatedTime>2023-02-28T23:39:44-08:00</LastUpdatedTime>
+      </MetaData>
+      <CustomField>
+        <DefinitionId>1</DefinitionId>
+        <Name>Crew #</Name>
+        <Type>StringType</Type>
+      </CustomField>
+      <DocNumber>1148</DocNumber>
+      <TxnDate>2023-02-28</TxnDate>
+      <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+      <Line>
+        <Id>1</Id>
+        <LineNum>1</LineNum>
+        <Description>Sewing Service for Alex</Description>
+        <Amount>150.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Services">1</ItemRef>
+          <Qty>2</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Id>2</Id>
+        <LineNum>2</LineNum>
+        <Description>Discount for Alex</Description>
+        <Amount>10.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Hours">2</ItemRef>
+          <Qty>10</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Amount>160.00</Amount>
+        <DetailType>SubTotalLineDetail</DetailType>
+        <SubTotalLineDetail/>
+      </Line>
+      <TxnTaxDetail>
+        <TotalTax>0</TotalTax>
+      </TxnTaxDetail>
+      <CustomerRef name="Student50010">120</CustomerRef>
+      <BillAddr>
+        <Id>249</Id>
+        <Line1>1238 NAI</Line1>
+        <City>KANA</City>
+        <PostalCode>940042</PostalCode>
+      </BillAddr>
+      <FreeFormAddress>false</FreeFormAddress>
+      <ShipFromAddr>
+        <Id>269</Id>
+        <Line1>123 Sierra Way</Line1>
+        <Line2>San Pablo, CA  87999</Line2>
+      </ShipFromAddr>
+      <DueDate>2023-03-30</DueDate>
+      <TotalAmt>160.00</TotalAmt>
+      <ApplyTaxAfterDiscount>false</ApplyTaxAfterDiscount>
+      <PrintStatus>NeedToPrint</PrintStatus>
+      <EmailStatus>NotSet</EmailStatus>
+      <Balance>160.00</Balance>
+      <AllowIPNPayment>false</AllowIPNPayment>
+      <AllowOnlinePayment>false</AllowOnlinePayment>
+      <AllowOnlineCreditCardPayment>false</AllowOnlineCreditCardPayment>
+      <AllowOnlineACHPayment>false</AllowOnlineACHPayment>
+    </Invoice>
+    <Invoice domain="QBO" sparse="false">
+      <Id>404</Id>
+      <SyncToken>0</SyncToken>
+      <MetaData>
+        <CreateTime>2023-02-28T23:38:44-08:00</CreateTime>
+        <LastModifiedByRef>9130356042979196</LastModifiedByRef>
+        <LastUpdatedTime>2023-02-28T23:38:44-08:00</LastUpdatedTime>
+      </MetaData>
+      <CustomField>
+        <DefinitionId>1</DefinitionId>
+        <Name>Crew #</Name>
+        <Type>StringType</Type>
+      </CustomField>
+      <DocNumber>1147</DocNumber>
+      <TxnDate>2023-02-28</TxnDate>
+      <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+      <Line>
+        <Id>1</Id>
+        <LineNum>1</LineNum>
+        <Description>Sewing Service for Alex</Description>
+        <Amount>150.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Services">1</ItemRef>
+          <Qty>2</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Id>2</Id>
+        <LineNum>2</LineNum>
+        <Description>Discount for Alex</Description>
+        <Amount>10.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Hours">2</ItemRef>
+          <Qty>10</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Amount>160.00</Amount>
+        <DetailType>SubTotalLineDetail</DetailType>
+        <SubTotalLineDetail/>
+      </Line>
+      <TxnTaxDetail>
+        <TotalTax>0</TotalTax>
+      </TxnTaxDetail>
+      <CustomerRef name="Student50010">120</CustomerRef>
+      <BillAddr>
+        <Id>249</Id>
+        <Line1>1238 NAI</Line1>
+        <City>KANA</City>
+        <PostalCode>940042</PostalCode>
+      </BillAddr>
+      <FreeFormAddress>false</FreeFormAddress>
+      <ShipFromAddr>
+        <Id>268</Id>
+        <Line1>123 Sierra Way</Line1>
+        <Line2>San Pablo, CA  87999</Line2>
+      </ShipFromAddr>
+      <DueDate>2023-03-30</DueDate>
+      <TotalAmt>160.00</TotalAmt>
+      <ApplyTaxAfterDiscount>false</ApplyTaxAfterDiscount>
+      <PrintStatus>NeedToPrint</PrintStatus>
+      <EmailStatus>NotSet</EmailStatus>
+      <Balance>160.00</Balance>
+      <AllowIPNPayment>false</AllowIPNPayment>
+      <AllowOnlinePayment>false</AllowOnlinePayment>
+      <AllowOnlineCreditCardPayment>false</AllowOnlineCreditCardPayment>
+      <AllowOnlineACHPayment>false</AllowOnlineACHPayment>
+    </Invoice>
+    <Invoice domain="QBO" sparse="false">
+      <Id>403</Id>
+      <SyncToken>0</SyncToken>
+      <MetaData>
+        <CreateTime>2023-02-28T23:37:40-08:00</CreateTime>
+        <LastModifiedByRef>9130356042979196</LastModifiedByRef>
+        <LastUpdatedTime>2023-02-28T23:37:40-08:00</LastUpdatedTime>
+      </MetaData>
+      <CustomField>
+        <DefinitionId>1</DefinitionId>
+        <Name>Crew #</Name>
+        <Type>StringType</Type>
+      </CustomField>
+      <DocNumber>1146</DocNumber>
+      <TxnDate>2023-02-28</TxnDate>
+      <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+      <Line>
+        <Id>1</Id>
+        <LineNum>1</LineNum>
+        <Description>Sewing Service for Alex</Description>
+        <Amount>150.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Services">1</ItemRef>
+          <Qty>2</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Id>2</Id>
+        <LineNum>2</LineNum>
+        <Description>Discount for Alex</Description>
+        <Amount>10.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Hours">2</ItemRef>
+          <Qty>10</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Amount>160.00</Amount>
+        <DetailType>SubTotalLineDetail</DetailType>
+        <SubTotalLineDetail/>
+      </Line>
+      <TxnTaxDetail>
+        <TotalTax>0</TotalTax>
+      </TxnTaxDetail>
+      <CustomerRef name="Student50010">120</CustomerRef>
+      <BillAddr>
+        <Id>249</Id>
+        <Line1>1238 NAI</Line1>
+        <City>KANA</City>
+        <PostalCode>940042</PostalCode>
+      </BillAddr>
+      <FreeFormAddress>false</FreeFormAddress>
+      <ShipFromAddr>
+        <Id>267</Id>
+        <Line1>123 Sierra Way</Line1>
+        <Line2>San Pablo, CA  87999</Line2>
+      </ShipFromAddr>
+      <DueDate>2023-03-30</DueDate>
+      <TotalAmt>160.00</TotalAmt>
+      <ApplyTaxAfterDiscount>false</ApplyTaxAfterDiscount>
+      <PrintStatus>NeedToPrint</PrintStatus>
+      <EmailStatus>NotSet</EmailStatus>
+      <Balance>160.00</Balance>
+      <AllowIPNPayment>false</AllowIPNPayment>
+      <AllowOnlinePayment>false</AllowOnlinePayment>
+      <AllowOnlineCreditCardPayment>false</AllowOnlineCreditCardPayment>
+      <AllowOnlineACHPayment>false</AllowOnlineACHPayment>
+    </Invoice>
+    <Invoice domain="QBO" sparse="false">
+      <Id>402</Id>
+      <SyncToken>0</SyncToken>
+      <MetaData>
+        <CreateTime>2023-02-28T23:35:22-08:00</CreateTime>
+        <LastModifiedByRef>9130356042979196</LastModifiedByRef>
+        <LastUpdatedTime>2023-02-28T23:35:22-08:00</LastUpdatedTime>
+      </MetaData>
+      <CustomField>
+        <DefinitionId>1</DefinitionId>
+        <Name>Crew #</Name>
+        <Type>StringType</Type>
+      </CustomField>
+      <DocNumber>1145</DocNumber>
+      <TxnDate>2023-02-28</TxnDate>
+      <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+      <Line>
+        <Id>1</Id>
+        <LineNum>1</LineNum>
+        <Description>Sewing Service for Alex</Description>
+        <Amount>150.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Services">1</ItemRef>
+          <Qty>2</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Id>2</Id>
+        <LineNum>2</LineNum>
+        <Description>Discount for Alex</Description>
+        <Amount>10.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Hours">2</ItemRef>
+          <Qty>10</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Amount>160.00</Amount>
+        <DetailType>SubTotalLineDetail</DetailType>
+        <SubTotalLineDetail/>
+      </Line>
+      <TxnTaxDetail>
+        <TotalTax>0</TotalTax>
+      </TxnTaxDetail>
+      <CustomerRef name="Student50010">120</CustomerRef>
+      <BillAddr>
+        <Id>249</Id>
+        <Line1>1238 NAI</Line1>
+        <City>KANA</City>
+        <PostalCode>940042</PostalCode>
+      </BillAddr>
+      <FreeFormAddress>false</FreeFormAddress>
+      <ShipFromAddr>
+        <Id>266</Id>
+        <Line1>123 Sierra Way</Line1>
+        <Line2>San Pablo, CA  87999</Line2>
+      </ShipFromAddr>
+      <DueDate>2023-03-30</DueDate>
+      <TotalAmt>160.00</TotalAmt>
+      <ApplyTaxAfterDiscount>false</ApplyTaxAfterDiscount>
+      <PrintStatus>NeedToPrint</PrintStatus>
+      <EmailStatus>NotSet</EmailStatus>
+      <Balance>160.00</Balance>
+      <AllowIPNPayment>false</AllowIPNPayment>
+      <AllowOnlinePayment>false</AllowOnlinePayment>
+      <AllowOnlineCreditCardPayment>false</AllowOnlineCreditCardPayment>
+      <AllowOnlineACHPayment>false</AllowOnlineACHPayment>
+    </Invoice>
+    <Invoice domain="QBO" sparse="false">
+      <Id>401</Id>
+      <SyncToken>0</SyncToken>
+      <MetaData>
+        <CreateTime>2023-02-28T23:29:38-08:00</CreateTime>
+        <LastModifiedByRef>9130356042979196</LastModifiedByRef>
+        <LastUpdatedTime>2023-02-28T23:29:38-08:00</LastUpdatedTime>
+      </MetaData>
+      <CustomField>
+        <DefinitionId>1</DefinitionId>
+        <Name>Crew #</Name>
+        <Type>StringType</Type>
+      </CustomField>
+      <DocNumber>1144</DocNumber>
+      <TxnDate>2023-02-28</TxnDate>
+      <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+      <Line>
+        <Id>1</Id>
+        <LineNum>1</LineNum>
+        <Description>Sewing Service for Alex</Description>
+        <Amount>150.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Services">1</ItemRef>
+          <Qty>2</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Id>2</Id>
+        <LineNum>2</LineNum>
+        <Description>Discount for Alex</Description>
+        <Amount>10.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Hours">2</ItemRef>
+          <Qty>10</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Amount>160.00</Amount>
+        <DetailType>SubTotalLineDetail</DetailType>
+        <SubTotalLineDetail/>
+      </Line>
+      <TxnTaxDetail>
+        <TotalTax>0</TotalTax>
+      </TxnTaxDetail>
+      <CustomerRef name="Student50010">120</CustomerRef>
+      <BillAddr>
+        <Id>249</Id>
+        <Line1>1238 NAI</Line1>
+        <City>KANA</City>
+        <PostalCode>940042</PostalCode>
+      </BillAddr>
+      <FreeFormAddress>false</FreeFormAddress>
+      <ShipFromAddr>
+        <Id>265</Id>
+        <Line1>123 Sierra Way</Line1>
+        <Line2>San Pablo, CA  87999</Line2>
+      </ShipFromAddr>
+      <DueDate>2023-03-30</DueDate>
+      <TotalAmt>160.00</TotalAmt>
+      <ApplyTaxAfterDiscount>false</ApplyTaxAfterDiscount>
+      <PrintStatus>NeedToPrint</PrintStatus>
+      <EmailStatus>NotSet</EmailStatus>
+      <Balance>160.00</Balance>
+      <AllowIPNPayment>false</AllowIPNPayment>
+      <AllowOnlinePayment>false</AllowOnlinePayment>
+      <AllowOnlineCreditCardPayment>false</AllowOnlineCreditCardPayment>
+      <AllowOnlineACHPayment>false</AllowOnlineACHPayment>
+    </Invoice>
+    <Invoice domain="QBO" sparse="false">
+      <Id>400</Id>
+      <SyncToken>0</SyncToken>
+      <MetaData>
+        <CreateTime>2023-02-28T23:28:23-08:00</CreateTime>
+        <LastModifiedByRef>9130356042979196</LastModifiedByRef>
+        <LastUpdatedTime>2023-02-28T23:28:23-08:00</LastUpdatedTime>
+      </MetaData>
+      <CustomField>
+        <DefinitionId>1</DefinitionId>
+        <Name>Crew #</Name>
+        <Type>StringType</Type>
+      </CustomField>
+      <DocNumber>1143</DocNumber>
+      <TxnDate>2023-02-28</TxnDate>
+      <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+      <Line>
+        <Id>1</Id>
+        <LineNum>1</LineNum>
+        <Description>Sewing Service for Alex</Description>
+        <Amount>150.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Services">1</ItemRef>
+          <Qty>2</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Id>2</Id>
+        <LineNum>2</LineNum>
+        <Description>Discount for Alex</Description>
+        <Amount>10.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Hours">2</ItemRef>
+          <Qty>10</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Amount>160.00</Amount>
+        <DetailType>SubTotalLineDetail</DetailType>
+        <SubTotalLineDetail/>
+      </Line>
+      <TxnTaxDetail>
+        <TotalTax>0</TotalTax>
+      </TxnTaxDetail>
+      <CustomerRef name="Student50010">120</CustomerRef>
+      <BillAddr>
+        <Id>249</Id>
+        <Line1>1238 NAI</Line1>
+        <City>KANA</City>
+        <PostalCode>940042</PostalCode>
+      </BillAddr>
+      <FreeFormAddress>false</FreeFormAddress>
+      <ShipFromAddr>
+        <Id>264</Id>
+        <Line1>123 Sierra Way</Line1>
+        <Line2>San Pablo, CA  87999</Line2>
+      </ShipFromAddr>
+      <DueDate>2023-03-30</DueDate>
+      <TotalAmt>160.00</TotalAmt>
+      <ApplyTaxAfterDiscount>false</ApplyTaxAfterDiscount>
+      <PrintStatus>NeedToPrint</PrintStatus>
+      <EmailStatus>NotSet</EmailStatus>
+      <Balance>160.00</Balance>
+      <AllowIPNPayment>false</AllowIPNPayment>
+      <AllowOnlinePayment>false</AllowOnlinePayment>
+      <AllowOnlineCreditCardPayment>false</AllowOnlineCreditCardPayment>
+      <AllowOnlineACHPayment>false</AllowOnlineACHPayment>
+    </Invoice>
+    <Invoice domain="QBO" sparse="false">
+      <Id>399</Id>
+      <SyncToken>0</SyncToken>
+      <MetaData>
+        <CreateTime>2023-02-28T23:28:06-08:00</CreateTime>
+        <LastModifiedByRef>9130356042979196</LastModifiedByRef>
+        <LastUpdatedTime>2023-02-28T23:28:06-08:00</LastUpdatedTime>
+      </MetaData>
+      <CustomField>
+        <DefinitionId>1</DefinitionId>
+        <Name>Crew #</Name>
+        <Type>StringType</Type>
+      </CustomField>
+      <DocNumber>1142</DocNumber>
+      <TxnDate>2023-02-28</TxnDate>
+      <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+      <Line>
+        <Id>1</Id>
+        <LineNum>1</LineNum>
+        <Description>Sewing Service for Alex</Description>
+        <Amount>150.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Services">1</ItemRef>
+          <Qty>2</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Id>2</Id>
+        <LineNum>2</LineNum>
+        <Description>Discount for Alex</Description>
+        <Amount>10.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Hours">2</ItemRef>
+          <Qty>10</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Amount>160.00</Amount>
+        <DetailType>SubTotalLineDetail</DetailType>
+        <SubTotalLineDetail/>
+      </Line>
+      <TxnTaxDetail>
+        <TotalTax>0</TotalTax>
+      </TxnTaxDetail>
+      <CustomerRef name="Student50010">120</CustomerRef>
+      <BillAddr>
+        <Id>249</Id>
+        <Line1>1238 NAI</Line1>
+        <City>KANA</City>
+        <PostalCode>940042</PostalCode>
+      </BillAddr>
+      <FreeFormAddress>false</FreeFormAddress>
+      <ShipFromAddr>
+        <Id>263</Id>
+        <Line1>123 Sierra Way</Line1>
+        <Line2>San Pablo, CA  87999</Line2>
+      </ShipFromAddr>
+      <DueDate>2023-03-30</DueDate>
+      <TotalAmt>160.00</TotalAmt>
+      <ApplyTaxAfterDiscount>false</ApplyTaxAfterDiscount>
+      <PrintStatus>NeedToPrint</PrintStatus>
+      <EmailStatus>NotSet</EmailStatus>
+      <Balance>160.00</Balance>
+      <AllowIPNPayment>false</AllowIPNPayment>
+      <AllowOnlinePayment>false</AllowOnlinePayment>
+      <AllowOnlineCreditCardPayment>false</AllowOnlineCreditCardPayment>
+      <AllowOnlineACHPayment>false</AllowOnlineACHPayment>
+    </Invoice>
+    <Invoice domain="QBO" sparse="false">
+      <Id>398</Id>
+      <SyncToken>1</SyncToken>
+      <MetaData>
+        <CreateTime>2023-02-28T23:27:24-08:00</CreateTime>
+        <LastModifiedByRef>9130356042979196</LastModifiedByRef>
+        <LastUpdatedTime>2023-02-28T23:27:24-08:00</LastUpdatedTime>
+      </MetaData>
+      <CustomField>
+        <DefinitionId>1</DefinitionId>
+        <Name>Crew #</Name>
+        <Type>StringType</Type>
+      </CustomField>
+      <DocNumber>1141</DocNumber>
+      <TxnDate>2023-02-28</TxnDate>
+      <CurrencyRef name="United States Dollar">USD</CurrencyRef>
+      <LinkedTxn>
+        <TxnId>386</TxnId>
+        <TxnType>Payment</TxnType>
+      </LinkedTxn>
+      <Line>
+        <Id>1</Id>
+        <LineNum>1</LineNum>
+        <Description>Sewing Service for Alex</Description>
+        <Amount>150.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Services">1</ItemRef>
+          <Qty>2</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Id>2</Id>
+        <LineNum>2</LineNum>
+        <Description>Discount for Alex</Description>
+        <Amount>10.00</Amount>
+        <DetailType>SalesItemLineDetail</DetailType>
+        <SalesItemLineDetail>
+          <ItemRef name="Hours">2</ItemRef>
+          <Qty>10</Qty>
+          <ItemAccountRef name="Services">1</ItemAccountRef>
+          <TaxCodeRef>NON</TaxCodeRef>
+        </SalesItemLineDetail>
+      </Line>
+      <Line>
+        <Amount>160.00</Amount>
+        <DetailType>SubTotalLineDetail</DetailType>
+        <SubTotalLineDetail/>
+      </Line>
+      <TxnTaxDetail>
+        <TotalTax>0</TotalTax>
+      </TxnTaxDetail>
+      <CustomerRef name="Student50010">120</CustomerRef>
+      <BillAddr>
+        <Id>249</Id>
+        <Line1>1238 NAI</Line1>
+        <City>KANA</City>
+        <PostalCode>940042</PostalCode>
+      </BillAddr>
+      <FreeFormAddress>false</FreeFormAddress>
+      <ShipFromAddr>
+        <Id>262</Id>
+        <Line1>123 Sierra Way</Line1>
+        <Line2>San Pablo, CA  87999</Line2>
+      </ShipFromAddr>
+      <DueDate>2023-03-30</DueDate>
+      <TotalAmt>160.00</TotalAmt>
+      <ApplyTaxAfterDiscount>false</ApplyTaxAfterDiscount>
+      <PrintStatus>NeedToPrint</PrintStatus>
+      <EmailStatus>NotSet</EmailStatus>
+      <Balance>80.00</Balance>
+      <AllowIPNPayment>false</AllowIPNPayment>
+      <AllowOnlinePayment>false</AllowOnlinePayment>
+      <AllowOnlineCreditCardPayment>false</AllowOnlineCreditCardPayment>
+      <AllowOnlineACHPayment>false</AllowOnlineACHPayment>
+    </Invoice>
+  </QueryResponse>
+</IntuitResponse>
+
+
