@@ -45,13 +45,13 @@ class PaymentServices {
         $name = $data["account_name"];
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name'  ");
         if(!$customer){
-            return response()->json(["message" => "Account by name $name Not Found", "code" => 404]);
+            return ["message" => "Account by name $name Not Found", "code" => 404];
         }
         $id = $customer[0]->Id;
         //TODO query all open invoices
         $invoices = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$id' and Balance > '0' ");
         if(!$invoices){
-            return response()->json(["message" => "Error We do not have any invoices to apply this payment", "code" => 404]);
+            return ["message" => "Error We do not have any invoices to apply this payment", "code" => 404];
         }
         $data["id"] = $id;
         $data["name"] = $name;
@@ -62,10 +62,10 @@ class PaymentServices {
                 $payment = $this->payInvoices($data, $invoices);
                //$this->paySingleInvoice($data, $invoices);
 
-               $payment = $this->paymentResponse($payment,$name);
+               //$payment = $this->paymentResponse($payment,$name);
                Log::info("LogPayment | payment request created successfully  ".__METHOD__."|".json_encode($payment)."|Payment Created|".json_encode($this->data));
 
-               return response()->json($payment);
+               return ["payment_id" => $payment->Id,"status" =>true, "code" => 200];
 
             }
             else{
@@ -94,10 +94,10 @@ class PaymentServices {
 
                 $payment = $this->dataService->Add($payment);
 
-                $payment = $this->paymentResponse($payment,$name);
+                //$payment = $this->paymentResponse($payment,$name);
                 Log::info("LoPayment | payment request created successfully  ".__METHOD__."|".json_encode($payment)."|Payment Created|".json_encode($this->data));
 
-                return response()->json($payment);
+                return ["payment_id" => $payment->Id,"status" =>true, "code" => 200];
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -168,36 +168,28 @@ class PaymentServices {
             }
         }
 
-        $payment = Payment::create([
-            "CustomerRef"=>
-            [
-                "value" => $data["id"],
-                "name" => $data["name"],
-            ],
-            "Line" => $lineItems,
-            "TotalAmt" => $data["amount"],
-            "PaymentRefNum" => $data["reference_number"],
-            "TxnDate" => $data["date_time"],
-            "PrivateNote" => $data["remarks"],
-            "CustomField" => $data["mobile_number"]
-        ]);
+        try{
+            $payment = Payment::create([
+                "CustomerRef"=>
+                [
+                    "value" => $data["id"],
+                    "name" => $data["name"],
+                ],
+                "Line" => $lineItems,
+                "TotalAmt" => $data["amount"],
+                "PaymentRefNum" => $data["reference_number"],
+                "TxnDate" => $data["date_time"],
+                "PrivateNote" => $data["remarks"],
+                "CustomField" => $data["mobile_number"]
+            ]);
 
+            return $this->dataService->Add($payment);
+        } catch (\Throwable $th) {
+            throw $th;
 
+           // return ["status" => false, "message" => $th->getMessage(), "code" => 422];
+        }
 
-        //Log::info(count($lineItems));
-
-
-     /*  if(count($invoices) > 1){
-        $str = $this->generateRandomString();
-        $batch = $this->dataService->CreateNewBatch();
-        $batch->AddEntity($payment,$str, "Create");
-        $batch->ExecuteWithRequestID("ThisIsMyFirstBatchRequest");
-
-        return $payment;
-       }  */
-        //TODO make payments in batches instead of one at a time
-
-        return $this->dataService->Add($payment);
 
      }
 
