@@ -139,6 +139,12 @@ class DataServiceHelper {
 
         Log::info('DATA SERVICE OBJECT CREATED SUCCESSFULLY');
 
+        $error = $dataService->getLastError();
+        if ($error) {
+            print_r("ee");
+            print_r($error);
+        }
+
         //$dataService->disableLog();
         $dataService->setLogLocation(storage_path('logs/quickbooks.log'));
         $path = storage_path('logs/quickbooks');
