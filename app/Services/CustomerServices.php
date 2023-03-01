@@ -94,8 +94,8 @@ class CustomerServices {
 
 
         $result = $this->dataService->Add($customer);
-        //$customer = $this->customerResponse($result);
-        //Log::info("LogCustomer | customer request created successfully  ".__METHOD__."|".json_encode($customer)."|Customer Created|".json_encode($this->data));
+        $customer = $this->customerResponse($result);
+        Log::info("LogCustomer | customer request created successfully  ".__METHOD__."|".json_encode($customer)."|Customer Created|".json_encode($this->data));
 
         return $customer;
     }
@@ -107,6 +107,9 @@ class CustomerServices {
         $customer["account_number"] = $data->DisplayName;
         $customer["phone_number"] = $data->PrimaryPhone->FreeFormNumber;
         $customer["email_address"] = $data->PrimaryEmailAddr->Address;
+        $customer["company_name"] = $data->CompanyName;
+        $customer["FullyQualifiedName"] = $data->FullyQualifiedName;
+        $customer["PrintOnCheckName"] = $data->PrintOnCheckName;
         $customer["customer_balance"] = $data->Balance;
         $customer["billing_address"] = $data->BillAddr->Line1;
 
