@@ -25,7 +25,7 @@ class DataServiceHelper {
     {
         $config = config("quickbooks");
 
-        $qb_token = QBConfig::where("user_id", $this->data["user_id"])->first();
+        $qb_token = QBConfig::where("user_id", $this->data["user_id"])->orderBy('created_at', 'desc')->first();
         //Log::info($qb_token->refresh_token);
         if($qb_token){
             //
@@ -48,17 +48,22 @@ class DataServiceHelper {
                         Log::info("QB_ACCESS_TOKEN_UPDATED");
 
                         try{
-                            $qb_token->Update([
+                            Log::info("QB_ACCESS_TOKEN_UPDATED_DB_SAVE");
+                            QBConfig::create([
+                                "user_id" => $this->data['user_id'],
                                 "access_token" => $access_token,
                                 "refresh_token" => $refresh_token,
                                 "expires_in" => $expires_in,
+                                "QBORealmID" => $config["QBORealmID"],
+                                "client_id" => $config["client_id"],
+                                "client_secret" => $config["client_secret"],
 
                             ]);
 
 
                         }
                         catch(\Exception $exception){
-                            Log::info("QB_ACCESS_DATABASE_UPDATE".$exception->getMessage());
+                            Log::info("QB_ACCESS_TOKEN_UPDATED_DB_SAVE".$exception->getMessage());
                             Log::info($exception);
                         }
 
