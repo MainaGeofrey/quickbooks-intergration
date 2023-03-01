@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\quickBooks\payment;
 
+use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
 use App\Services\PaymentServices;
 use Illuminate\Http\Request;
@@ -11,9 +12,11 @@ class PaymentController extends Controller
 {
     //
     protected $payment;
+    protected $data;
 
-    public function __construct(){
-        $this->payment = new PaymentServices();
+    public function __construct(Request $request){
+        $this->data["user_id"] = Utils::getApiUser($request);
+        $this->payment = new PaymentServices($this->data);
     }
 
 
@@ -26,7 +29,7 @@ class PaymentController extends Controller
         try {
             $data = $this->payment->store($request);
 
-            return response()->json($data);
+            return $data;
         } catch (\Throwable $th) {
             //throw $th;
             //Log::error($th->getMessage());
