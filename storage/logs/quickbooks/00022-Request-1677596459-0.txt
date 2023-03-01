@@ -1,0 +1,34 @@
+REQUEST URI FOR SEQUENCE ID 00022
+==================================
+https://sandbox-quickbooks.api.intuit.com/v3/company/4620816365281741020/payment?minorversion=68
+
+REQUEST HEADERS
+================
+Authorization: Bearer eyJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwiYWxnIjoiZGlyIn0..DL152n8sUQoKJY9frrldig.odjUbqfNAb5BpDh_v4gwnDlQqloAoSFI5fjuTo-N2IHKXN09-dxtLltkFTiaGg4e9s0HJcIyTdf33dlk_CL1bBSVs52sVQAWDrJ-DBFmOU9e-WpEPoEKSBkOCWkYGLZi6q4I2kQX_MejFlKEJrxvGEZJHdNobZZKN42RmlEcfbBNHo6-0DrQ-_okPEOG_RldOyGfn1GR8fUjKPs3CTkXbmQ1ALNDmqlgfy0sJ9b8vyVrRK_Tb8zRmsj8CeOPgcb8dk67GKWP_VtVJnNv2KwjKtSdVtcSggA_kcxRnXtbns7jQU-diXDLA5powr6h40sLk_qqiI8STPEk2BlkHrEjtUToawMdBtI1mxV0yzJl-DDn_XAwczzXPDWtp-0mw5K-CAK-tEFrjbZGZUoxR7a6hbREPX9M-XPwF03czKqMhC0Qzw_6HRf7Nya5D_k5iOwOquIHl_cI59BDK9YroAhSeoCwbgXcfJFs6TuttBl5wtVJjO3UeqjBhSgdLHJwTG63WxugXJld86wd6CcBWanASKDaskJ6Tcin98bEScLZm_ZONgOrUeAgz0gBuslNEwEqAlhLpFRhDGRXqyx4nkxOMLzLnogGhduDf7XP-N7KkCX_z96LkK6_b0EY6A1PfU-px8mCxU4n3Nd2EzqCKJa9G8VvG6tD_Pxugze_4thdbv8EeyXDt3VXxbuVrcMF5MeYOBHvaxH44kDT-BoCBoc-eRUKRwGozzf7dpdDDs6I_qcF2qADGOc3XvjbtpzR56P-vYWBldqsMhnqi8ISKV4Ma1c76mJP-BjO68m2L0uwE1D9etr4PiTEAQw2JUvjBxdScM9U3Vh7QYZMS0it-OXiWYgdSVRz1I_T7O5nObcxRLizGztD6RwxYf_rm36CgTPW.BFgTWRwKgPg52lycgxwhMQ
+host: sandbox-quickbooks.api.intuit.com
+user-agent: V3PHPSDK6.1.1
+accept: application/xml
+connection: close
+content-type: application/xml
+content-length: 596
+
+REQUEST BODY
+=============
+<?xml version="1.0" encoding="UTF-8"?>
+<ns0:Payment xmlns:ns0="http://schema.intuit.com/finance/v3">
+  <ns0:CustomField>0734512465</ns0:CustomField>
+  <ns0:TxnDate>2023-02-27T05:22:50-08:00</ns0:TxnDate>
+  <ns0:PrivateNote>Modern remarks.</ns0:PrivateNote>
+  <ns0:Line>
+    <ns0:Amount>20.0</ns0:Amount>
+    <ns0:LinkedTxn>
+      <ns0:TxnId>382</ns0:TxnId>
+      <ns0:TxnType>Invoice</ns0:TxnType>
+    </ns0:LinkedTxn>
+  </ns0:Line>
+  <ns0:CustomerRef name="Student50007">118</ns0:CustomerRef>
+  <ns0:PaymentRefNum>QXP00167X</ns0:PaymentRefNum>
+  <ns0:TotalAmt>20.0</ns0:TotalAmt>
+</ns0:Payment>
+
+
