@@ -98,14 +98,14 @@ class CustomerServices {
             $result = $this->dataService->Add($customer);
 
 
-            $customer = $this->customerResponse($result);
+            //$customer = $this->customerResponse($result);
             Log::info("LogCustomer | customer request created successfully  ".__METHOD__."|".json_encode($customer)."|Customer Created|".json_encode($this->data));
 
 
             return ["customer_id" => $result->Id,"status" =>true, "code" => 200];
         } catch (\Throwable $th) {
         //throw $th;
-        
+
 
             return ["message" => $th->getMessage(),"status" =>false, "code" => 200];
         }
