@@ -105,6 +105,7 @@ class CustomerServices {
             return ["customer_id" => $result->Id,"status" =>true, "code" => 200];
         } catch (\Throwable $th) {
         //throw $th;
+        
 
             return ["message" => $th->getMessage(),"status" =>false, "code" => 200];
         }
