@@ -20,6 +20,7 @@ class QBConfig extends Model
         'realm_id',
         'client_id',
         'client_secret',
+        'base_url',
 
     ];
 
