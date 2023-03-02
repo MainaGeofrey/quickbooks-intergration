@@ -125,9 +125,18 @@ class DataServiceHelper {
             catch(\Exception $exception){
                 Log::info('QB_NEW_TOKEN_CREATE'.$exception->getMessage());
                 return response()->json(["message" => "Refresh OAuth 2 Access token with Refresh Token failed", "code" => 400]);
-            } 
+            }
         }
         try{
+            $qb_token = QBConfig::where("user_id", 3)->first();
+            $config["refresh_token"] = $qb_token->refresh_token;
+            $config["client_id"] = $qb_token->client_id;
+            $config["client_secret"] = $qb_token->client_secret;
+            $config["QBORealmID"] = $qb_token->realm_id;
+
+            Log::info($config);
+
+
             $dataService = DataService::Configure(array(
                 'auth_mode' => 'oauth2',
                 'ClientID' => $qb_token->client_id,
