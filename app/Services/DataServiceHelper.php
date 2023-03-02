@@ -31,7 +31,6 @@ class DataServiceHelper {
         if($qb_token){
             //
            // Log::info("QB_TOKEN");
-
             $date1 = new DateTime(date('Y-m-d H:i:s',strtotime($qb_token->expires_in)));
             $date2 = new DateTime(date('Y-m-d H:i:s'));
 
@@ -41,7 +40,6 @@ class DataServiceHelper {
                 $config["refresh_token"] = $qb_token->refresh_token;
                 Log::info($config["refresh_token"]);
                 $newAccessTokenObj = $this->refreshToken($config);
-
 
                     try{
                         $access_token = $newAccessTokenObj->getAccessToken();
@@ -80,7 +78,6 @@ class DataServiceHelper {
                         Log::info("QB_ACCESS_TOKEN_REFRESH_FAIL".$exception->getMessage());
                         return response()->json(["message" => "Refresh OAuth 2 Access token with Refresh Token failed", "code" => 400]);
                     }
-
 
             }
             else{
@@ -123,22 +120,27 @@ class DataServiceHelper {
                 Log::info('QB_NEW_TOKEN_CREATE'.$exception->getMessage());
                 return response()->json(["message" => "Refresh OAuth 2 Access token with Refresh Token failed", "code" => 400]);
             }
-        }
+	}
+	$qb_token = QBConfig::where("user_id", $this->data["user_id"])->orderBy('created_at', 'desc')->first();
+	if(!$qb_token)
+	{
+		Log::info('QB_NEW_TOKEN_CREATE'.$exception->getMessage());
+                return response()->json(["message" => "Refresh OAuth 2 Access token with Refresh Token failed and does not exist in the database", "code" => 400]);
+
+	}
         $dataService = DataService::Configure(array(
             'auth_mode' => 'oauth2',
-            'ClientID' => $config['client_id'],
-            'ClientSecret' =>  $config['client_secret'],
+            'ClientID' => $qb_token->client_id,
+            'ClientSecret' =>  $qb_token->client_secret,
             'RedirectURI' => $config['oauth_redirect_uri'],
             'scope' => $config['oauth_scope'],
-            'baseUrl' => "development",
+            'baseUrl' => "production",
             'refreshToken' => $refresh_token,
             'accessTokenKey' => $access_token,
-            'QBORealmID' => $config['QBORealmID'],
+            'QBORealmID' => $qb_token->realm_id,
             "expires_in"=>  $expires_in
         ));
-
-        Log::info('DATA SERVICE OBJECT CREATED SUCCESSFULLY');
-
+       Log::info('DATA SERVICE OBJECT CREATED SUCCESSFULLY');
         $error = $dataService->getLastError();
         if ($error) {
             print_r("ee");
