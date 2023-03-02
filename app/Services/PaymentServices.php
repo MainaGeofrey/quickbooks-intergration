@@ -43,7 +43,8 @@ class PaymentServices {
 
         Log::info("LogPayment | payment request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
         $name = $data["account_name"];
-        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name'  ");
+        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
+
         if(!$customer){
             return ["status"=>false,"message" => "Account by name $name Not Found", "code" => 404];
         }
@@ -60,7 +61,7 @@ class PaymentServices {
         try {
             if($invoices){
                 $payment_response = $this->payInvoices($data, $invoices);
-               Log::info("LogPayment | payment request created response |Request->".json_encode($this->data)."|Response =>".json_encode($payment_response));
+               Log::info("LogPayment | payment created response |Request->".json_encode($this->data)."|Response =>".json_encode($payment_response));
                return $payment_response;
 
             }

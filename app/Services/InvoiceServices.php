@@ -62,7 +62,7 @@ class InvoiceServices {
         $name = $data["AccountNumber"];
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
         if(!$customer){
-            return response()->json(["message" => "Account by name $name Not Found", "code" => 404]);
+            return ["message" => "Account by name $name Not Found", "code" => 404];
         }
 
         $id = $customer[0]->Id;
@@ -78,7 +78,7 @@ class InvoiceServices {
 
             $result = $this->dataService->Add($invoice);
             //$invoice = $this->invoiceResponse($result,$name);
-            Log::info("LogInvoice | invoice request created successfully  ".__METHOD__."|".json_encode($invoice)."|Invoice Created|".json_encode($this->data));
+            Log::info("LogInvoice | invoice created successfully  ".__METHOD__."|".json_encode($invoice)."|Invoice Created|".json_encode($this->data));
             // $result = json_encode($result, JSON_PRETTY_PRINT);
             // print_r($result);
 
