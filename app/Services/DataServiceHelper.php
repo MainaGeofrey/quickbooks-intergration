@@ -26,19 +26,26 @@ class DataServiceHelper {
     {
         $config = config("quickbooks");
 
-        $qb_token = QBConfig::where("user_id", $this->data["user_id"])->orderBy('created_at', 'desc')->first();
-        //Log::info($qb_token->refresh_token);
+        $qb_token = QBConfig::where("user_id", $this->data["user_id"])->first();
+
+
         if($qb_token){
-            //
-           // Log::info("QB_TOKEN");
+            //update config
+            $config["refresh_token"] = $qb_token->refresh_token;
+            $config["client_id"] = $qb_token->client_id;
+            $config["client_secret"] = $qb_token->client_secret;
+            $config["QBORealmID"] = $qb_token->realm_id;
+
+            Log::info($config);
+
             $date1 = new DateTime(date('Y-m-d H:i:s',strtotime($qb_token->expires_in)));
             $date2 = new DateTime(date('Y-m-d H:i:s'));
 
             if( $date1 < $date2 ) {
                 //token is expired
                 Log::info("QB_TOKEN_EXPIRED");
-                $config["refresh_token"] = $qb_token->refresh_token;
-                Log::info($config["refresh_token"]);
+                //$config["refresh_token"] = $qb_token->refresh_token;
+
                 $newAccessTokenObj = $this->refreshToken($config);
 
                     try{
@@ -69,7 +76,6 @@ class DataServiceHelper {
                         }
                         catch(\Exception $exception){
                             Log::info("QB_ACCESS_TOKEN_UPDATED_DB_SAVE".$exception->getMessage());
-                            Log::info($exception);
                         }
 
                     }
@@ -91,7 +97,7 @@ class DataServiceHelper {
         }
         else{
             //TODO get config from DB for new dataservice
-            try{
+           /* try{
                 $newAccessTokenObj = $this->refreshToken($config);
                 $access_token = $newAccessTokenObj->getAccessToken();
                 $refresh_token = $newAccessTokenObj->getRefreshToken();
@@ -119,32 +125,29 @@ class DataServiceHelper {
             catch(\Exception $exception){
                 Log::info('QB_NEW_TOKEN_CREATE'.$exception->getMessage());
                 return response()->json(["message" => "Refresh OAuth 2 Access token with Refresh Token failed", "code" => 400]);
-            }
-	}
-	$qb_token = QBConfig::where("user_id", $this->data["user_id"])->orderBy('created_at', 'desc')->first();
-	if(!$qb_token)
-	{
-		Log::info('QB_NEW_TOKEN_CREATE'.$exception->getMessage());
-                return response()->json(["message" => "Refresh OAuth 2 Access token with Refresh Token failed and does not exist in the database", "code" => 400]);
+            } */
+        }
+        try{
+            $dataService = DataService::Configure(array(
+                'auth_mode' => 'oauth2',
+                'ClientID' => $qb_token->client_id,
+                'ClientSecret' =>  $qb_token->client_secret,
+                'RedirectURI' => $config['oauth_redirect_uri'],
+                'scope' => $config['oauth_scope'],
+                'baseUrl' => $qb_token->base_url,
+                'refreshToken' => $refresh_token,
+                'accessTokenKey' => $access_token,
+                'QBORealmID' => $qb_token->realm_id,
+                "expires_in"=>  $expires_in
+            ));
+        Log::info('DATA SERVICE OBJECT CREATED SUCCESSFULLY');
 
-	}
-        $dataService = DataService::Configure(array(
-            'auth_mode' => 'oauth2',
-            'ClientID' => $qb_token->client_id,
-            'ClientSecret' =>  $qb_token->client_secret,
-            'RedirectURI' => $config['oauth_redirect_uri'],
-            'scope' => $config['oauth_scope'],
-            'baseUrl' => "production",
-            'refreshToken' => $refresh_token,
-            'accessTokenKey' => $access_token,
-            'QBORealmID' => $qb_token->realm_id,
-            "expires_in"=>  $expires_in
-        ));
-       Log::info('DATA SERVICE OBJECT CREATED SUCCESSFULLY');
-        $error = $dataService->getLastError();
-        if ($error) {
-            print_r("ee");
-            print_r($error);
+        } catch (\Throwable $th) {
+            Log::info("DataService | user data  ".__METHOD__."|".json_encode($config).json_encode($th->getMessage()));
+
+            throw $th;
+
+            //return ["message" => $th->getMessage(),"status" =>false, "code" => 200];
         }
 
         //$dataService->disableLog();
@@ -156,7 +159,7 @@ class DataServiceHelper {
         $dataService->setLogLocation($path);
 
         return $dataService;
-        }
+    }
 
         public function refreshToken($config){
             try{
