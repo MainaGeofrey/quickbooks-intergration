@@ -97,7 +97,7 @@ class DataServiceHelper {
         }
         else{
             //TODO get config from DB for new dataservice
-           /* try{
+            try{
                 $newAccessTokenObj = $this->refreshToken($config);
                 $access_token = $newAccessTokenObj->getAccessToken();
                 $refresh_token = $newAccessTokenObj->getRefreshToken();
@@ -125,7 +125,7 @@ class DataServiceHelper {
             catch(\Exception $exception){
                 Log::info('QB_NEW_TOKEN_CREATE'.$exception->getMessage());
                 return response()->json(["message" => "Refresh OAuth 2 Access token with Refresh Token failed", "code" => 400]);
-            } */
+            } 
         }
         try{
             $dataService = DataService::Configure(array(
