@@ -39,27 +39,50 @@ class InvoiceServices {
             return ["message" => $validator->errors()->getMessages(), "code" => 422];
         }
 
-
         $Line = [];
         $line_item = [];
         foreach($data->line as $key => $value){
+            $validator = Validator::make($value, [
+                'description' => 'required|string',
+                'amount' =>  'required|numeric|gt:0',
+                'detail_type' => 'required|string',
+                //'sales_item_line_detail_item_ref' => 'required|string',
+            ]);
+
+            if($validator->fails()){
+                Log::info($value);
+                return ["message" => $validator->errors()->getMessages(), "code" => 422];
+            }
+
             $line_item["Description"] = $value["description"];
             $line_item["Amount"] = $value["amount"];
             $line_item["DetailType"] = $value["detail_type"];
-            $line_item["SalesItemLineDetail"]["ItemRef"] = $value["sales_item_linedetail_item_ref"];
+            $line_item["SalesItemLineDetail"]["ItemRef"] = $value["sales_item_line_detail_item_ref"];
             $Line[] = $line_item;
-            Log::info($Line);
 
         }
 
-        Log::info("LogInvoice | invoice request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
+
         $name = $data["account_number"];
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
         if(!$customer){
             return ["message" => "Account number $name Not Found", "code" => 404];
         }
-
         $id = $customer[0]->Id;
+
+    /*    $name = $data["sales_item_line_detail_item_ref"];
+        $item = $this->dataService->Query("SELECT * FROM SalesItemLineDetail  ");
+        if(!$item){
+            return ["message" => "Line Item $name Not Found", "code" => 404];
+        }
+        print_r($item); */
+
+
+
+
+
+        //Log::info("LogInvoice | invoice request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
+
 
         try {
             $invoice = Invoice::create([
@@ -70,7 +93,7 @@ class InvoiceServices {
                     ]
             ]);
 
-            Log::info("LogPayment | payment request payload created ".json_encode($data));
+            Log::info("LogInvoice | invoice request payload created ".json_encode($data));
 
 			$response = $this->dataService->Add($invoice);
 			$error = $this->dataService->getLastError();

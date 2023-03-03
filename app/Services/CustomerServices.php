@@ -48,7 +48,7 @@ class CustomerServices {
         }
 
 
-        Log::info("LogCustomer | customer request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
+        //Log::info("LogCustomer | customer request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
 
         try{
             $customer = Customer::create([
@@ -92,12 +92,12 @@ class CustomerServices {
                 //"SecondaryTaxIdentifier" => $data->data['SecondaryTaxIdentifier'],
                 //"ClientCompanyId" => $data->data['ClientCompanyId'],
             ]);
-
+            Log::info("LogCustomer | customer request payload created ".json_encode($data));
 
 			$response = $this->dataService->Add($customer);
 			$error = $this->dataService->getLastError();
 			if ($error) {
-				Log::info("LogInvoice |Error|Request =>".json_encode($data)."|Error Response".$error->getHttpStatusCode()."|
+				Log::info("LogCustomer|Request =>".json_encode($data)."|Error Response".$error->getHttpStatusCode()."|
 					".$error->getOAuthHelperError()."|".$error->getResponseBody());
 				return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
             } else {

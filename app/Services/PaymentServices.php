@@ -41,7 +41,7 @@ class PaymentServices {
             return ["status"=>false,"message" => $validator->errors()->getMessages(), "code" => 422];
         }
 
-        Log::info("LogPayment | payment request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
+        //Log::info("LogPayment | payment request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
         $name = $data["account_name"];
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name'  ");
         if(!$customer){
