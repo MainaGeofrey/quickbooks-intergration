@@ -84,24 +84,7 @@ class PaymentServices {
 
     }
 
-    public function paymentResponse($data, $name){
-        $payment = [];
-        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
 
-        //$payment["PaymentId"] = $data->Id;
-        $payment["account_number"] = $name;
-        $payment["reference_number"] = $data->PaymentRefNum;
-        $payment["mobile_number"] = $data->CustomField;
-        $payment["amount"] = $data->TotalAmt;
-        $payment["mobile_number"] = $data->CustomField;
-        $payment["payer_transaction_id"] = "";
-        $payment["remarks"] = $data->PrivateNote;
-        $payment["date_time"] = $data->TxnDate;
-       // $payment["remarks"] = $data->PrivateNote;
-        //$payment["CustomerBalance"] = $customer[0]->Balance;
-
-        return $payment;
-    }
 
      public function processPayment($data,$invoices){
         //$invoices = $this->invoiceServices->show($data);

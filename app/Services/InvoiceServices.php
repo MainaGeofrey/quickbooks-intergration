@@ -91,18 +91,7 @@ class InvoiceServices {
         }
     }
 
-    public function invoiceResponse($data, $name){
-        $invoice = [];
-        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
 
-        $invoice["invoice_id"] = $data->Id;
-        $invoice["account_name"] = $name;
-        $invoice["created_time"] = $data->MetaData->CreateTime;
-        $payment["amount"] = $data->TotalAmt;
-
-
-        return $invoice;
-    }
 
 
     public function show($data){

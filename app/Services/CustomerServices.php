@@ -114,21 +114,7 @@ class CustomerServices {
 
     }
 
-    public function customerResponse($data){
-        $customer = [];
 
-        $customer["customer_id"] = $data->Id;
-        $customer["account_number"] = $data->DisplayName;
-        $customer["phone_number"] = $data->PrimaryPhone->FreeFormNumber;
-        $customer["email_address"] = $data->PrimaryEmailAddr->Address;
-        $customer["company_name"] = $data->CompanyName;
-        $customer["FullyQualifiedName"] = $data->FullyQualifiedName;
-        $customer["PrintOnCheckName"] = $data->PrintOnCheckName;
-        $customer["customer_balance"] = $data->Balance;
-        $customer["billing_address"] = $data->BillAddr->Line1;
-
-        return $customer;
-    }
     public function show($data){
         $result = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$data->DisplayName' ");
 
