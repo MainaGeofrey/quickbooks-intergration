@@ -26,7 +26,8 @@ class CustomerServices {
     }
     public function store($data){
         $validator = Validator::make($data->all(), [
-            'AccountName' => 'required|string',
+            'account_number' => 'required|string',
+            'phone_number' => 'required|string',
             //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
             //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
 
@@ -34,18 +35,16 @@ class CustomerServices {
 
         if($validator->fails()){
 
-            return ["message" => "Please provide the AccountName", "code" => 422];
+            return ["message" => "Please provide the AccountNumber", "code" => 422];
         }
-        $name = $data["AccountName"];
+        $name = $data["account_number"];
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
 
 
         if($customer){
 
-            //TODO Customer update
             Log::info("CUSTOMER EXISTS");
-            //Log::info("LogCustomer | customer request updated successfully  ".__METHOD__."|".json_encode($customer)."|Customer Created|".json_encode($this->data));
-            return ["message" => "Account by number $name Exists", "code" => 422];
+            return ["status"=> false,"message" => "Account by number $name Exists", "code" => 422];
         }
 
 
@@ -54,37 +53,37 @@ class CustomerServices {
         try{
             $customer = Customer::create([
                 "BillAddr" => [
-                    "Line1" => $data['BillAddr']['Line1']?? null,
-                    "City" =>  $data['BillAddr']['City']?? null,
+                    "Line1" => $data['bill_addr']['line1']?? null,
+                    "City" =>  $data['bill_addr']['city']?? null,
                     //"Country" => "USA",
                     //"CountrySubDivisionCode" => "CA",
-                    "PostalCode" =>  $data['BillAddr']['PostalCode']?? null,
+                    "PostalCode" =>  $data['bill_addr']['postal_code']?? null,
                 ]?? null,
                 //"CustomField" => $data->data['CustomField'],
                 //"Organization" => $data->data['Organization'],
-                "Notes" => $data['Notes']?? null,
-                "Title" => $data['Title']?? null,
-                "GivenName" => $data['GivenName']?? null,
-                "MiddleName" => $data['MiddleName']?? null,
-                "FamilyName" => $data['FamilyName']?? null,
-                "Suffix" => $data['Suffix']?? null,
-                "Balance" => $data['Balance']?? null,
-                "FullyQualifiedName" => $data['FullyQualifiedName']?? null,
-                "CompanyName" => $data['CompanyName']?? null,
-                "DisplayName" => $data['AccountName'],
-                "PrintOnCheckName" => $data['PrintOnCheckName']?? null,
+                "Notes" => $data['notes']?? null,
+                "Title" => $data['title']?? null,
+                "GivenName" => $data['given_name']?? null,
+                "MiddleName" => $data['middle_name']?? null,
+                "FamilyName" => $data['family_name']?? null,
+                "Suffix" => $data['suffix']?? null,
+                "Balance" => $data['balance']?? null,
+                "FullyQualifiedName" => $data['fully_qualified_name']?? null,
+                "CompanyName" => $data['company_name']?? null,
+                "DisplayName" => $data['account_number'],
+                "PrintOnCheckName" => $data['print_on_check_name']?? null,
                 //"UserId" => $data->data['UserId'],
                 //"Active" => $data->data['Active'],
                 "PrimaryPhone" => [
-                    "FreeFormNumber" =>  $data['PhoneNumber']?? null,
+                    "FreeFormNumber" =>  $data['phone_number'],
                 ]?? null,
                 //"AlternatePhone" => $data->data['AlternatePhone'],
                 "PrimaryEmailAddr" => [
-                    "Address" => $data['EmailAddr']?? null,
+                    "Address" => $data['email_addr']?? null,
                 ]?? null,
                 //"WebAddr" => $data->data['WebAddr'],
                 //"OtherContactInfo" => $data->data['OtherContactInfo'],
-                "DefaultTaxCodeRef" => $data['DefaultTaxCodeRef']?? null,
+                "DefaultTaxCodeRef" => $data['default_tax_code_ref']?? null,
                 //"ShipAddr" => $data->data['ShipAddr'],
                 //"OtherAddr" => $data->data['OtherAddr'],
             // "ContactName" => $data->data['ContactName'],
@@ -95,19 +94,22 @@ class CustomerServices {
             ]);
 
 
-            $result = $this->dataService->Add($customer);
+			$response = $this->dataService->Add($customer);
+			$error = $this->dataService->getLastError();
+			if ($error) {
+				Log::info("LogInvoice |Error|Request =>".json_encode($data)."|Error Response".$error->getHttpStatusCode()."|
+					".$error->getOAuthHelperError()."|".$error->getResponseBody());
+				return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
+            } else {
 
+                return ['status'=>true,"customer_id"=>$response->Id,"message"=>"Successfully created a customer.","code" => 200];
+            }
 
-            //$customer = $this->customerResponse($result);
-            Log::info("LogCustomer | customer request created successfully  ".__METHOD__."|".json_encode($customer)."|Customer Created|".json_encode($this->data));
-
-
-            return ["customer_id" => $result->Id,"status" =>true, "code" => 200];
         } catch (\Throwable $th) {
         //throw $th;
 
 
-            return ["message" => $th->getMessage(),"status" =>false, "code" => 200];
+            return ["status" =>false,"message" => $th->getMessage(), "code" => 200];
         }
 
     }
