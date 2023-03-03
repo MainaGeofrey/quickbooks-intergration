@@ -27,7 +27,12 @@ class InvoiceServices {
     public function store($data){
         $validator = Validator::make($data->all(), [
             'account_number' => 'required|string',
-            "line"    => "required|array|min:1",
+            "line_items"    => "required|array|min:1",
+            'line_items.*.amount' => 'required|numeric|gt:0',
+            'line_items.*.item_name' => 'required|max:50',
+            'line_items.*.quantity'    => 'required|integer',
+            'line_items.*.unit_price'    => 'required|integer',
+           // 'line_items.*.item_code'    => 'required|max:20',
             //"Line.*"  => "required|array|min:3",
             //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
             //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
@@ -36,16 +41,107 @@ class InvoiceServices {
 
         if($validator->fails()){
 
-            return ["message" => $validator->errors()->getMessages(), "code" => 422];
+            return ["status" => false,"errors" => $validator->errors()->getMessages()];
         }
 
-        $Line = [];
+        $name = $data["account_number"];
+        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
+        if(!$customer){
+            return ["message" => "Account number $name Not Found", "code" => 404];
+        }
+        $id = $customer[0]->Id;
+
+
+        $line_items = [];
+        $item_names = array_column($data->line_items,"item_name");
+
+        $sql_products = "select * from Item where Name in ('".join("','",$item_names)."')";
+        $items = $this->dataService->Query($sql_products);
+
+        if(!$items)
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => "the item codes do not exist in quickbooks. create or confirm the correct details"
+            ], 401);
+
+        }
+        $line_items = [];
+        //$items_ids = [];
+        foreach($items as $item)
+        {
+            $line_items[$item->Id]=$item->Id;
+            $items_ids[] = $item->Id;
+        }
+        Log::info($items_ids);
+
+        if(sizeOf($line_items) <> sizeOf($data->line_items))
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => "There are some missing item codes on the system. Existing ones are ".json_encode($line_items)
+            ], 401);
+        }/*
+        1. You should first search and get the vendor by display name (vendor )
+        2. You search for each item and see if the items returned have the same size as the line items select * from items where displayname = $code or displayname = code2
+        3. Create the payload
+        */
+
+$Line = [];
+        foreach ($data->line_items as $key => $item) {
+
+          /*  $line_items[] = [
+                "Amount" => $item['amount'],
+                "Description" => $item['description'],
+                "DetailType" => "SalesItemLineDetail",
+                "SalesItemLineDetail"=> [
+                    "ItemRef"=>[
+                        "value"=>1,
+                      //  "name": "Pump"
+                    ],
+                    //"ItemRef"=> $item['item_code'],
+                    "ClassRef"=> "",
+                    "UnitPrice"=> $item['unit_price'],
+                    "RatePercent"=> "",
+                    "PriceLevelRef"=> "",
+                    "MarkupInfo"=> "",
+                    "Qty"=> $item['quantity'],
+                    "UOMRef"=> "",
+                    "ItemAccountRef"=> "",
+                    "InventorySiteRef"=> "",
+                    "TaxCodeRef"=> "NON",
+                    "TaxClassificationRef"=> "",
+                    "CustomerRef"=> "",
+                    "BillableStatus"=> "NotBillable",
+                    "TaxInclusiveAmt"=> "",
+                    "ItemBasedExpenseLineDetailEx"=> ""
+                ],
+            ]; */
+
+            $line_item["Description"] = $item["description"];
+            $line_item["Amount"] = $item["amount"];
+            $line_item["DetailType"] = "SalesItemLineDetail";
+            $line_item["SalesItemLineDetail"]["ItemRef"]["value"] = $items_ids[$key];
+            $line_item["SalesItemLineDetail"]["UnitPrice"] = $item['unit_price'];
+            $line_item["SalesItemLineDetail"]["Qty"] = $item['quantity'];
+            //$line_item["SalesItemLineDetail"]["BillableStatus"] = "NotBillable";
+            $line_item["SalesItemLineDetail"]["TaxCodeRef"] = "NON";
+
+
+            $Line[] = $line_item;
+        }
+
+
+
+
+
+      /*  $Line = [];
         $line_item = [];
-        foreach($data->line as $key => $value){
+        foreach($data->line_items as $key => $value){
             $validator = Validator::make($value, [
                 'description' => 'required|string',
                 'amount' =>  'required|numeric|gt:0',
-                'detail_type' => 'required|string',
+              //  'detail_type' => 'required|string',
                 //'sales_item_line_detail_item_ref' => 'required|string',
             ]);
 
@@ -56,28 +152,11 @@ class InvoiceServices {
 
             $line_item["Description"] = $value["description"];
             $line_item["Amount"] = $value["amount"];
-            $line_item["DetailType"] = $value["detail_type"];
-            $line_item["SalesItemLineDetail"]["ItemRef"] = $value["sales_item_line_detail_item_ref"];
+            $line_item["DetailType"] = "SalesItemLineDetail";
+            $line_item["SalesItemLineDetail"]["ItemRef"] = 1;
             $Line[] = $line_item;
 
-        }
-
-
-        $name = $data["account_number"];
-        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
-        if(!$customer){
-            return ["message" => "Account number $name Not Found", "code" => 404];
-        }
-        $id = $customer[0]->Id;
-
-    /*    $name = $data["sales_item_line_detail_item_ref"];
-        $item = $this->dataService->Query("SELECT * FROM SalesItemLineDetail  ");
-        if(!$item){
-            return ["message" => "Line Item $name Not Found", "code" => 404];
-        }
-        print_r($item); */
-
-
+        } */
 
 
 
@@ -87,10 +166,13 @@ class InvoiceServices {
         try {
             $invoice = Invoice::create([
                 "Line" => $Line,
-                    "CustomerRef" => [
+                //"DocNumber" => $data["reference_number"],
+                //"DueDate" => $data["due_date"],
+                //"DateCreated" =>$data["date_created"],
+                "CustomerRef" => [
                     "value" => $id,
                     //"name" => $data->data["CustomerRef"]["DisplayName"]
-                    ]
+                ]
             ]);
 
             Log::info("LogInvoice | invoice request payload created ".json_encode($data));

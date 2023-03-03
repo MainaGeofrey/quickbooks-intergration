@@ -19,7 +19,7 @@ class BillServices {
 
     protected $dataService;
     public function __construct($data){
-        
+
         $dataService = new DataServiceHelper($data);
         $this->dataService = $dataService->getDataService();
     }
@@ -42,10 +42,10 @@ class BillServices {
         'due_date' => 'required',
         'line_items' => 'required|array',
         'line_items.*.amount' => 'required|integer',
-    'line_items.*.item_name' => 'required|max:50',
-    'line_items.*.quantity'    => 'required|integer',
-    'line_items.*.unit_price'    => 'required|integer',
-    'line_items.*.item_code'    => 'required|max:20',
+        'line_items.*.item_name' => 'required|max:50',
+        'line_items.*.quantity'    => 'required|integer',
+        'line_items.*.unit_price'    => 'required|integer',
+        'line_items.*.item_code'    => 'required|max:20',
 
     ]);
 
@@ -58,13 +58,13 @@ class BillServices {
 
     $vendor = $this->dataService->Query("SELECT * FROM Vendor where DisplayName = '".$request->vendor_code."'  ");
     if(!$vendor)
-{
-    return response()->json([
-        'status' => false,
-        'errors' => "the vendor code does not exist in quickbooks. create or confirm the correct details"
-    ], 401);
-}
-    
+    {
+        return response()->json([
+            'status' => false,
+            'errors' => "the vendor code does not exist in quickbooks. create or confirm the correct details"
+        ], 401);
+    }
+
     $line_items = [];
     $item_codes = array_column($request->line_items,"item_code");
     $sql_products = "select * from items where displayName in ('".join("','",$item_codes)."')";
@@ -156,7 +156,7 @@ if(sizeOf($line_items) <> sizeOf($request->line_items))
     //     return ["status"=>false,"message" => "Vendor by name $name Not Found", "code" => 404];
     // }
 
-  
+
 
 }
 
@@ -212,7 +212,7 @@ if(sizeOf($line_items) <> sizeOf($request->line_items))
     //                         "ItemBasedExpenseLineDetailEx"=> ""
     //                     ],
     //                 ],
-            
+
     //             ],
     //             "VendorRef" => [
     //                 "value" =>"$request->RefrenceNo",
@@ -221,7 +221,7 @@ if(sizeOf($line_items) <> sizeOf($request->line_items))
     //         ]);
 
     //         $allVendors = $this->dataService->Query("SELECT * FROM Vendor ");
-           
+
 
     //         // return $allVendors;
 
@@ -252,12 +252,12 @@ if(sizeOf($line_items) <> sizeOf($request->line_items))
     //         //         'message' => 'vendor does not exist'
     //         //     ], 500);
     //         // };
-    
+
     //         // $result = $this->dataService->Add($payment);
     //         // $result = json_encode($result, JSON_PRETTY_PRINT);
     //         // print_r($result);
 
-            
+
 
     //         // if($payment) {
     //         //     return response()->json([
@@ -270,9 +270,9 @@ if(sizeOf($line_items) <> sizeOf($request->line_items))
     //         //         'message' => 'something went wrong'
     //         //     ], 500);
     //         // }
-            
+
     //     }
-        
+
     // }
 
 
