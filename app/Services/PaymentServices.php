@@ -45,53 +45,24 @@ class PaymentServices {
         $name = $data["account_name"];
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name'  ");
         if(!$customer){
-            return ["status"=>false,"message" => "Account by name $name Not Found", "code" => 404];
+            return ["status"=>false,"message" => "Account number $name Not Found", "code" => 404];
         }
-        $id = $customer[0]->Id;
-        //TODO query all open invoices
-        $invoices = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$id' and Balance > '0' ");
-        if(!$invoices){
-            return ["status"=>false,"message" => "Error We do not have any invoices to apply this payment", "code" => 404];
-        }
+        $id = $customer[0]->Id;        $invoices = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$id' and Balance > '0' ");
+
         $data["id"] = $id;
         $data["name"] = $name;
 
         //Log::info(count($invoices));
         try {
-            if($invoices){
-                $payment_response = $this->payInvoices($data, $invoices);
+
+                $payment_response = $this->processPayment($data, $invoices);
                Log::info("LogPayment | payment request created response |Request->".json_encode($this->data)."|Response =>".json_encode($payment_response));
                return $payment_response;
 
+        } catch (\Throwable $th) {
+        Log::Error("LogPayment|Error".json_encode($this->data)."|Error Response =>".$th->getMessage());
+            return ["status" => false, "message" => $th->getMessage(), "code" => 422];
             }
-            else{
-/*                $payment = Payment::create([
-                    "CustomerRef"=>
-                    [
-                        "value" => $id,
-                        "name" => $name,
-                    ],
-                    "TotalAmt" => $data["amount"],
-                    "PaymentRefNum" => $data["reference_number"],
-                    "TxnDate" => $data["date_time"],
-                    "PrivateNote" => $data["remarks"],
-                    "CustomField" => $data["mobile_number"]
-                ]);
-
-                $payment = $this->dataService->Add($payment);
-
-                //$payment = $this->paymentResponse($payment,$name);
-                Log::info("LoPayment | payment request created successfully  ".__METHOD__."|".json_encode($payment)."|Payment Created|".json_encode($this->data));
-
-		return ["payment_id" => $payment->Id,"status" =>true, "code" => 200];
- */
-		  Log::info("Payment| request=>".json_encode($this->data)."| The User has no Invoice, payments not processed");
-		  return ['status'=>false,"message"=> "The Account has no invoice","code"=>404];
-            }
-	} catch (\Throwable $th) {
-      Log::Error("LogPayment|Error".json_encode($this->data)."|Error Response =>".$th->getMessage());
-           return ["status" => false, "message" => $th->getMessage(), "code" => 422];
-        }
 
     }
 
@@ -132,7 +103,7 @@ class PaymentServices {
         return $payment;
     }
 
-     public function payInvoices($data,$invoices){
+     public function processPayment($data,$invoices){
         //$invoices = $this->invoiceServices->show($data);
         //$invoices = json_decode($invoices, true);
         $lineItems = [];
@@ -141,7 +112,8 @@ class PaymentServices {
 
         $payment_amount = $data["amount"];
 		$paid_amount = $payment_amount;
-
+     if($invoices)
+     {
 		foreach ($invoices as $key =>$invoice) {
             $payment_amount_for_invoice = min($payment_amount, $invoice->Balance); // make sure payment doesn't exceed amount due
                 $lineItems[] = [
@@ -157,6 +129,7 @@ class PaymentServices {
                 break;
             }
         }
+    }
 		try{
 			$payload = [
                 "CustomerRef"=>
@@ -180,11 +153,11 @@ class PaymentServices {
 			if ($error) {
 				Log::info("LogPayment |Error|Request =>".json_encode($payload)."|Error Response".$error->getHttpStatusCode()."|
 					".$error->getOAuthHelperError()."|".$error->getResponseBody());
-				return ['status'=>false,'message'=>'We have received an Error'.$error->getResponseBody()];
+                    return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
 } else {
     # code...
     // Echo some formatted output
-    return ['status'=>true,"payment_id"=>$response->Id,"message"=>"Successfully created a payment"];
+    return ['status'=>true,"payment_id"=>$response->Id,"message"=>"Successfully created a payment.".(isset($invoices)?"Invoices updated":"created as a sales receipt"), "code" => 200];
 }
 		} catch (\Throwable $th) {
 			Log::Error("LogPayment|Error".json_encode($payload)."|Error Response =>".$th->getMessage());
