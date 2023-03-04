@@ -60,10 +60,11 @@ class InvoiceServices {
 
         if(!$items)
         {
-            return response()->json([
+            return [
                 'status' => false,
-                'errors' => "the item name do not exist in quickbooks. create or confirm the correct details"
-            ], 401);
+                'errors' => "the item name do not exist in quickbooks. create or confirm the correct details",
+                'code' => 401
+            ];
 
         }
         $line_items = [];
@@ -77,10 +78,11 @@ class InvoiceServices {
 
         if(sizeOf($line_items) <> sizeOf($data->line_items))
         {
-            return response()->json([
+            return [
                 'status' => false,
-                'errors' => "There are some missing item names on the system. Existing ones are ".json_encode($line_items)
-            ], 401);
+                'errors' => "There are some missing item names on the system. Existing ones are ".json_encode($line_items),
+                'code' => 401
+            ];
         }/*
         1. You should first search and get the vendor by display name (vendor )
         2. You search for each item and see if the items returned have the same size as the line items select * from items where displayname = $code or displayname = code2
