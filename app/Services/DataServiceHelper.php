@@ -36,7 +36,7 @@ class DataServiceHelper {
             $config["client_secret"] = $qb_token->client_secret;
             $config["QBORealmID"] = $qb_token->realm_id;
 
-            Log::info($config);
+           // Log::info($config);
 
             $date1 = new DateTime(date('Y-m-d H:i:s',strtotime($qb_token->expires_in)));
             $date2 = new DateTime(date('Y-m-d H:i:s'));
