@@ -42,10 +42,10 @@ class BillServices {
         'due_date' => 'required',
         'line_items' => 'required|array',
         'line_items.*.amount' => 'required|integer',
-    'line_items.*.item_name' => 'required|max:50',
-    'line_items.*.quantity'    => 'required|integer',
-    'line_items.*.unit_price'    => 'required|integer',
-    'line_items.*.item_code'    => 'required|max:20',
+        'line_items.*.item_name' => 'required|max:50',
+        'line_items.*.quantity'    => 'required|integer',
+        'line_items.*.unit_price'    => 'required|integer',
+        'line_items.*.item_code'    => 'required|max:20',
 
     ]);
 
@@ -56,7 +56,9 @@ class BillServices {
         ], 422);
     }
 
-    $vendor = $this->dataService->Query("SELECT * FROM Vendor where DisplayName = '".$request->vendor_code."'  ");
+    $vendor = $this->dataService->Query("SELECT * FROM Vendor where DisplayName = '".$request->vendor_name."'  ");
+    // print_r($vendor);
+    // die();
     if(!$vendor)
 {
     return response()->json([
@@ -67,6 +69,7 @@ class BillServices {
     
     $line_items = [];
     $item_codes = array_column($request->line_items,"item_code");
+    // $sql_products = $this->dataService->Query("SELECT * FROM Items where DisplayName = '".$request->item_name."' ");
     $sql_products = "select * from items where displayName in ('".join("','",$item_codes)."')";
     $items = $this->dataService->Query($sql_products);
     if(!$items)

@@ -7,6 +7,6 @@ return array(
     'oauth_scope' => 'com.intuit.quickbooks.accounting openid profile email phone address',
     'oauth_redirect_uri' => 'http://localhost:3000/callback.php',
     'QBORealmID' => "4620816365280299070",
-    'refresh_token' => "BB116864648067iby6My4PghuZWn47wmR50i9oiw4I8YEeX3jm",
+    'refresh_token' => "AB11686636507oMFsuf7jjkarICi0n8iPamzzatTs5C0h4SZGb",
 )
 ?>
