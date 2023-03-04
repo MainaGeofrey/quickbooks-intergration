@@ -26,6 +26,8 @@ class InvoiceServices {
     }
     public function store($data){
         $validator = Validator::make($data->all(), [
+            'reference_number' => 'required|string',
+            'due_date' => 'required|string',
             'account_number' => 'required|string',
             "line_items"    => "required|array|min:1",
             'line_items.*.amount' => 'required|numeric|gt:0',
@@ -62,7 +64,7 @@ class InvoiceServices {
         {
             return [
                 'status' => false,
-                'errors' => "the item name do not exist in quickbooks. create or confirm the correct details",
+                'errors' => "the item do not exist in quickbooks. create or confirm the correct details",
                 'code' => 401
             ];
 
@@ -71,7 +73,7 @@ class InvoiceServices {
         //$items_ids = [];
         foreach($items as $item)
         {
-            $line_items[$item->Id]=$item->Id;
+            $line_items[$item->Name]=$item->Name;
             $items_ids[] = $item->Id;
         }
         Log::info($items_ids);
@@ -80,7 +82,7 @@ class InvoiceServices {
         {
             return [
                 'status' => false,
-                'errors' => "There are some missing item names on the system. Existing ones are ".json_encode($line_items),
+                'errors' => "There are some missing item on the system. Existing ones are ".json_encode($line_items),
                 'code' => 401
             ];
         }/*
@@ -168,6 +170,7 @@ $Line = [];
         try {
             $invoice = Invoice::create([
                 "Line" => $Line,
+                "DocNumber" => $data["reference_number"],
                 //"DocNumber" => $data["reference_number"],
                 //"DueDate" => $data["due_date"],
                 //"DateCreated" =>$data["date_created"],
