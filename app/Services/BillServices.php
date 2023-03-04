@@ -78,7 +78,7 @@ class BillServices {
     {
         return [
             'status' => false,
-            'errors' => "the item codes do not exist in quickbooks. create or confirm the correct details",
+            'errors' => "the item do not exist in quickbooks. create or confirm the correct details",
             'code' => 401
         ];
 
@@ -87,7 +87,7 @@ class BillServices {
     //$items_ids = [];
     foreach($items as $item)
     {
-        $line_items[$item->Id]=$item->Id;
+        $line_items[$item->Name]=$item->Name;
         $items_ids[] = $item->Id;
     }
     //Log::info($items_ids);
@@ -96,7 +96,7 @@ class BillServices {
     {
         return [
             'status' => false,
-            'errors' => "There are some missing item codes on the system. Existing ones are ".json_encode($line_items),
+            'errors' => "There are some missing items on the system. Existing ones are ".json_encode($line_items),
             'code' => 401
         ];
     }/*
