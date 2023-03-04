@@ -33,102 +33,126 @@ class BillServices {
         // return  $this->dataService->Query("SELECT * FROM Bill ");
     }
 
-    public function store(Request $request)
+    public function store( $data)
 {
-    $validator = Validator::make($request->all(), [
+    Log::info("LogBill | Bill request payload created ".json_encode($data));
+    $validator = Validator::make($data->all(), [
         'vendor_name' => 'required',
         'vendor_code' => 'required',
         'reference_number' => 'required',
         'due_date' => 'required',
         'line_items' => 'required|array',
         'line_items.*.amount' => 'required|integer',
-        'line_items.*.item_name' => 'required|max:50',
-        'line_items.*.quantity'    => 'required|integer',
-        'line_items.*.unit_price'    => 'required|integer',
-        'line_items.*.item_code'    => 'required|max:20',
+    'line_items.*.item_name' => 'required|max:50',
+    'line_items.*.quantity'    => 'required|integer',
+    'line_items.*.unit_price'    => 'required|integer',
+    //'line_items.*.item_code'    => 'required|max:20',
 
     ]);
 
     if($validator->fails()) {
-        return response()->json([
+        return [
             'status' => false,
-            'errors' => $validator->messages()
-        ], 422);
-    }
-
-    $vendor = $this->dataService->Query("SELECT * FROM Vendor where DisplayName = '".$request->vendor_code."'  ");
-    if(!$vendor)
-    {
-        return response()->json([
-            'status' => false,
-            'errors' => "the vendor code does not exist in quickbooks. create or confirm the correct details"
-        ], 401);
-    }
-
-    $line_items = [];
-    $item_codes = array_column($request->line_items,"item_code");
-    $sql_products = "select * from items where displayName in ('".join("','",$item_codes)."')";
-    $items = $this->dataService->Query($sql_products);
-    if(!$items)
-    {
-        return response()->json([
-            'status' => false,
-            'errors' => "the item codes do not exist in quickbooks. create or confirm the correct details"
-        ], 401);
-
-    }
-    $line_items = [];
-foreach($items as $item)
-{
-$line_items[$item->displayName]=$item->Id;
-}
-
-if(sizeOf($line_items) <> sizeOf($request->line_items))
-{
-    return response()->json([
-        'status' => false,
-        'errors' => "There are some missing item codes on the system. Existing ones are ".json_encode($line_items)
-    ], 401);
-}/*
-1. You should first search and get the vendor by display name (vendor )
-2. You search for each item and see if the items returned have the same size as the line items select * from items where displayname = $code or displayname = code2
-3. Create the payload
-*/
-
-    foreach ($request->line_items as $item) {
-        $line_items[] = [
-            "Amount" => $item['amount'],
-            "Description" => $item['item_description'],
-            "DetailType" => "ItemBasedExpenseLineDetail",
-            "ItemBasedExpenseLineDetail"=> [
-                "ItemRef"=>[
-                    "value"=>$line_items[$item['item_code']],
-                  //  "name": "Pump"
-                ],
-                //"ItemRef"=> $item['item_code'],
-                "ClassRef"=> "",
-                "UnitPrice"=> $item['unit_price'],
-                "RatePercent"=> "",
-                "PriceLevelRef"=> "",
-                "MarkupInfo"=> "",
-                "Qty"=> $item['quantity'],
-                "UOMRef"=> "",
-                "ItemAccountRef"=> "",
-                "InventorySiteRef"=> "",
-                "TaxCodeRef"=> "NON",
-                "TaxClassificationRef"=> "",
-                "CustomerRef"=> "",
-                "BillableStatus"=> "NotBillable",
-                "TaxInclusiveAmt"=> "",
-                "ItemBasedExpenseLineDetailEx"=> ""
-            ],
+            'errors' => $validator->messages(),
+            'code' => 401
         ];
     }
 
+    $vendor = $this->dataService->Query("SELECT * FROM Vendor where DisplayName = '".$data->vendor_name."'  ");
+    if(!$vendor)
+    {
+        return [
+            'status' => false,
+            'errors' => "The vendor Name does not exist in quickbooks. create or confirm the correct details",
+            'code' => 401
+        ];
+    }
+
+    $line_items = [];
+    $item_names = array_column($data->line_items,"item_name");
+
+    $sql_products = "select * from Item where Name in ('".join("','",$item_names)."')";
+    $items = $this->dataService->Query($sql_products);
+
+    if(!$items)
+    {
+        return [
+            'status' => false,
+            'errors' => "the item codes do not exist in quickbooks. create or confirm the correct details",
+            'code' => 401
+        ];
+
+    }
+    $line_items = [];
+    //$items_ids = [];
+    foreach($items as $item)
+    {
+        $line_items[$item->Id]=$item->Id;
+        $items_ids[] = $item->Id;
+    }
+    Log::info($items_ids);
+
+    if(sizeOf($line_items) <> sizeOf($data->line_items))
+    {
+        return [
+            'status' => false,
+            'errors' => "There are some missing item codes on the system. Existing ones are ".json_encode($line_items),
+            'code' => 401
+        ];
+    }/*
+    1. You should first search and get the vendor by display name (vendor )
+    2. You search for each item and see if the items returned have the same size as the line items select * from items where displayname = $code or displayname = code2
+    3. Create the payload
+    */
+
+    $Line = [];
+    foreach ($data->line_items as $key => $item) {
+
+  /*  $line_items[] = [
+        "Amount" => $item['amount'],
+        "Description" => $item['description'],
+        "DetailType" => "SalesItemLineDetail",
+        "SalesItemLineDetail"=> [
+            "ItemRef"=>[
+                "value"=>1,
+              //  "name": "Pump"
+            ],
+            //"ItemRef"=> $item['item_code'],
+            "ClassRef"=> "",
+            "UnitPrice"=> $item['unit_price'],
+            "RatePercent"=> "",
+            "PriceLevelRef"=> "",
+            "MarkupInfo"=> "",
+            "Qty"=> $item['quantity'],
+            "UOMRef"=> "",
+            "ItemAccountRef"=> "",
+            "InventorySiteRef"=> "",
+            "TaxCodeRef"=> "NON",
+            "TaxClassificationRef"=> "",
+            "CustomerRef"=> "",
+            "BillableStatus"=> "NotBillable",
+            "TaxInclusiveAmt"=> "",
+            "ItemBasedExpenseLineDetailEx"=> ""
+        ],
+    ]; */
+
+    $line_item["Description"] = $item["description"];
+    $line_item["Amount"] = $item["amount"];
+    $line_item["DetailType"] = "ItemBasedExpenseLineDetail";
+    $line_item["ItemBasedExpenseLineDetail"]["ItemRef"]["value"] = $items_ids[$key];
+    $line_item["ItemBasedExpenseLineDetail"]["UnitPrice"] = $item['unit_price'];
+    $line_item["ItemBasedExpenseLineDetail"]["Qty"] = $item['quantity'];
+    //$line_item["SalesItemLineDetail"]["BillableStatus"] = "NotBillable";
+    $line_item["ItemBasedExpenseLineDetail"]["TaxCodeRef"] = "NON";
+
+
+    $Line[] = $line_item;
+}
+
     $bill = Bill::create([
-        "DocNumber" => $request->reference_number,
-        "DueDate" => $request->due_date,
-        "Line" => $line_items,
+        "DocNumber" => $data->reference_number,
+        "DueDate" => $data->due_date,
+        "Line" => $Line,
         "VendorRef" => [
             "value" => $vendor[0]->Id,
             "name" => $vendor[0]->DisplayName
@@ -137,15 +161,16 @@ if(sizeOf($line_items) <> sizeOf($request->line_items))
 
 
     $response = $this->dataService->Add($bill);
+    print_r($response);
 			$error = $this->dataService->getLastError();
 			if ($error) {
-				Log::info("LogPayment |Error|Request =>|Error Response".$error->getHttpStatusCode()."|
+				Log::info("LogBill |Error|Request =>|Error Response".$error->getHttpStatusCode()."|
 					".$error->getOAuthHelperError()."|".$error->getResponseBody());
-				return ['status'=>false,'message'=>'We have received an Error'.$error->getResponseBody()];
+                return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
 } else {
     # code...
     // Echo some formatted output
-    return ['status'=>true,"payment_id"=>$response->Id,"message"=>"Successfully created a payment"];
+    return ['status'=>true,"payment_id"=>$response->Id,"message"=>"Successfully created a Bill"];
 }
 
     // $name = $request["VendorName"];

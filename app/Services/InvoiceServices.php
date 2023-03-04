@@ -62,7 +62,7 @@ class InvoiceServices {
         {
             return response()->json([
                 'status' => false,
-                'errors' => "the item codes do not exist in quickbooks. create or confirm the correct details"
+                'errors' => "the item name do not exist in quickbooks. create or confirm the correct details"
             ], 401);
 
         }
@@ -79,7 +79,7 @@ class InvoiceServices {
         {
             return response()->json([
                 'status' => false,
-                'errors' => "There are some missing item codes on the system. Existing ones are ".json_encode($line_items)
+                'errors' => "There are some missing item names on the system. Existing ones are ".json_encode($line_items)
             ], 401);
         }/*
         1. You should first search and get the vendor by display name (vendor )
