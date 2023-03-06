@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api\quickBooks\Vendor;
+namespace App\Http\Controllers\Api\quickBooks\vendor;
 
+use App\Helpers\Utils;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\VendorServices;
 use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
-use App\Helpers\Utils;
 
 class VendorController extends Controller
 {
@@ -24,23 +24,16 @@ class VendorController extends Controller
 
         return response()->json($data);
     }
-
-    // public function vendors(Request $request){
-    //     $data = $this->bill->vendors($request);
-
-    //     return response()->json($data);
-    // }
-
     public function store(Request $request){
         $data = $this->vendor->store($request);
 
         return response()->json($data);
     }
 
-    // public function show(Request $request){
-    //     $data = $this->bill->show($request);
+    public function show(Request $request){
+        $data = $this->vendor->show($request);
 
 
-    //     return response()->json($data);
-    // }
+        return response()->json($data);
+    }
 }

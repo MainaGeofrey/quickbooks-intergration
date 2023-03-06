@@ -34,7 +34,7 @@ class VendorServices {
         ]);
 
         if($validator->fails()){
-
+            
             return ["message" => "Please provide the AccountNumber", "code" => 422];
         }
         $name = $data["account_number"];
