@@ -6,14 +6,17 @@ use Illuminate\Http\Request;
 use App\Services\VendorServices;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Helpers\Utils;
 
 class VendorController extends Controller
 {
     //
     protected $vendor;
+    protected $data;
 
-    public function __construct(){
-        $this->vendor = new VendorServices();
+    public function __construct(Request $request){
+        $this->data["user_id"] = Utils::getApiUser($request);
+        $this->vendor = new VendorServices($this->data);
     }
 
     public function index(){
