@@ -26,6 +26,8 @@ class InvoiceServices {
     }
     public function store($data){
         $validator = Validator::make($data->all(), [
+            'reference_number' => 'required|string',
+            'due_date' => 'required|string',
             'account_number' => 'required|string',
             "line_items"    => "required|array|min:1",
             'line_items.*.amount' => 'required|numeric|gt:0',
@@ -60,27 +62,29 @@ class InvoiceServices {
 
         if(!$items)
         {
-            return response()->json([
+            return [
                 'status' => false,
-                'errors' => "the item name do not exist in quickbooks. create or confirm the correct details"
-            ], 401);
+                'errors' => "the item do not exist in quickbooks. create or confirm the correct details",
+                'code' => 401
+            ];
 
         }
         $line_items = [];
         //$items_ids = [];
         foreach($items as $item)
         {
-            $line_items[$item->Id]=$item->Id;
+            $line_items[$item->Name]=$item->Name;
             $items_ids[] = $item->Id;
         }
         Log::info($items_ids);
 
         if(sizeOf($line_items) <> sizeOf($data->line_items))
         {
-            return response()->json([
+            return [
                 'status' => false,
-                'errors' => "There are some missing item names on the system. Existing ones are ".json_encode($line_items)
-            ], 401);
+                'errors' => "There are some missing item on the system. Existing ones are ".json_encode($line_items),
+                'code' => 401
+            ];
         }/*
         1. You should first search and get the vendor by display name (vendor )
         2. You search for each item and see if the items returned have the same size as the line items select * from items where displayname = $code or displayname = code2
@@ -166,6 +170,7 @@ $Line = [];
         try {
             $invoice = Invoice::create([
                 "Line" => $Line,
+                "DocNumber" => $data["reference_number"],
                 //"DocNumber" => $data["reference_number"],
                 //"DueDate" => $data["due_date"],
                 //"DateCreated" =>$data["date_created"],

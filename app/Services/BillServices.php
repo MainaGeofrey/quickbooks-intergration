@@ -38,7 +38,7 @@ class BillServices {
     Log::info("LogBill | Bill request payload created ".json_encode($data));
     $validator = Validator::make($data->all(), [
         'vendor_name' => 'required',
-        'vendor_code' => 'required',
+        //'vendor_code' => 'required',
         'reference_number' => 'required',
         'due_date' => 'required',
         'line_items' => 'required|array',
@@ -78,7 +78,7 @@ class BillServices {
     {
         return [
             'status' => false,
-            'errors' => "the item codes do not exist in quickbooks. create or confirm the correct details",
+            'errors' => "the item do not exist in quickbooks. create or confirm the correct details",
             'code' => 401
         ];
 
@@ -87,16 +87,16 @@ class BillServices {
     //$items_ids = [];
     foreach($items as $item)
     {
-        $line_items[$item->Id]=$item->Id;
+        $line_items[$item->Name]=$item->Name;
         $items_ids[] = $item->Id;
     }
-    Log::info($items_ids);
+    //Log::info($items_ids);
 
     if(sizeOf($line_items) <> sizeOf($data->line_items))
     {
         return [
             'status' => false,
-            'errors' => "There are some missing item codes on the system. Existing ones are ".json_encode($line_items),
+            'errors' => "There are some missing items on the system. Existing ones are ".json_encode($line_items),
             'code' => 401
         ];
     }/*
@@ -161,7 +161,7 @@ class BillServices {
 
 
     $response = $this->dataService->Add($bill);
-    print_r($response);
+    ///print_r($response);
 			$error = $this->dataService->getLastError();
 			if ($error) {
 				Log::info("LogBill |Error|Request =>|Error Response".$error->getHttpStatusCode()."|
@@ -170,7 +170,7 @@ class BillServices {
 } else {
     # code...
     // Echo some formatted output
-    return ['status'=>true,"payment_id"=>$response->Id,"message"=>"Successfully created a Bill"];
+    return ['status'=>true,"payment_id"=>$response->Id,"message"=>"Successfully created a Bill", "code" => 200];
 }
 
     // $name = $request["VendorName"];
