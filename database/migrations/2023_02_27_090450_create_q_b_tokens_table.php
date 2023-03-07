@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text("access_token");
             $table->text("refresh_token");
             $table->string('realm_id');
+            $table->string('base_url');
             $table->string('client_id');
             $table->string('client_secret');
             $table->string("expires_in")->timestamps();

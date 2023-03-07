@@ -73,7 +73,7 @@ class CustomerServices {
                 "DisplayName" => $data['account_number'],
                 "PrintOnCheckName" => $data['print_on_check_name']?? null,
                 //"UserId" => $data->data['UserId'],
-                //"Active" => $data->data['Active'],
+                "Active" => true,
                 "PrimaryPhone" => [
                     "FreeFormNumber" =>  $data['phone_number'],
                 ]?? null,
@@ -102,7 +102,7 @@ class CustomerServices {
 				return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
             } else {
 
-                return ['status'=>true,"customer_id"=>$response->Id,"message"=>"Successfully created a customer.","code" => 200];
+                return ['status'=>true,"customer_id"=>$response,"message"=>"Successfully created a customer.","code" => 200];
             }
 
         } catch (\Throwable $th) {
