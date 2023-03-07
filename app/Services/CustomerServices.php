@@ -26,7 +26,7 @@ class CustomerServices {
     }
     public function store($data){
         $validator = Validator::make($data->all(), [
-            'account_number' => 'required|string',
+            'account_name' => 'required|string',
             'phone_number' => 'required|string',
             //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
             //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
@@ -44,7 +44,7 @@ class CustomerServices {
         if($customer){
 
             Log::info("CUSTOMER EXISTS");
-            return ["status"=> false,"message" => "Account by number $name Exists", "code" => 422];
+            return ["status"=> false,"message" => "Account  $name Exists", "code" => 422];
         }
 
 
@@ -70,7 +70,7 @@ class CustomerServices {
                 "Balance" => $data['balance']?? null,
                 "FullyQualifiedName" => $data['fully_qualified_name']?? null,
                 "CompanyName" => $data['company_name']?? null,
-                "DisplayName" => $data['customer_name'],
+                "DisplayName" => $data['account_name'],
                 "PrintOnCheckName" => $data['print_on_check_name']?? null,
                 //"UserId" => $data->data['UserId'],
                 "Active" => true,
@@ -102,7 +102,7 @@ class CustomerServices {
 				return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
             } else {
 
-                return ['status'=>true,"customer_id"=>$response,"message"=>"Successfully created a customer.","code" => 200];
+                return ['status'=>true,"customer_id"=>$response->Id,"message"=>"Successfully created a customer.","code" => 200];
             }
 
         } catch (\Throwable $th) {
