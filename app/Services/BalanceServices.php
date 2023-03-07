@@ -19,7 +19,7 @@ class BalanceServices {
     }
 
     public function index(){
-        $result = $this->dataService->Query("SELECT * FROM CustomerBalance");
+        $result = $this->dataService->Query("SELECT * FROM CustomerBalance ");
 
 
         return $result;
@@ -36,6 +36,7 @@ class BalanceServices {
             return ["status"=>false,"message" => $validator->errors()->getMessages(), "code" => 422];
         }
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$data->account_number' ");
+
         if(!$customer){
             return ["message" => "Account number $data->account_number Not Found", "code" => 404];
         }
