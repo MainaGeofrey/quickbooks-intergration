@@ -27,14 +27,19 @@ class PaymentController extends Controller
     }
     public function store(Request $request){
         try {
-            $data = $this->payment->store($request);
+            $payment_response = $this->payment->store($request);
+	$status =$payment_response['status']??false;
 
-            return $data;
+	    if($status ==false)
+		    return response()->json($payment_response,$payment_response['code']??400);
+	    else
+		    return response()->json($payment_response);
+
         } catch (\Throwable $th) {
             //throw $th;
             //Log::error($th->getMessage());
 
-            return response()->json(["code" => 422, "message" => $th->getMessage()]);
+            return response()->json([ "message" => $th->getMessage(),"status" => false, "code" => 422,]);
         }
     }
 

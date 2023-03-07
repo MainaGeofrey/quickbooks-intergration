@@ -2,12 +2,12 @@
 namespace App\Services;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use QuickBooksOnline\API\Facades\Customer;
+use QuickBooksOnline\API\Facades\Vendor;
 
 
 
 //session_start();
-class CustomerServices {
+class VendorServices {
 
     protected $dataService;
     protected $data;
@@ -19,7 +19,7 @@ class CustomerServices {
     }
 
     public function index(){
-        $result = $this->dataService->Query("SELECT * FROM Customer ");
+        $result = $this->dataService->Query("SELECT * FROM Vendor ");
 
 
         return $result;
@@ -34,24 +34,24 @@ class CustomerServices {
         ]);
 
         if($validator->fails()){
-
+            
             return ["message" => "Please provide the AccountNumber", "code" => 422];
         }
         $name = $data["account_number"];
-        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
+        $vendor= $this->dataService->Query("SELECT * FROM Vendor WHERE DisplayName = '$name' ");
 
 
-        if($customer){
+        if($vendor){
 
-            Log::info("CUSTOMER EXISTS");
+            Log::info("VENDOR EXISTS");
             return ["status"=> false,"message" => "Account by number $name Exists", "code" => 422];
         }
 
 
-        //Log::info("LogCustomer | customer request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
+        //Log::info("LogVendor | vendor request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
 
         try{
-            $customer = Customer::create([
+            $vendor = Vendor::create([
                 "BillAddr" => [
                     "Line1" => $data['bill_addr']['line1']?? null,
                     "City" =>  $data['bill_addr']['city']?? null,
@@ -92,17 +92,17 @@ class CustomerServices {
                 //"SecondaryTaxIdentifier" => $data->data['SecondaryTaxIdentifier'],
                 //"ClientCompanyId" => $data->data['ClientCompanyId'],
             ]);
-            Log::info("LogCustomer | customer request payload created ".json_encode($data));
+            Log::info("LogVendor | vendor request payload created ".json_encode($data));
 
-			$response = $this->dataService->Add($customer);
+			$response = $this->dataService->Add($vendor);
 			$error = $this->dataService->getLastError();
 			if ($error) {
-				Log::info("LogCustomer|Request =>".json_encode($data)."|Error Response".$error->getHttpStatusCode()."|
+				Log::info("LogVendor|Request =>".json_encode($data)."|Error Response".$error->getHttpStatusCode()."|
 					".$error->getOAuthHelperError()."|".$error->getResponseBody());
 				return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
             } else {
 
-                return ['status'=>true,"customer_id"=>$response->Id,"message"=>"Successfully created a customer.","code" => 200];
+                return ['status'=>true,"Vendor_id"=>$response->Id,"message"=>"Successfully created a vendor.","code" => 200];
             }
 
         } catch (\Throwable $th) {
@@ -116,7 +116,7 @@ class CustomerServices {
 
 
     public function show($data){
-        $result = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$data->DisplayName' ");
+        $result = $this->dataService->Query("SELECT * FROM Vendor WHERE DisplayName = '$data->DisplayName' ");
 
 
         return $result;
