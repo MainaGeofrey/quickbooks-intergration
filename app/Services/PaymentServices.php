@@ -159,6 +159,7 @@ class PaymentServices {
             } else {
                 $db_payment->update([
                     'processed' => true,
+                    'response' => json_encode($response, true),
                 ]);
 
                 return ['status'=>true,"payment_id"=>$response->Id,"message"=>"Successfully created a payment.".(isset($invoices)?"Invoices updated":"created as a sales receipt"), "code" => 200];

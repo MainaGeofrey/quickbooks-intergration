@@ -22,6 +22,7 @@ class Payments extends Model
         'notes',
         'processed',
         'date_time',
+        'response',
 
     ];
 }

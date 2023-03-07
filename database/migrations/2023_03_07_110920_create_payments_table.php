@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string("mobile_number")->varchar(200);
             $table->string("reference_number")->nullable();
             $table->decimal('amount');
-            $table->text('notes')->nullable();;
+            $table->text('notes')->nullable();
+            $table->json('response')->nullable();
             $table->boolean('processed')->default(0);
             $table->integer("status")->default(1);
             $table->timestamp("date_time")->nullable();
