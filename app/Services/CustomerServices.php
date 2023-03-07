@@ -70,7 +70,7 @@ class CustomerServices {
                 "Balance" => $data['balance']?? null,
                 "FullyQualifiedName" => $data['fully_qualified_name']?? null,
                 "CompanyName" => $data['company_name']?? null,
-                "DisplayName" => $data['account_number'],
+                "DisplayName" => $data['customer_name'],
                 "PrintOnCheckName" => $data['print_on_check_name']?? null,
                 //"UserId" => $data->data['UserId'],
                 "Active" => true,
