@@ -26,16 +26,27 @@ class CustomerServices {
     }
     public function store($data){
         $validator = Validator::make($data->all(), [
-            'account_name' => 'required|string',
+      'title' => 'required|string',
+                        "given_name"=> 'required|string',
+                        "middle_name"=> 'required|string',
+                        "family_name"=> 'required|string',
+                        "suffix"=> 'required|string',
+                            "company_name"=> 'required|string',
+            'account_number' => 'required|string',
             'phone_number' => 'required|string',
+            'email_addr' => 'required|email',
+                        "address" => 'required|string',
+                        "notes"=> 'required|string',
+			"balance"=>'required|numeric|min:0',
+			"currency_code"=>"required|string"
+
             //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
             //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
 
         ]);
 
         if($validator->fails()){
-
-            return ["message" => "Please provide the AccountNumber", "code" => 422];
+	return ["status"=>false,"message" => $validator->errors()->getMessages(), "code" => 422];
         }
         $name = $data["account_number"];
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
@@ -73,7 +84,11 @@ class CustomerServices {
                 "DisplayName" => $data['account_name'],
                 "PrintOnCheckName" => $data['print_on_check_name']?? null,
                 //"UserId" => $data->data['UserId'],
-                "Active" => true,
+		"Active" => true,
+		  "CurrencyRef" => [
+                "value" => $data['currency_code']
+//..                "name" => "Philippine Peso"
+            ],
                 "PrimaryPhone" => [
                     "FreeFormNumber" =>  $data['phone_number'],
                 ]?? null,

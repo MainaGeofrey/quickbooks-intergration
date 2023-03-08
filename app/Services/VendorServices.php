@@ -25,39 +25,38 @@ class VendorServices {
         return $result;
     }
     public function store($data){
-        $validator = Validator::make($data->all(), [
+ $validator = Validator::make($data->all(), [
+			'title' => 'required|string',
+			"given_name"=> 'required|string',
+			"middle_name"=> 'required|string',
+			"family_name"=> 'required|string',
+			"suffix"=> 'required|string',
+			    "company_name"=> 'required|string',
             'account_number' => 'required|string',
             'phone_number' => 'required|string',
-            //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
-            //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
-
-        ]);
-
-        if($validator->fails()){
-            
-            return ["message" => "Please provide the AccountNumber", "code" => 422];
+            'email_addr' => 'required|email',
+			"address" => 'required|string',
+			"notes"=> 'required|string',
+			"balance"=>'required|numeric|min:0',
+			"currency_code"=>"required|string"
+        ]);    
+	    if($validator->fails()){
+           return ["status"=>false,"message" => $validator->errors()->getMessages(), "code" => 422]; 
         }
         $name = $data["account_number"];
         $vendor= $this->dataService->Query("SELECT * FROM Vendor WHERE DisplayName = '$name' ");
-
-
         if($vendor){
-
             Log::info("VENDOR EXISTS");
             return ["status"=> false,"message" => "Account by number $name Exists", "code" => 422];
         }
-
-
-        //Log::info("LogVendor | vendor request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
-
         try{
             $vendor = Vendor::create([
                 "BillAddr" => [
-                    "Line1" => $data['bill_addr']['line1']?? null,
-                    "City" =>  $data['bill_addr']['city']?? null,
+                    "Line1" => $data['address']?? null,
+                    "City" =>   null,
                     //"Country" => "USA",
                     //"CountrySubDivisionCode" => "CA",
-                    "PostalCode" =>  $data['bill_addr']['postal_code']?? null,
+//                    "PostalCode" =>  $data['bill_addr']['postal_code']?? null,
                 ]?? null,
                 //"CustomField" => $data->data['CustomField'],
                 //"Organization" => $data->data['Organization'],
@@ -71,7 +70,11 @@ class VendorServices {
                 "FullyQualifiedName" => $data['fully_qualified_name']?? null,
                 "CompanyName" => $data['company_name']?? null,
                 "DisplayName" => $data['account_number'],
-                "PrintOnCheckName" => $data['print_on_check_name']?? null,
+		"PrintOnCheckName" => $data['print_on_check_name']?? null,
+		        "CurrencyRef" => [
+                "value" => $data['currency_code']
+//..                "name" => "Philippine Peso"
+            ],
                 //"UserId" => $data->data['UserId'],
                 //"Active" => $data->data['Active'],
                 "PrimaryPhone" => [
@@ -93,7 +96,6 @@ class VendorServices {
                 //"ClientCompanyId" => $data->data['ClientCompanyId'],
             ]);
             Log::info("LogVendor | vendor request payload created ".json_encode($data));
-
 			$response = $this->dataService->Add($vendor);
 			$error = $this->dataService->getLastError();
 			if ($error) {
