@@ -95,34 +95,6 @@ class InvoiceServices {
     $Line = [];
         foreach ($data->line_items as $key => $item) {
 
-          /*  $line_items[] = [
-                "Amount" => $item['amount'],
-                "Description" => $item['description'],
-                "DetailType" => "SalesItemLineDetail",
-                "SalesItemLineDetail"=> [
-                    "ItemRef"=>[
-                        "value"=>1,
-                      //  "name": "Pump"
-                    ],
-                    //"ItemRef"=> $item['item_code'],
-                    "ClassRef"=> "",
-                    "UnitPrice"=> $item['unit_price'],
-                    "RatePercent"=> "",
-                    "PriceLevelRef"=> "",
-                    "MarkupInfo"=> "",
-                    "Qty"=> $item['quantity'],
-                    "UOMRef"=> "",
-                    "ItemAccountRef"=> "",
-                    "InventorySiteRef"=> "",
-                    "TaxCodeRef"=> "NON",
-                    "TaxClassificationRef"=> "",
-                    "CustomerRef"=> "",
-                    "BillableStatus"=> "NotBillable",
-                    "TaxInclusiveAmt"=> "",
-                    "ItemBasedExpenseLineDetailEx"=> ""
-                ],
-            ]; */
-
             $line_item["Description"] = $item["description"];
             $line_item["Amount"] = $item["amount"];
             $line_item["DetailType"] = "SalesItemLineDetail";
@@ -195,8 +167,6 @@ class InvoiceServices {
     public function show($data){
         //Query Open Invoices
         $result = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$data->id' ");
-        //$result = json_encode($result, JSON_PRETTY_PRINT);
-        //print_r($result);
 
         return $result;
      }
