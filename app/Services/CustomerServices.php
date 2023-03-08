@@ -26,7 +26,7 @@ class CustomerServices {
     }
     public function store($data){
         $validator = Validator::make($data->all(), [
-            'account_number' => 'required|string',
+            'account_name' => 'required|string',
             'phone_number' => 'required|string',
             //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
             //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
@@ -44,7 +44,7 @@ class CustomerServices {
         if($customer){
 
             Log::info("CUSTOMER EXISTS");
-            return ["status"=> false,"message" => "Account by number $name Exists", "code" => 422];
+            return ["status"=> false,"message" => "Account  $name Exists", "code" => 422];
         }
 
 
@@ -70,10 +70,10 @@ class CustomerServices {
                 "Balance" => $data['balance']?? null,
                 "FullyQualifiedName" => $data['fully_qualified_name']?? null,
                 "CompanyName" => $data['company_name']?? null,
-                "DisplayName" => $data['account_number'],
+                "DisplayName" => $data['account_name'],
                 "PrintOnCheckName" => $data['print_on_check_name']?? null,
                 //"UserId" => $data->data['UserId'],
-                //"Active" => $data->data['Active'],
+                "Active" => true,
                 "PrimaryPhone" => [
                     "FreeFormNumber" =>  $data['phone_number'],
                 ]?? null,
