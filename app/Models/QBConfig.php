@@ -18,7 +18,7 @@ class QBConfig extends Model
         'expires_in',
         'refresh_token',
         'realm_id',
-        'client_id',
+        'qb_client_id',
         'client_secret',
         'base_url',
 

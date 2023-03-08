@@ -1,5 +1,7 @@
 <?php
 namespace App\Services;
+
+use App\Models\DB_Customer;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use QuickBooksOnline\API\Facades\Customer;
@@ -97,14 +99,31 @@ class CustomerServices {
 			$response = $this->dataService->Add($customer);
 			$error = $this->dataService->getLastError();
 			if ($error) {
+                $data['status'] = 5;
+                $this->storeCustomer($data,$response = null ,$error->getIntuitErrorDetail());
+
 				Log::info("LogCustomer|Request =>".json_encode($data)."|Error Response".$error->getHttpStatusCode()."|
 					".$error->getOAuthHelperError()."|".$error->getResponseBody());
 				return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
-            } else {
+            } else if ($response) {
+                $response_data['Id'] = $response->Id;
+                $response_data['SyncToken'] = $response->Id;
+                $response_data['CreatedDate'] = $response->MetaData->CreateTime;
+
+
+                $data['Id'] = $response->Id;
+                $data['status'] = 2; // success, happy path
+                $this->storeCustomer($data,$response_data, $error = null);
 
                 return ['status'=>true,"customer_id"=>$response->Id,"message"=>"Successfully created a customer.","code" => 200];
             }
-
+            else{
+                ///No error and no response
+                //could have failed or succeeded but no error or response
+                //TODO before re-push check if payment  created
+                $data['status'] = 3;
+                $this->storeCustomer($data);
+            }
         } catch (\Throwable $th) {
         //throw $th;
 
@@ -122,14 +141,34 @@ class CustomerServices {
         return $result;
      }
 
-    public function getCompanyInfo()
-    {
-
-        $companyInfo = $this->dataService->getCompanyInfo();
-
-
-        return $companyInfo;
-    }
+     public function storeCustomer($data,$response = null, $error = null){
+        $customer_details = [
+            "title" =>$data["title"] ?? null,
+            "suffix" => $data["suffix"] ?? null,
+            "given_name" => $data["given_name"] ?? null,
+            "middle_name" => $data["middle_name"] ?? null,
+            "family_name" => $data["family_name"] ?? null,
+            "fully_qualified_name" => $data["fully_qualified_name"] ?? null,
+            "print_on_check_name" => $data["print_on_check_name"]??null,
+            "default_tax_code_ref" => $data["default_tax_code_ref"]?? null,
+        ];
+        return DB_Customer::create([
+            'account_name' => $data["account_name"],
+            'company_name' => $data["company_name"],
+            'reference_number' => $data["reference_number"],
+            'email' => $data["email_addr"],
+            'balance' => $data["balance"],
+            'mobile_number' => $data["phone_number"],
+            'client_id' => $this->data['user_id'],
+            'notes' => $data['notes'],
+            'customer_details' => json_encode( $customer_details, true),
+            'status' => $data["status"] ?? 0,
+            'response_message' => $error,
+            'qb_id' => $response["Id"] ?? 0,
+            'response' => json_encode($response, true),
+            'bill_addr' =>json_encode( $data["bill_addr"], true),
+        ]);
+     }
 
 
 }
