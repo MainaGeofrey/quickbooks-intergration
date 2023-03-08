@@ -1,5 +1,6 @@
 <?php
 namespace App\Services;
+use App\Models\DB_Invoice;
 use App\Services\DataServiceHelper;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -91,7 +92,7 @@ class InvoiceServices {
         3. Create the payload
         */
 
-$Line = [];
+    $Line = [];
         foreach ($data->line_items as $key => $item) {
 
           /*  $line_items[] = [
@@ -134,37 +135,7 @@ $Line = [];
 
             $Line[] = $line_item;
         }
-
-
-
-
-
-      /*  $Line = [];
-        $line_item = [];
-        foreach($data->line_items as $key => $value){
-            $validator = Validator::make($value, [
-                'description' => 'required|string',
-                'amount' =>  'required|numeric|gt:0',
-              //  'detail_type' => 'required|string',
-                //'sales_item_line_detail_item_ref' => 'required|string',
-            ]);
-
-            if($validator->fails()){
-                Log::info($value);
-                return ["message" => $validator->errors()->getMessages(), "code" => 422];
-            }
-
-            $line_item["Description"] = $value["description"];
-            $line_item["Amount"] = $value["amount"];
-            $line_item["DetailType"] = "SalesItemLineDetail";
-            $line_item["SalesItemLineDetail"]["ItemRef"] = 1;
-            $Line[] = $line_item;
-
-        } */
-
-
-
-        //Log::info("LogInvoice | invoice request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
+        $data["line"] = $Line;
 
 
         try {
@@ -185,12 +156,29 @@ $Line = [];
 			$response = $this->dataService->Add($invoice);
 			$error = $this->dataService->getLastError();
 			if ($error) {
+                $data['status'] = 5;
+                $this->storeInvoice($data,$response = null ,$error->getIntuitErrorDetail());
+
 				Log::info("LogInvoice |Error|Request =>".json_encode($invoice)."|Error Response".$error->getHttpStatusCode()."|
 					".$error->getOAuthHelperError()."|".$error->getResponseBody());
 				return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
-            } else {
+            } else if ($response) {
+                $response_data['Id'] = $response->Id;
+                $response_data['SyncToken'] = $response->Id;
+                $response_data['CreatedDate'] = $response->MetaData->CreateTime;
+
+                $data['Id'] = $response->Id;
+                $data['status'] = 2; // success, happy path
+                $this->storeInvoice($data,$response_data, $error = null);
 
                 return ['status'=>true,"invoice_id"=>$response->Id,"message"=>"Successfully created an invoice.", "code" => 200];
+            }
+            else{
+                ///No error and no response
+                //could have failed or succeeded but no error or response
+                //TODO before re-push check if invoice  created
+                $data['status'] = 3;
+                $this->storeInvoice($data);
             }
 
           //  return ["invoice_id" => $result->Id,"status" =>true, "code" => 200];
@@ -211,5 +199,21 @@ $Line = [];
         //print_r($result);
 
         return $result;
+     }
+
+
+    public function storeInvoice($data,$response = null, $error = null){
+        return DB_Invoice::create([
+            'account_name' => $data["account_number"],
+            'reference_number' => $data["reference_number"],
+            'due_date' => $data["due_date"],
+            'date_created' => $data["date_created"],
+            'client_id' => $this->data['user_id'],
+            'status' => $data["status"] ?? 0,
+            'response_message' => $error,
+            'qb_id' => $response["Id"] ?? 0,
+            'line_items' =>json_encode( $data["line"], true),
+            'response' => json_encode($response, true),
+        ]);
      }
 }
