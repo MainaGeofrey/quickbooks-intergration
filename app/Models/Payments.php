@@ -23,6 +23,11 @@ class Payments extends Model
         'processed',
         'date_time',
         'response',
+        'response_message',
+        'qb_id',
+        'status',
+        'deleted_at',
+        'line_items',
 
     ];
 }
