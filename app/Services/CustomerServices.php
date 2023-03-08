@@ -28,19 +28,19 @@ class CustomerServices {
     }
     public function store($data){
         $validator = Validator::make($data->all(), [
-      'title' => 'required|string',
-                        "given_name"=> 'required|string',
-                        "middle_name"=> 'required|string',
-                        "family_name"=> 'required|string',
-                        "suffix"=> 'required|string',
-                            "company_name"=> 'required|string',
+            'title' => 'required|string',
+            "given_name"=> 'required|string',
+            "middle_name"=> 'required|string',
+            "family_name"=> 'required|string',
+            "suffix"=> 'required|string',
+            "company_name"=> 'required|string',
             'account_number' => 'required|string',
             'phone_number' => 'required|string',
             'email_addr' => 'required|email',
-                        "address" => 'required|string',
-                        "notes"=> 'required|string',
+            //"address" => 'required|string',
+            "notes"=> 'required|string',
 			"balance"=>'required|numeric|min:0',
-			"currency_code"=>"required|string"
+			//"currency_code"=>"required|string"
 
             //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
             //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
@@ -64,6 +64,7 @@ class CustomerServices {
         //Log::info("LogCustomer | customer request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
 
         try{
+            print_r("mmm");
             $customer = Customer::create([
                 "BillAddr" => [
                     "Line1" => $data['bill_addr']['line1']?? null,
@@ -83,14 +84,14 @@ class CustomerServices {
                 "Balance" => $data['balance']?? null,
                 "FullyQualifiedName" => $data['fully_qualified_name']?? null,
                 "CompanyName" => $data['company_name']?? null,
-                "DisplayName" => $data['account_name'],
+                "DisplayName" => $data['account_number'],
                 "PrintOnCheckName" => $data['print_on_check_name']?? null,
                 //"UserId" => $data->data['UserId'],
-		"Active" => true,
-		  "CurrencyRef" => [
-                "value" => $data['currency_code']
-//..                "name" => "Philippine Peso"
-            ],
+                "Active" => true,
+               /* "CurrencyRef" => [
+                        //"value" => $data['currency_code']?? null,
+        //..             "name" => "Philippine Peso"
+                    ]?? null, */
                 "PrimaryPhone" => [
                     "FreeFormNumber" =>  $data['phone_number'],
                 ]?? null,
@@ -110,7 +111,7 @@ class CustomerServices {
                 //"ClientCompanyId" => $data->data['ClientCompanyId'],
             ]);
             Log::info("LogCustomer | customer request payload created ".json_encode($data));
-
+            print_r("kkk");
 			$response = $this->dataService->Add($customer);
 			$error = $this->dataService->getLastError();
 			if ($error) {
@@ -130,7 +131,7 @@ class CustomerServices {
                 $data['status'] = 2; // success, happy path
                 $this->storeCustomer($data,$response_data, $error = null);
 
-                return ['status'=>true,"customer_id"=>$response->Id,"message"=>"Successfully created a customer.","code" => 200];
+                return ['status'=>true,"customer_id"=>$response,"message"=>"Successfully created a customer.","code" => 200];
             }
             else{
                 ///No error and no response
@@ -168,7 +169,7 @@ class CustomerServices {
             "default_tax_code_ref" => $data["default_tax_code_ref"]?? null,
         ];
         return DB_Customer::create([
-            'account_name' => $data["account_name"],
+            'account_name' => $data["account_number"],
             'company_name' => $data["company_name"],
             'reference_number' => $data["reference_number"],
             'email' => $data["email_addr"],
