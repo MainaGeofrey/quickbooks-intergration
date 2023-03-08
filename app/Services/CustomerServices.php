@@ -39,7 +39,7 @@ class CustomerServices {
 
             return ["message" => "Please provide the AccountNumber", "code" => 422];
         }
-        $name = $data["account_number"];
+        $name = $data["account_name"];
         $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$name' ");
 
 
