@@ -63,10 +63,9 @@ class VendorServices {
                 ]?? null,
                 //"CustomField" => $data->data['CustomField'],
                 //"Organization" => $data->data['Organization'],
-                // "Notes" => $data['notes']?? null,
                 "Title" => $data['title']?? null,
                 "GivenName" => $data['given_name']?? null,
-                // "MiddleName" => $data['middle_name']?? null,
+                "MiddleName" => $data['middle_name']?? null,
                 "FamilyName" => $data['family_name']?? null,
                 "Suffix" => $data['suffix']?? null,
                 "Balance" => $data['balance']?? null,
@@ -102,14 +101,31 @@ class VendorServices {
 			$response = $this->dataService->Add($vendor);
 			$error = $this->dataService->getLastError();
 			if ($error) {
+                $data['status'] = 5;
+                $this->storeVendor($data,$response = null ,$error->getIntuitErrorDetail());
+
 				Log::info("LogVendor|Request =>".json_encode($data)."|Error Response".$error->getHttpStatusCode()."|
 					".$error->getOAuthHelperError()."|".$error->getResponseBody());
 				return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
-            } else {
+            } else if ($response) {
+                $response_data['Id'] = $response->Id;
+                $response_data['SyncToken'] = $response->Id;
+                $response_data['CreatedDate'] = $response->MetaData->CreateTime;
+
+
+                $data['Id'] = $response->Id;
+                $data['status'] = 2; // success, happy path
+                $this->storeVendor($data,$response_data, $error = null);
 
                 return ['status'=>true,"Vendor_id"=>$response,"message"=>"Successfully created a vendor.","code" => 200];
             }
-
+            else{
+                ///No error and no response
+                //could have failed or succeeded but no error or response
+                //TODO before re-push check if payment  created
+                $data['status'] = 3;
+                $this->storeVendor($data);
+            }
         } catch (\Throwable $th) {
         //throw $th;
 
@@ -127,7 +143,7 @@ class VendorServices {
         return $result;
      }
 
-     public function storeCustomer($data,$response = null, $error = null){
+     public function storeVendor($data,$response = null, $error = null){
         $customer_details = [
             "title" =>$data["title"] ?? null,
             "suffix" => $data["suffix"] ?? null,
@@ -139,7 +155,8 @@ class VendorServices {
             "default_tax_code_ref" => $data["default_tax_code_ref"]?? null,
         ];
         return DB_Vendor::create([
-            'account_name' => $data["account_name"],
+            'vendor_name' => $data["vendor_name"],
+            'account_number' => $data["account_number"],
             'company_name' => $data["company_name"],
             'reference_number' => $data["reference_number"],
             'email' => $data["email_addr"],

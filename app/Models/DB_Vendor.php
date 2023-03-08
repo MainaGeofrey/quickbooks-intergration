@@ -14,7 +14,7 @@ class DB_Vendor extends Model
 
     protected $fillable = [
         'client_id',
-        'account_name',
+        'vendor_name',
         'account_number',
         'mobile_number',
         'email',
