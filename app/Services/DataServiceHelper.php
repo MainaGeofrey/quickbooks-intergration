@@ -32,7 +32,7 @@ class DataServiceHelper {
         if($qb_token){
             //update config
             $config["refresh_token"] = $qb_token->refresh_token;
-            $config["client_id"] = $qb_token->client_id;
+            $config["qb_client_id"] = $qb_token->qb_client_id;
             $config["client_secret"] = $qb_token->client_secret;
             $config["QBORealmID"] = $qb_token->realm_id;
 
@@ -62,7 +62,7 @@ class DataServiceHelper {
                                 "refresh_token" => $refresh_token,
                                 "expires_in" => $expires_in,
                                 "realm_id" => $config["QBORealmID"],
-                                "client_id" => $config["client_id"],
+                                "qb_client_id" => $config["qb_client_id"],
                                 "client_secret" => $config["client_secret"],
 
                             ]); */
@@ -111,7 +111,7 @@ class DataServiceHelper {
                         "refresh_token" => $refresh_token,
                         "expires_in" => $expires_in,
                         "realm_id" => $config["QBORealmID"],
-                        "client_id" => $config["client_id"],
+                        "qb_client_id" => $config["qb_client_id"],
                         "client_secret" => $config["client_secret"],
 
                     ]);
@@ -130,7 +130,7 @@ class DataServiceHelper {
         try{
             $dataService = DataService::Configure(array(
                 'auth_mode' => 'oauth2',
-                'ClientID' => $qb_token->client_id,
+                'ClientID' => $qb_token->qb_client_id,
                 'ClientSecret' =>  $qb_token->client_secret,
                 'RedirectURI' => $config['oauth_redirect_uri'],
                 'scope' => $config['oauth_scope'],
@@ -163,7 +163,7 @@ class DataServiceHelper {
 
         public function refreshToken($config){
             try{
-                $oauth2LoginHelper = new OAuth2LoginHelper($config['client_id'],$config['client_secret']);
+                $oauth2LoginHelper = new OAuth2LoginHelper($config['qb_client_id'],$config['client_secret']);
                 $newAccessTokenObj = $oauth2LoginHelper->refreshAccessTokenWithRefreshToken($config['refresh_token']);
             }
             catch(\Exception $exception){
