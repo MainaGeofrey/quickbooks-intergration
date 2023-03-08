@@ -98,8 +98,8 @@ class PaymentServices {
 
         $payment_amount = $data["amount"];
 		$paid_amount = $payment_amount;
-     if($invoices)
-     {
+        if($invoices)
+        {
 		foreach ($invoices as $key =>$invoice) {
             $payment_amount_for_invoice = min($payment_amount, $invoice->Balance); // make sure payment doesn't exceed amount due
                 $lineItems[] = [
@@ -120,7 +120,7 @@ class PaymentServices {
 			$payload = [
                 "CustomerRef"=>
                 [
-                    "value" => $data["id"],
+                    "value" =>$data['id'],
                     "name" => $data["name"],
                 ],
                 "Line" => $lineItems,
@@ -132,50 +132,64 @@ class PaymentServices {
             ];
 			$payment = Payment::create($payload);
 
-            //save to DB
-            $db_payment = Payments::create([
-                'account_name' => $data["account_name"],
-                'reference_number' => $data["reference_number"],
-                'date_time' => $data["date_time"],
-                'amount' => $data["amount"],
-                'mobile_number' => $data["mobile_number"],
-                'client_id' => $this->data['user_id'],
-                'notes' => $data['remarks'],
-            ]);
+            $data["line"] = $lineItems;
+
 
             Log::info("LogPayment | payment request payload created ".json_encode($payload));
 
 			$response = $this->dataService->Add($payment);
 			$error = $this->dataService->getLastError();
 			if ($error) {
-                $db_payment->update([
-                    'processed' => false,
-                ]);
+                $data['status'] = 5;
+                $this->storePayment($data,$response = null ,$error->getIntuitErrorDetail());
 
 				Log::info("LogPayment |Error|Request =>".json_encode($payload)."|Error Response".$error->getHttpStatusCode()."|
 					".$error->getOAuthHelperError()."|".$error->getResponseBody());
 
                 return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
-            } else {
-                $db_payment->update([
-                    'processed' => true,
-                    'response' => json_encode($response, true),
-                ]);
+            } else  if ($response) {
+                $response_data['Id'] = $response->Id;
+                $response_data['SyncToken'] = $response->Id;
+                $response_data['CreatedDate'] = $response->MetaData->CreateTime;
+                $response_data['UnappliedAmt'] = $response->UnappliedAmt;
+                //$data["response"]['UnappliedAmt'] = $response->UnappliedAmt;
 
+
+                $data['Id'] = $response->Id;
+                $data['status'] = 2; // success, happy path
+                $this->storePayment($data,$response_data, $error = null);
                 return ['status'=>true,"payment_id"=>$response->Id,"message"=>"Successfully created a payment.".(isset($invoices)?"Invoices updated":"created as a sales receipt"), "code" => 200];
             }
+            else{
+                ///No error and no response
+                //could have failed or succeeded but no error or response
+                //TODO before re-push check if payment  created
+                $data['status'] = 3;
+                $this->storePayment($data);
+            }
 		} catch (\Throwable $th) {
-			Log::Error("LogPayment|Error".json_encode($payload)."|Error Response =>".$th->getMessage());
+			Log::Error("LogPayment|Error".json_encode($payload)."|Error Response =>".$th);
            return ["status" => false, "message" => $th->getMessage(), "code" => 422];
         }
      }
 
 
-     public static function generateRandomString($length = 10): string
-     {
-         $original_string = array_merge(range(0, 29), range('a', 'z'), range('A', 'Z'));
-         $original_string = implode("", $original_string);
-         return substr(str_shuffle($original_string), 0, $length);
+     public function storePayment($data,$response = null, $error = null){
+        return Payments::create([
+            'account_name' => $data["account_name"],
+            'reference_number' => $data["reference_number"],
+            'date_time' => $data["date_time"],
+            'amount' => $data["amount"],
+            'mobile_number' => $data["mobile_number"],
+            'client_id' => $this->data['user_id'],
+            'notes' => $data['remarks'],
+            //'processed' => true,
+            'status' => $data["status"] ?? 0,
+            'response_message' => $error,
+            'qb_id' => $response["Id"] ?? 0,
+            'line_items' =>json_encode( $data["line"], true),
+            'response' => json_encode($response, true),
+        ]);
      }
 
 }

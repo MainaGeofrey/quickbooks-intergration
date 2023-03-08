@@ -19,7 +19,7 @@ class BalanceServices {
     }
 
     public function index(){
-        $result = $this->dataService->Query("SELECT * FROM CustomerBalance ");
+        $result = $this->dataService->Query("SELECT * FROM CustomerBalanceDetail");
 
 
         return $result;
