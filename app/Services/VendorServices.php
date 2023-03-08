@@ -1,5 +1,7 @@
 <?php
 namespace App\Services;
+
+use App\Models\DB_Vendor;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use QuickBooksOnline\API\Facades\Vendor;
@@ -34,7 +36,7 @@ class VendorServices {
         ]);
 
         if($validator->fails()){
-            
+
             return ["message" => "Please provide the AccountNumber", "code" => 422];
         }
         $name = $data["account_number"];
@@ -73,7 +75,7 @@ class VendorServices {
                 "DisplayName" => $data['account_number'],
                 "PrintOnCheckName" => $data['print_on_check_name']?? null,
                 //"UserId" => $data->data['UserId'],
-                //"Active" => $data->data['Active'],
+                "Active" => true,
                 "PrimaryPhone" => [
                     "FreeFormNumber" =>  $data['phone_number'],
                 ]?? null,
@@ -102,7 +104,7 @@ class VendorServices {
 				return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
             } else {
 
-                return ['status'=>true,"Vendor_id"=>$response->Id,"message"=>"Successfully created a vendor.","code" => 200];
+                return ['status'=>true,"Vendor_id"=>$response,"message"=>"Successfully created a vendor.","code" => 200];
             }
 
         } catch (\Throwable $th) {
@@ -122,14 +124,34 @@ class VendorServices {
         return $result;
      }
 
-    public function getCompanyInfo()
-    {
-
-        $companyInfo = $this->dataService->getCompanyInfo();
-
-
-        return $companyInfo;
-    }
+     public function storeCustomer($data,$response = null, $error = null){
+        $customer_details = [
+            "title" =>$data["title"] ?? null,
+            "suffix" => $data["suffix"] ?? null,
+            "given_name" => $data["given_name"] ?? null,
+            "middle_name" => $data["middle_name"] ?? null,
+            "family_name" => $data["family_name"] ?? null,
+            "fully_qualified_name" => $data["fully_qualified_name"] ?? null,
+            "print_on_check_name" => $data["print_on_check_name"]??null,
+            "default_tax_code_ref" => $data["default_tax_code_ref"]?? null,
+        ];
+        return DB_Vendor::create([
+            'account_name' => $data["account_name"],
+            'company_name' => $data["company_name"],
+            'reference_number' => $data["reference_number"],
+            'email' => $data["email_addr"],
+            'balance' => $data["balance"],
+            'mobile_number' => $data["phone_number"],
+            'client_id' => $this->data['user_id'],
+            'notes' => $data['notes'],
+            'customer_details' => json_encode( $customer_details, true),
+            'status' => $data["status"] ?? 0,
+            'response_message' => $error,
+            'qb_id' => $response["Id"] ?? 0,
+            'response' => json_encode($response, true),
+            'bill_addr' =>json_encode( $data["bill_addr"], true),
+        ]);
+     }
 
 
 }
