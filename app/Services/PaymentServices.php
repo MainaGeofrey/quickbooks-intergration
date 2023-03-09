@@ -30,11 +30,10 @@ class PaymentServices {
         $validator = Validator::make($data->all(), [
             'account_name' => 'required|string',
             'reference_number' => 'required|string',
-            'date_time' => 'required|string',
-            'amount' =>  'required|numeric|gt:0'
-            //'mobile_number' => 'required|string',
-            //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
-            //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
+            'date_time' => 'required|date',
+            'amount' =>  'required|numeric|gt:0',
+            'remarks' => 'sometimes|string',
+            'mobile_number' => 'required|string',
 
         ]);
 

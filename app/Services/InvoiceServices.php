@@ -28,7 +28,9 @@ class InvoiceServices {
     public function store($data){
         $validator = Validator::make($data->all(), [
             'reference_number' => 'required|string',
-            'due_date' => 'required|string',
+            'due_date' => 'required|date',
+            'date_created' => 'sometimes|date',
+            ///'date_created' => 'nullable|date',
             'account_number' => 'required|string',
             "line_items"    => "required|array|min:1",
             'line_items.*.amount' => 'required|numeric|gt:0',

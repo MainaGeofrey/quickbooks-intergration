@@ -28,19 +28,26 @@ class CustomerServices {
     }
     public function store($data){
         $validator = Validator::make($data->all(), [
-            'title' => 'required|string',
-            "given_name"=> 'required|string',
-            "middle_name"=> 'required|string',
-            "family_name"=> 'required|string',
-            "suffix"=> 'required|string',
-            "company_name"=> 'required|string',
+            'title' => 'sometimes|string',
+            "given_name"=> 'sometimes|string',
+            "middle_name"=> 'sometimes|string',
+            "family_name"=> 'sometimes|string',
+            "suffix"=> 'sometimes|string',
+            "company_name"=> 'sometimes|string',
             'account_number' => 'required|string',
             'phone_number' => 'required|string',
             'email_addr' => 'required|email',
             //"address" => 'required|string',
-            "notes"=> 'required|string',
-			"balance"=>'required|numeric|min:0',
+            "notes"=> 'sometimes|string',
+			"balance"=>'sometimes|numeric|min:0',
 			//"currency_code"=>"required|string"
+            'bill_addr' => 'sometimes|array',
+            'bill_addr.*line1' => 'sometimes|string',
+            'bill_addr.*city' => 'sometimes|string',
+            'bill_addr.*postal_code' => 'sometimes|string',
+            'default_tax_code_ref' => 'sometimes|string',
+            'print_on_check_name' => 'sometimes|string',
+            'fully_qualified_name' => 'sometimes|string',
 
             //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
             //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
@@ -64,7 +71,6 @@ class CustomerServices {
         //Log::info("LogCustomer | customer request  ".__METHOD__."|".json_encode($data).json_encode($this->data));
 
         try{
-            print_r("mmm");
             $customer = Customer::create([
                 "BillAddr" => [
                     "Line1" => $data['bill_addr']['line1']?? null,
@@ -111,7 +117,7 @@ class CustomerServices {
                 //"ClientCompanyId" => $data->data['ClientCompanyId'],
             ]);
             Log::info("LogCustomer | customer request payload created ".json_encode($data));
-            print_r("kkk");
+
 			$response = $this->dataService->Add($customer);
 			$error = $this->dataService->getLastError();
 			if ($error) {

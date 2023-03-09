@@ -30,6 +30,26 @@ class VendorServices {
         $validator = Validator::make($data->all(), [
             'vendor_name' => 'required|string',
             'phone_number' => 'required|string',
+            'title' => 'sometimes|string',
+            "given_name"=> 'sometimes|string',
+            "middle_name"=> 'sometimes|string',
+            "family_name"=> 'sometimes|string',
+            "suffix"=> 'sometimes|string',
+            "company_name"=> 'sometimes|string',
+            'account_number' => 'required|string',
+            'email_addr' => 'required|email',
+            //"address" => 'required|string',
+            "notes"=> 'sometimes|string',
+			"balance"=>'sometimes|numeric|min:0',
+			//"currency_code"=>"required|string"
+            'bill_addr' => 'sometimes|array',
+            'bill_addr.*line1' => 'sometimes|string',
+            'bill_addr.*city' => 'sometimes|string',
+            'bill_addr.*postal_code' => 'sometimes|string',
+            'default_tax_code_ref' => 'sometimes|string',
+            'print_on_check_name' => 'sometimes|string',
+            'fully_qualified_name' => 'sometimes|string',
+
             //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
             //'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
 
@@ -71,16 +91,13 @@ class VendorServices {
                 "Balance" => $data['balance']?? null,
                 "FullyQualifiedName" => $data['fully_qualified_name']?? null,
                 "CompanyName" => $data['company_name']?? null,
-                // "DisplayName" => $data['account_number'],
                 "DisplayName" => $data['vendor_name'],
                 "AcctNum" => $data['account_number'],
                 "PrintOnCheckName" => $data['print_on_check_name']?? null,
-                //"UserId" => $data->data['UserId'],
                 "Active" => true,
                 "PrimaryPhone" => [
                     "FreeFormNumber" =>  $data['phone_number'],
                 ]?? null,
-                //"AlternatePhone" => $data->data['AlternatePhone'],
                 "PrimaryEmailAddr" => [
                     "Address" => $data['email_addr']?? null,
                 ]?? null,
@@ -88,13 +105,6 @@ class VendorServices {
                 //"OtherContactInfo" => $data->data['OtherContactInfo'],
                 "DefaultTaxCodeRef" => $data['default_tax_code_ref']?? null,
                 "Notes" => $data['notes'] ?? null,
-                //"ShipAddr" => $data->data['ShipAddr'],
-                //"OtherAddr" => $data->data['OtherAddr'],
-            // "ContactName" => $data->data['ContactName'],
-                //"AltContactName" => $data->data['AltContactName'],
-            // "CreditLimit" => $data->data['CreditLimit'],
-                //"SecondaryTaxIdentifier" => $data->data['SecondaryTaxIdentifier'],
-                //"ClientCompanyId" => $data->data['ClientCompanyId'],
             ]);
             Log::info("LogVendor | vendor request payload created ".json_encode($data));
 
