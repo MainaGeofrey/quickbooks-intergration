@@ -1,7 +1,7 @@
 <?php
 namespace App\Services;
 //require_once(__DIR__ . '/../../vendor/autoload.php');
-require __DIR__.'/../../vendor/autoload.php';
+//require __DIR__.'/../../vendor/autoload.php';
 
 use App\Helpers\Utils;
 
@@ -13,28 +13,74 @@ use QuickBooksOnline\API\Core\OAuth\OAuth2\OAuth2LoginHelper;
 use QuickBooksOnline\API\DataService\DataService;
 use App\Services\QBAuthService;
 
-session_start();
+//session_start();
 
 class DataServiceHelper {
 
     protected $data;
 
+    protected $config;
+
     public function __construct($data){
         $this->data = $data;
+        $this->config = config("quickbooks");
     }
-    function getDataService()
-    {
-        $config = config("quickbooks");
 
+    public function getDataService(){
+        $qb_token = QBConfig::where("user_id", $this->data["user_id"])->first();
+
+        if($qb_token){
+            //update config
+            Log::info('QB_ACCESS_TOKEN_VALID');
+            $access_token = $qb_token->access_token;
+            $refresh_token = $qb_token->refresh_token;
+            $expires_in = $qb_token->expires_in;
+
+            try{
+                $dataService = DataService::Configure(array(
+                    'auth_mode' => 'oauth2',
+                    'ClientID' => $qb_token->qb_client_id,
+                    'ClientSecret' =>  $qb_token->client_secret,
+                    'RedirectURI' => $this->config['oauth_redirect_uri'],
+                    'scope' => $this->config['oauth_scope'],
+                    'baseUrl' => $qb_token->base_url,
+                    'refreshToken' => $refresh_token,
+                    'accessTokenKey' => $access_token,
+                    'QBORealmID' => $qb_token->realm_id,
+                    "expires_in"=>  $expires_in
+                ));
+                Log::info("DataService | DATA SERVICE OBJECT CREATED SUCCESSFULLY  ");
+
+                //$dataService->disableLog();
+                $dataService->setLogLocation(storage_path('logs/quickbooks.log'));
+                $path = storage_path('logs/quickbooks');
+                if (!file_exists($path)) {
+                    mkdir($path, 0777, true);
+                }
+                $dataService->setLogLocation($path);
+
+                return $dataService;
+
+            } catch (\Throwable $th) {
+                Log::info("DataService | DATA SERVICE OBJECT NOT CREATED  ".json_encode($th->getMessage()));
+
+                throw $th;
+
+                //return ["message" => $th->getMessage(),"status" =>false, "code" => 200];
+            }
+        }
+    }
+    public function getValidQBConfig()
+    {
         $qb_token = QBConfig::where("user_id", $this->data["user_id"])->first();
 
 
         if($qb_token){
             //update config
-            $config["refresh_token"] = $qb_token->refresh_token;
-            $config["qb_client_id"] = $qb_token->qb_client_id;
-            $config["client_secret"] = $qb_token->client_secret;
-            $config["QBORealmID"] = $qb_token->realm_id;
+            $this->config["refresh_token"] = $qb_token->refresh_token;
+            $this->config["qb_client_id"] = $qb_token->qb_client_id;
+            $this->config["client_secret"] = $qb_token->client_secret;
+            $this->config["QBORealmID"] = $qb_token->realm_id;
 
            // Log::info($config);
 
@@ -46,12 +92,19 @@ class DataServiceHelper {
                 Log::info("QB_TOKEN_EXPIRED");
                 //$config["refresh_token"] = $qb_token->refresh_token;
 
-                $newAccessTokenObj = $this->refreshToken($config);
+                $newAccessTokenObj = $this->refreshToken($this->config);
+
+                if(is_array($newAccessTokenObj)  && $newAccessTokenObj["code"] == 404){
+
+                    return $newAccessTokenObj;
+                }
 
                     try{
+                        //$newAccessTokenObj = $newAccessTokenObj["access_obj"];
                         $access_token = $newAccessTokenObj->getAccessToken();
                         $refresh_token = $newAccessTokenObj->getRefreshToken();
                         $expires_in = $newAccessTokenObj->getAccessTokenExpiresAt();
+
                         Log::info("QB_ACCESS_TOKEN_UPDATED");
 
                         try{
@@ -82,58 +135,30 @@ class DataServiceHelper {
                     catch(\Exception $exception){
                         //Log::info($exception->getMessage());
                         Log::info("QB_ACCESS_TOKEN_REFRESH_FAIL".$exception->getMessage());
-                        return response()->json(["message" => "Refresh OAuth 2 Access token with Refresh Token failed", "code" => 400]);
+                        return ["message" => $exception->getMessage(), "code" => 404];
                     }
 
             }
             else{
                 //stored access token
                 Log::info('QB_ACCESS_TOKEN_VALID');
-                $access_token = $qb_token->access_token;
-                $refresh_token = $qb_token->refresh_token;
-                $expires_in = $qb_token->expires_in;
+                //$access_token = $qb_token->access_token;
+                //$refresh_token = $qb_token->refresh_token;
+                //$expires_in = $qb_token->expires_in;
+                return ["message" => "Refresh Token Valid", "code" => 200];
 
             }
         }
         else{
-            //TODO get config from DB for new dataservice
-           /* try{
-                $newAccessTokenObj = $this->refreshToken($config);
-                $access_token = $newAccessTokenObj->getAccessToken();
-                $refresh_token = $newAccessTokenObj->getRefreshToken();
-                $expires_in = $newAccessTokenObj->getAccessTokenExpiresAt();
-
-                Log::info('QB_NEW_TOKEN_CREATED');
-                try{
-                    QBConfig::create([
-                        "user_id" => $this->data['user_id'],
-                        "access_token" => $access_token,
-                        "refresh_token" => $refresh_token,
-                        "expires_in" => $expires_in,
-                        "realm_id" => $config["QBORealmID"],
-                        "qb_client_id" => $config["qb_client_id"],
-                        "client_secret" => $config["client_secret"],
-
-                    ]);
-                }
-                catch(\Exception $exception){
-                    Log::info('QB_NEW_TOKEN_CREATE_DATABASE_SAVE'.$exception->getMessage());
-                    return response()->json(["message" => "Refresh OAuth 2 Access token with Refresh Token failed", "code" => 400]);
-                }
-
-            }
-            catch(\Exception $exception){
-                Log::info('QB_NEW_TOKEN_CREATE'.$exception->getMessage());
-                return response()->json(["message" => "Refresh OAuth 2 Access token with Refresh Token failed", "code" => 400]);
-            } */
+            return ["message" => "Client QuickBooks Configuration Not Found", "code" => 404];
         }
-        try{
+     /*   try{
             $dataService = DataService::Configure(array(
                 'auth_mode' => 'oauth2',
                 'ClientID' => $qb_token->qb_client_id,
                 'ClientSecret' =>  $qb_token->client_secret,
-                'RedirectURI' => $config['oauth_redirect_uri'],
-                'scope' => $config['oauth_scope'],
+                'RedirectURI' => $this->config['oauth_redirect_uri'],
+                'scope' => $this->config['oauth_scope'],
                 'baseUrl' => $qb_token->base_url,
                 'refreshToken' => $refresh_token,
                 'accessTokenKey' => $access_token,
@@ -143,22 +168,15 @@ class DataServiceHelper {
         Log::info('DATA SERVICE OBJECT CREATED SUCCESSFULLY');
 
         } catch (\Throwable $th) {
-            Log::info("DataService | user data  ".__METHOD__."|".json_encode($config).json_encode($th->getMessage()));
 
+            Log::info("DataService | DATA SERVICE OBJECT NOT CREATED  ".json_encode($th->getMessage()));
             throw $th;
 
             //return ["message" => $th->getMessage(),"status" =>false, "code" => 200];
-        }
+        } */
 
-        //$dataService->disableLog();
-        $dataService->setLogLocation(storage_path('logs/quickbooks.log'));
-        $path = storage_path('logs/quickbooks');
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
-        $dataService->setLogLocation($path);
-
-        return $dataService;
+        //return $dataService;
+        return ["access_obj" => $newAccessTokenObj, "code" => 200];
     }
 
         public function refreshToken($config){
@@ -167,12 +185,14 @@ class DataServiceHelper {
                 $newAccessTokenObj = $oauth2LoginHelper->refreshAccessTokenWithRefreshToken($config['refresh_token']);
             }
             catch(\Exception $exception){
-                //Log::info($exception);
-                throw $exception;
+                Log::info($exception);
+                //throw $exception;
+            return ["message" => $exception->getMessage(), "code" => 404];
             }
             //$newAccessTokenObj->setRealmID($config['QBORealmID']);
 
             return $newAccessTokenObj;
+            //return ["access_obj" => $newAccessTokenObj, "code" => 200];
         }
 }
 //$result = getDataService();
