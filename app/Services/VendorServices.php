@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Helpers\Utils;
 use App\Models\DB_Vendor;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -13,8 +14,8 @@ class VendorServices {
 
     protected $dataService;
     protected $data;
-    public function __construct($data){
-        $this->data = $data;
+    public function __construct($request){
+        $this->data["user_id"] = Utils::getApiUser($request);
         $dataService = new DataServiceHelper($this->data);
 
         $this->dataService = $dataService->getDataService();

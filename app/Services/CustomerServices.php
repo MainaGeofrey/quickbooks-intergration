@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Helpers\Utils;
 use App\Models\DB_Customer;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -13,8 +14,8 @@ class CustomerServices {
 
     protected $dataService;
     protected $data;
-    public function __construct($data){
-        $this->data = $data;
+    public function __construct($request){
+        $this->data["user_id"] = Utils::getApiUser($request);
         $dataService = new DataServiceHelper($this->data);
 
         $this->dataService = $dataService->getDataService();
@@ -126,7 +127,7 @@ class CustomerServices {
 
 				Log::info("LogCustomer|Request =>".json_encode($data)."|Error Response".$error->getHttpStatusCode()."|
 					".$error->getOAuthHelperError()."|".$error->getResponseBody());
-				return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
+				return ['status'=>false,'message'=>'We have received an Error. '.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
             } else if ($response) {
                 $response_data['Id'] = $response->Id;
                 $response_data['SyncToken'] = $response->Id;

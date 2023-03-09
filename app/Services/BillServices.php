@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Helpers\Utils;
 use App\Services\VendorServices;
 use App\Models\BillItem;
 use App\Models\DB_Bill;
@@ -21,10 +22,11 @@ class BillServices {
     protected $dataService;
 
     protected $data;
-    public function __construct($data){
-        $this->data = $data;
+    public function __construct($request){
+        $this->data["user_id"] = Utils::getApiUser($request);
+        $dataService = new DataServiceHelper($this->data);
 
-        $dataService = new DataServiceHelper($data);
+        $dataService = new DataServiceHelper($this->data);
         $this->dataService = $dataService->getDataService();
     }
 

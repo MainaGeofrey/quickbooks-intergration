@@ -61,12 +61,7 @@ class AuthenticatedSessionController extends Controller
 
 
        // Log::info($project_id);
-                  return response([
-                    'project_id' => $project_id,
-                  'id' => auth()->user()->id,
-                  "name" =>auth()->user()->name,
-                  'api_token' => auth()->user()->createToken('authToken')->plainTextToken
-                  ], Response::HTTP_OK);
+         
               /*
         if ($user->password_attempts >= getEnv("LOGIN_ATTEMPTS")) {
             $user->status = getEnv("BLOCKED_STATE");

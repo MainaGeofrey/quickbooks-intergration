@@ -14,24 +14,22 @@ class CustomerController extends Controller
     protected $customer;
     protected $data;
 
-    public function __construct(Request $request){
-        $this->data["user_id"] = Utils::getApiUser($request);
-        $this->customer = new CustomerServices($this->data);
-    }
-
-    public function index(){
-        $data = $this->customer->index();
+    public function index(Request $request){
+        $customer = new CustomerServices($request);
+        $data = $customer->index();
 
         return response()->json($data);
     }
     public function store(Request $request){
-        $data = $this->customer->store($request);
+        $customer = new CustomerServices($request);
+        $data = $customer->store($request);
 
         return response()->json($data);
     }
 
     public function show(Request $request){
-        $data = $this->customer->show($request);
+        $customer = new CustomerServices($request);
+        $data = $customer->show($request);
 
 
         return response()->json($data);

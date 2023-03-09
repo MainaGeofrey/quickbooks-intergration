@@ -13,24 +13,23 @@ class InvoiceController extends Controller
     protected $invoice;
     protected $data;
 
-    public function __construct(Request $request){
-        $this->data["user_id"] = Utils::getApiUser($request);
-        $this->invoice = new InvoiceServices($this->data);
-    }
 
-    public function index(){
-        $data = $this->invoice->index();
+    public function index(Request $request){
+        $invoice = new InvoiceServices($request);
+        $data = $invoice->index();
 
         return response()->json($data);
     }
     public function store(Request $request){
-        $data = $this->invoice->store($request);
+        $invoice = new InvoiceServices($request);
+        $data = $invoice->store($request);
 
         return response()->json($data);
     }
 
     public function show(Request $request){
-        $data = $this->invoice->show($request);
+        $invoice = new InvoiceServices($request);
+        $data = $invoice->show($request);
 
         return response()->json($data);
     }

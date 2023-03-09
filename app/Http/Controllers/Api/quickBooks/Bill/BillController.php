@@ -15,35 +15,22 @@ class BillController extends Controller
     protected $bill;
 
     protected $data;
-    public function __construct(Request $request){
-        $this->data["user_id"] = Utils::getApiUser($request);
-        $this->bill = new BillServices($this->data);
-    }
 
-    public function index(){
-        $data = $this->bill->index();
+    public function index(request $request){
+        $bill = new BillServices($request);
+        $data = $bill->index();
 
         return response()->json($data);
     }
 
-    // public function vendors(Request $request){
-    //     $data = $this->bill->vendors($request);
-
-    //     return response()->json($data);
-    // }
 
     public function store(Request $request){
-        $data = $this->bill->store($request);
+        $bill = new BillServices($request);
+        $data = $bill->store($request);
 
         return response()->json($data);
     }
 
-    // public function show(Request $request){
-    //     $data = $this->bill->show($request);
-
-
-    //     return response()->json($data);
-    // }
 }
 
 ?>

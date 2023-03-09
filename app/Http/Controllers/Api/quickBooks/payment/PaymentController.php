@@ -14,20 +14,17 @@ class PaymentController extends Controller
     protected $payment;
     protected $data;
 
-    public function __construct(Request $request){
-        $this->data["user_id"] = Utils::getApiUser($request);
-        $this->payment = new PaymentServices($this->data);
-    }
 
-
-    public function index(){
-        $data = $this->payment->index();
+    public function index(Request $request){
+        $payment = new PaymentServices($request);
+        $data = $payment->index();
 
         return response()->json($data);
     }
     public function store(Request $request){
+        $payment = new PaymentServices($request);
         try {
-            $payment_response = $this->payment->store($request);
+            $payment_response = $payment->store($request);
 	$status =$payment_response['status']??false;
 
 	    if($status ==false)
