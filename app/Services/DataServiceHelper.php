@@ -140,11 +140,8 @@ class DataServiceHelper {
 
             }
             else{
-                //stored access token
                 Log::info('QB_ACCESS_TOKEN_VALID');
-                //$access_token = $qb_token->access_token;
-                //$refresh_token = $qb_token->refresh_token;
-                //$expires_in = $qb_token->expires_in;
+
                 return ["message" => "Refresh Token Valid", "code" => 200];
 
             }
@@ -152,31 +149,7 @@ class DataServiceHelper {
         else{
             return ["message" => "Client QuickBooks Configuration Not Found", "code" => 404];
         }
-     /*   try{
-            $dataService = DataService::Configure(array(
-                'auth_mode' => 'oauth2',
-                'ClientID' => $qb_token->qb_client_id,
-                'ClientSecret' =>  $qb_token->client_secret,
-                'RedirectURI' => $this->config['oauth_redirect_uri'],
-                'scope' => $this->config['oauth_scope'],
-                'baseUrl' => $qb_token->base_url,
-                'refreshToken' => $refresh_token,
-                'accessTokenKey' => $access_token,
-                'QBORealmID' => $qb_token->realm_id,
-                "expires_in"=>  $expires_in
-            ));
-        Log::info('DATA SERVICE OBJECT CREATED SUCCESSFULLY');
-
-        } catch (\Throwable $th) {
-
-            Log::info("DataService | DATA SERVICE OBJECT NOT CREATED  ".json_encode($th->getMessage()));
-            throw $th;
-
-            //return ["message" => $th->getMessage(),"status" =>false, "code" => 200];
-        } */
-
-        //return $dataService;
-        return ["access_obj" => $newAccessTokenObj, "code" => 200];
+        return ["message" => "Refresh Token Valid", "code" => 200];
     }
 
         public function refreshToken($config){

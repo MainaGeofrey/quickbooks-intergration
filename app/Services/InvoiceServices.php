@@ -1,5 +1,6 @@
 <?php
 namespace App\Services;
+use App\Helpers\Utils;
 use App\Models\DB_Invoice;
 use App\Services\DataServiceHelper;
 use Illuminate\Support\Facades\Log;
@@ -13,8 +14,8 @@ class InvoiceServices {
 
     protected $dataService;
     protected $data;
-    public function __construct($data){
-        $this->data = $data;
+    public function __construct($request){
+        $this->data["user_id"] = Utils::getApiUser($request);
         $dataService = new DataServiceHelper($this->data);
 
         $this->dataService = $dataService->getDataService();

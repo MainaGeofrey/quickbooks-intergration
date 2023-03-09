@@ -30,7 +30,6 @@ class EnsureQBTokenIsValid
         if( $data["dataService"]["code"]== 404){
             return response()->json([
                 'status' => false,
-                //'status' => 401,
                 'message' => 'QuickBooks Authorization Failed',
                 'errors' => $data["dataService"]["message"],
                 'code' => $data["dataService"]["code"]

@@ -1,5 +1,6 @@
 <?php
 namespace App\Services;
+use App\Helpers\Utils;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use QuickBooksOnline\API\Facades\Customer;
@@ -11,8 +12,8 @@ class BalanceServices {
 
     protected $dataService;
     protected $data;
-    public function __construct($data){
-        $this->data = $data;
+    public function __construct($request){
+        $this->data["user_id"] = Utils::getApiUser($request);
         $dataService = new DataServiceHelper($this->data);
 
         $this->dataService = $dataService->getDataService();
