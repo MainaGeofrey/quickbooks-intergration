@@ -44,7 +44,7 @@ class BillServices {
     Log::info("LogBill | Bill request payload created ".json_encode($data));
     $validator = Validator::make($data->all(), [
         'vendor_name' => 'required',
-        //'vendor_code' => 'required',
+        "currency_code"=>"required|string",
 	'reference_number' => 'required',
 	"date_created"=>"required",
         'due_date' => 'required',
@@ -125,7 +125,6 @@ class BillServices {
     $data["line"] = $Line;
     $bill = Bill::create([
 	    "DocNumber" => $data['reference_number'],
-        "currency_code"=>"required|string",
 	    "TxnDate"=>$data['date_created'],
         "DueDate" => $data['due_date'],
         "GlobalTaxCalculation" => "NotApplicable",
