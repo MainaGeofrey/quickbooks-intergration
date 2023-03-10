@@ -31,6 +31,13 @@ class BillController extends Controller
         return response()->json($data);
     }
 
+ public function show(Request $request){
+    $bill = new BillServices($request);
+     $data = $bill->show($request);
+
+
+     return response()->json($data);
+ }
 }
 
 ?>

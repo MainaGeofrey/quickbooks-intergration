@@ -45,13 +45,14 @@ class BillServices {
     $validator = Validator::make($data->all(), [
         'vendor_name' => 'required',
         //'vendor_code' => 'required',
-        'reference_number' => 'required',
+	'reference_number' => 'required',
+	"date_created"=>"required",
         'due_date' => 'required',
         'line_items' => 'required|array',
-        'line_items.*.amount' => 'required|integer',
+        'line_items.*.amount' => 'required|numeric',
     'line_items.*.item_name' => 'required|max:50',
     'line_items.*.quantity'    => 'required|integer',
-    'line_items.*.unit_price'    => 'required|integer',
+    'line_items.*.unit_price'    => 'required|numeric',
     //'line_items.*.item_code'    => 'required|max:20',
 
     ]);
@@ -91,12 +92,10 @@ class BillServices {
     }
     $line_items = [];
     //$items_ids = [];
-    foreach($items as $item)
-    {
-        $line_items[$item->Name]=$item->Name;
-        $items_ids[] = $item->Id;
-    }
-    //Log::info($items_ids);
+      foreach($items as $item)
+        {
+            $line_items[$item->Name]=$item->Id;
+        }
 
     if(sizeOf($line_items) <> sizeOf($data->line_items))
     {
@@ -117,20 +116,23 @@ class BillServices {
         $line_item["Description"] = $item["description"];
         $line_item["Amount"] = $item["amount"];
         $line_item["DetailType"] = "ItemBasedExpenseLineDetail";
-        $line_item["ItemBasedExpenseLineDetail"]["ItemRef"]["value"] = $items_ids[$key];
+        //        $line_item["ItemBasedExpenseLineDetail"]["ItemRef"]["value"] = $items_ids[$key];
+        $line_item["ItemBasedExpenseLineDetail"]["ItemRef"]["value"] = $line_items[$item['item_name']];
         $line_item["ItemBasedExpenseLineDetail"]["UnitPrice"] = $item['unit_price'];
         $line_item["ItemBasedExpenseLineDetail"]["Qty"] = $item['quantity'];
-        //$line_item["SalesItemLineDetail"]["BillableStatus"] = "NotBillable";
-        $line_item["ItemBasedExpenseLineDetail"]["TaxCodeRef"] = "NON";
-
-
         $Line[] = $line_item;
     }
     $data["line"] = $Line;
-
     $bill = Bill::create([
-        "DocNumber" => $data->reference_number,
-        "DueDate" => $data->due_date,
+	    "DocNumber" => $data['reference_number'],
+        "currency_code"=>"required|string",
+	    "TxnDate"=>$data['date_created'],
+        "DueDate" => $data['due_date'],
+        "GlobalTaxCalculation" => "NotApplicable",
+        "ExchangeRate"=>100,
+        "CurrencyRef" => [
+                        "value" => $data['currency_code'],
+                        ],
         "Line" => $Line,
         "VendorRef" => [
             "value" => $vendor[0]->Id,
@@ -171,6 +173,7 @@ class BillServices {
 
 
     public function storeBill($data,$response = null, $error = null){
+	    return;
         return DB_Bill::create([
             'vendor_name' => $data["vendor_name"],
             'reference_number' => $data["reference_number"],
@@ -183,6 +186,12 @@ class BillServices {
             'line_items' =>json_encode( $data["line"], true),
             'response' => json_encode($response, true),
         ]);
+     }
+
+ public function show($data){
+        //Query Open Invoices
+        $result = $this->dataService->Query("SELECT * FROM Bill ");
+        return $result;
      }
 
 
