@@ -28,7 +28,7 @@ Route::get('/', function () {
             'message' => 'API resource found here!'
 ],404);});
 
-Route::group(['middleware' => ['qb.auth:qb.api']], function ()   {
+Route::group(['middleware' => ['auth','qb.auth']], function ()   {
 
 	Route::prefix('v1')->group(function () {
 		Route::prefix('customer')->group(function () {
