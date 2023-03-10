@@ -38,12 +38,12 @@ class BillController extends Controller
         return response()->json($data);
     }
 
-    // public function show(Request $request){
-    //     $data = $this->bill->show($request);
+ public function show(Request $request){
+     $data = $this->bill->show($request);
 
 
-    //     return response()->json($data);
-    // }
+     return response()->json($data);
+ }
 }
 
 ?>
