@@ -41,7 +41,7 @@ class CustomerServices {
             //"address" => 'required|string',
             "notes"=> 'sometimes|string',
 			"balance"=>'sometimes|numeric|min:0',
-			//"currency_code"=>"required|string"
+            "currency_code"=>"required|string",
             'bill_addr' => 'sometimes|array',
             'bill_addr.*line1' => 'sometimes|string',
             'bill_addr.*city' => 'sometimes|string',
@@ -95,10 +95,10 @@ class CustomerServices {
                 "PrintOnCheckName" => $data['print_on_check_name']?? null,
                 //"UserId" => $data->data['UserId'],
                 "Active" => true,
-               /* "CurrencyRef" => [
-                        //"value" => $data['currency_code']?? null,
+                "CurrencyRef" => [
+                       "value" => $data['currency_code'],
         //..             "name" => "Philippine Peso"
-                    ]?? null, */
+                    ],
                 "PrimaryPhone" => [
                     "FreeFormNumber" =>  $data['phone_number'],
                 ]?? null,
@@ -174,6 +174,7 @@ class CustomerServices {
             "fully_qualified_name" => $data["fully_qualified_name"] ?? null,
             "print_on_check_name" => $data["print_on_check_name"]??null,
             "default_tax_code_ref" => $data["default_tax_code_ref"]?? null,
+            "currency_code" => $data['currency_code'],
         ];
         return DB_Customer::create([
             'account_name' => $data["account_number"],

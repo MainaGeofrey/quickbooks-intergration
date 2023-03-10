@@ -29,15 +29,16 @@ class InvoiceServices {
     public function store($data){
         $validator = Validator::make($data->all(), [
             'reference_number' => 'required|string',
-            'due_date' => 'required|date',
-            'date_created' => 'sometimes|date',
+            'due_date' => 'required',
+	    'date_created' => 'required',
+	    "currency_code"=>"required|string",
             ///'date_created' => 'nullable|date',
             'account_number' => 'required|string',
             "line_items"    => "required|array|min:1",
-            'line_items.*.amount' => 'required|numeric|gt:0',
+            'line_items.*.amount' => 'required|numeric',
             'line_items.*.item_name' => 'required|max:50',
             'line_items.*.quantity'    => 'required|integer',
-            'line_items.*.unit_price'    => 'required|integer',
+            'line_items.*.unit_price'    => 'required|numeric',
            // 'line_items.*.item_code'    => 'required|max:20',
             //"Line.*"  => "required|array|min:3",
             //'username' => 'required|unique:users,username,NULL,id,deleted_at,NULL',
@@ -76,11 +77,9 @@ class InvoiceServices {
         $line_items = [];
         //$items_ids = [];
         foreach($items as $item)
-        {
-            $line_items[$item->Name]=$item->Name;
-            $items_ids[] = $item->Id;
+	{
+            $line_items[$item->Name]=$item->Id;
         }
-        Log::info($items_ids);
 
         if(sizeOf($line_items) <> sizeOf($data->line_items))
         {
@@ -89,36 +88,45 @@ class InvoiceServices {
                 'errors' => "There are some missing item on the system. Existing ones are ".json_encode($line_items),
                 'code' => 401
             ];
-        }/*
+	}
+	/*
         1. You should first search and get the vendor by display name (vendor )
         2. You search for each item and see if the items returned have the same size as the line items select * from items where displayname = $code or displayname = code2
         3. Create the payload
         */
-
     $Line = [];
         foreach ($data->line_items as $key => $item) {
-
-            $line_item["Description"] = $item["description"];
+            $line_item["Description"] = $item["description"]??"";
             $line_item["Amount"] = $item["amount"];
             $line_item["DetailType"] = "SalesItemLineDetail";
-            $line_item["SalesItemLineDetail"]["ItemRef"]["value"] = $items_ids[$key];
+            $line_item["SalesItemLineDetail"]["ItemRef"]["value"] = $line_items[$item['item_name']];
             $line_item["SalesItemLineDetail"]["UnitPrice"] = $item['unit_price'];
             $line_item["SalesItemLineDetail"]["Qty"] = $item['quantity'];
             //$line_item["SalesItemLineDetail"]["BillableStatus"] = "NotBillable";
-            $line_item["SalesItemLineDetail"]["TaxCodeRef"] = "NON";
-
+//            $line_item["SalesItemLineDetail"]["TaxCodeRef"]['Value']="TAX";
+/*/
+ * *
+ * "TaxCodeRef"=>
+         [
+            "value"=> "2"
+         ],
+*/
 
             $Line[] = $line_item;
         }
         $data["line"] = $Line;
-
-
         try {
             $invoice = Invoice::create([
                 "Line" => $Line,
                 "DocNumber" => $data["reference_number"],
-                //"DocNumber" => $data["reference_number"],
-                //"DueDate" => $data["due_date"],
+                "GlobalTaxCalculation" => "NotApplicable",
+		        "CurrencyRef" => [
+                       "value" => $data['currency_code'],
+        //..             "name" => "Philippine Peso"
+                    ],
+		        //"DocNumber" => $data["reference_number"],
+		        "DueDate" => $data["due_date"],
+		        "TxnDate"=> $data['date_created'],
                 //"DateCreated" =>$data["date_created"],
                 "CustomerRef" => [
                     "value" => $id,
@@ -132,7 +140,7 @@ class InvoiceServices {
 			$error = $this->dataService->getLastError();
 			if ($error) {
                 $data['status'] = 5;
-                $this->storeInvoice($data,$response = null ,$error->getIntuitErrorDetail());
+        //        $this->storeInvoice($data,$response = null ,$error->getIntuitErrorDetail());
 
 				Log::info("LogInvoice |Error|Request =>".json_encode($invoice)."|Error Response".$error->getHttpStatusCode()."|
 					".$error->getOAuthHelperError()."|".$error->getResponseBody());
@@ -144,7 +152,7 @@ class InvoiceServices {
 
                 $data['Id'] = $response->Id;
                 $data['status'] = 2; // success, happy path
-                $this->storeInvoice($data,$response_data, $error = null);
+          //      $this->storeInvoice($data,$response_data, $error = null);
 
                 return ['status'=>true,"invoice_id"=>$response->Id,"message"=>"Successfully created an invoice.", "code" => 200];
             }
@@ -153,7 +161,7 @@ class InvoiceServices {
                 //could have failed or succeeded but no error or response
                 //TODO before re-push check if invoice  created
                 $data['status'] = 3;
-                $this->storeInvoice($data);
+            //    $this->storeInvoice($data);
             }
 
           //  return ["invoice_id" => $result->Id,"status" =>true, "code" => 200];
@@ -170,7 +178,6 @@ class InvoiceServices {
     public function show($data){
         //Query Open Invoices
         $result = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$data->id' ");
-
         return $result;
      }
 
