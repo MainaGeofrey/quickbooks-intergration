@@ -135,9 +135,9 @@ class CustomerServices {
 
                 $data['Id'] = $response->Id;
                 $data['status'] = 2; // success, happy path
-                $this->storeCustomer($data,$response_data, $error = null);
+//                $this->storeCustomer($data,$response_data, $error = null);
 
-                return ['status'=>true,"customer_id"=>$response,"message"=>"Successfully created a customer.","code" => 200];
+                return ['status'=>true,"customer_id"=>$response->Id,"message"=>"Successfully created a customer.","code" => 200];
             }
             else{
                 ///No error and no response
