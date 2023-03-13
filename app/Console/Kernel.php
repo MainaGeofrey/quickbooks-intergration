@@ -10,7 +10,7 @@ class Kernel extends ConsoleKernel
 
 
     protected $commands = [
-        Commands\Service::class
+        Commands\ScheduleQB::class
     ];
 
     /**
@@ -19,7 +19,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('minute:service')->everyMinute();
+        $schedule->command('schedule:qb')->everyMinute();
     }
 
     /**

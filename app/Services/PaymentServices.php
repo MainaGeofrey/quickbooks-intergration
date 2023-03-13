@@ -2,7 +2,7 @@
 namespace App\Services;
 
 use App\Helpers\Utils;
-use App\Models\Payments;
+use App\Models\sync_Payments;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -175,7 +175,7 @@ class PaymentServices {
 
 
      public function storePayment($data,$response = null, $error = null){
-        return Payments::create([
+        return sync_Payments::create([
             'account_name' => $data["account_name"],
             'reference_number' => $data["reference_number"],
             'date_time' => $data["date_time"],
