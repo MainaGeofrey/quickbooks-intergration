@@ -3,23 +3,24 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class Service extends Command
+class ScheduleQB extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'minute:service';
+    protected $signature = 'schedule:qb';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Send data to quick_books';
 
     /**
      * Execute the console command.
@@ -27,7 +28,10 @@ class Service extends Command
     public function handle(): void
     {
         //
-        Log::info("rat race");
+        Log::info("new rats");
+    }
 
+    public function fetchPayment(){
+      
     }
 }

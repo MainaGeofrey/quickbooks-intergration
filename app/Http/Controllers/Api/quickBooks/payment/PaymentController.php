@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\quickBooks\payment;
 
 use App\Helpers\Utils;
 use App\Http\Controllers\Controller;
+use App\Services\Batch\BatchServices;
 use App\Services\PaymentServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -16,10 +17,10 @@ class PaymentController extends Controller
 
 
     public function index(Request $request){
-        $payment = new PaymentServices($request);
-        $data = $payment->index();
+        $payment = new BatchServices($request);
+        $payment->storeBatch();
 
-        return response()->json($data);
+        //return response()->json($data);
     }
     public function store(Request $request){
         $payment = new PaymentServices($request);
