@@ -14,24 +14,22 @@ class VendorController extends Controller
     protected $vendor;
     protected $data;
 
-    public function __construct(Request $request){
-        $this->data["user_id"] = Utils::getApiUser($request);
-        $this->vendor = new VendorServices($this->data);
-    }
-
-    public function index(){
-        $data = $this->vendor->index();
+    public function index(Request $request){
+        $vendor = new VendorServices($request);
+        $data = $vendor->index();
 
         return response()->json($data);
     }
     public function store(Request $request){
-        $data = $this->vendor->store($request);
+        $vendor = new VendorServices($request);
+        $data = $vendor->store($request);
 
         return response()->json($data);
     }
 
     public function show(Request $request){
-        $data = $this->vendor->show($request);
+        $vendor = new VendorServices($request);
+        $data = $vendor->show($request);
 
 
         return response()->json($data);

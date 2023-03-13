@@ -1,8 +1,10 @@
 <?php
 namespace App\Services;
 
+use App\Helpers\Utils;
 use App\Services\VendorServices;
 use App\Models\BillItem;
+use App\Models\DB_Bill;
 use Illuminate\Http\Request;
 use QuickBooksOnline\API\Facades\Bill;
 use QuickBooksOnline\API\Facades\Item;
@@ -18,9 +20,13 @@ use Illuminate\Support\Facades\Log;
 class BillServices {
 
     protected $dataService;
-    public function __construct($data){
 
-        $dataService = new DataServiceHelper($data);
+    protected $data;
+    public function __construct($request){
+        $this->data["user_id"] = Utils::getApiUser($request);
+        $dataService = new DataServiceHelper($this->data);
+
+        $dataService = new DataServiceHelper($this->data);
         $this->dataService = $dataService->getDataService();
     }
 
@@ -38,14 +44,15 @@ class BillServices {
     Log::info("LogBill | Bill request payload created ".json_encode($data));
     $validator = Validator::make($data->all(), [
         'vendor_name' => 'required',
-        //'vendor_code' => 'required',
-        'reference_number' => 'required',
+        "currency_code"=>"required|string",
+	'reference_number' => 'required',
+	"date_created"=>"required",
         'due_date' => 'required',
         'line_items' => 'required|array',
-        'line_items.*.amount' => 'required|integer',
+        'line_items.*.amount' => 'required|numeric',
     'line_items.*.item_name' => 'required|max:50',
     'line_items.*.quantity'    => 'required|integer',
-    'line_items.*.unit_price'    => 'required|integer',
+    'line_items.*.unit_price'    => 'required|numeric',
     //'line_items.*.item_code'    => 'required|max:20',
 
     ]);
@@ -85,12 +92,10 @@ class BillServices {
     }
     $line_items = [];
     //$items_ids = [];
-    foreach($items as $item)
-    {
-        $line_items[$item->Name]=$item->Name;
-        $items_ids[] = $item->Id;
-    }
-    //Log::info($items_ids);
+      foreach($items as $item)
+        {
+            $line_items[$item->Name]=$item->Id;
+        }
 
     if(sizeOf($line_items) <> sizeOf($data->line_items))
     {
@@ -108,50 +113,25 @@ class BillServices {
     $Line = [];
     foreach ($data->line_items as $key => $item) {
 
-  /*  $line_items[] = [
-        "Amount" => $item['amount'],
-        "Description" => $item['description'],
-        "DetailType" => "SalesItemLineDetail",
-        "SalesItemLineDetail"=> [
-            "ItemRef"=>[
-                "value"=>1,
-              //  "name": "Pump"
-            ],
-            //"ItemRef"=> $item['item_code'],
-            "ClassRef"=> "",
-            "UnitPrice"=> $item['unit_price'],
-            "RatePercent"=> "",
-            "PriceLevelRef"=> "",
-            "MarkupInfo"=> "",
-            "Qty"=> $item['quantity'],
-            "UOMRef"=> "",
-            "ItemAccountRef"=> "",
-            "InventorySiteRef"=> "",
-            "TaxCodeRef"=> "NON",
-            "TaxClassificationRef"=> "",
-            "CustomerRef"=> "",
-            "BillableStatus"=> "NotBillable",
-            "TaxInclusiveAmt"=> "",
-            "ItemBasedExpenseLineDetailEx"=> ""
-        ],
-    ]; */
-
-    $line_item["Description"] = $item["description"];
-    $line_item["Amount"] = $item["amount"];
-    $line_item["DetailType"] = "ItemBasedExpenseLineDetail";
-    $line_item["ItemBasedExpenseLineDetail"]["ItemRef"]["value"] = $items_ids[$key];
-    $line_item["ItemBasedExpenseLineDetail"]["UnitPrice"] = $item['unit_price'];
-    $line_item["ItemBasedExpenseLineDetail"]["Qty"] = $item['quantity'];
-    //$line_item["SalesItemLineDetail"]["BillableStatus"] = "NotBillable";
-    $line_item["ItemBasedExpenseLineDetail"]["TaxCodeRef"] = "NON";
-
-
-    $Line[] = $line_item;
-}
-
+        $line_item["Description"] = $item["description"];
+        $line_item["Amount"] = $item["amount"];
+        $line_item["DetailType"] = "ItemBasedExpenseLineDetail";
+        //        $line_item["ItemBasedExpenseLineDetail"]["ItemRef"]["value"] = $items_ids[$key];
+        $line_item["ItemBasedExpenseLineDetail"]["ItemRef"]["value"] = $line_items[$item['item_name']];
+        $line_item["ItemBasedExpenseLineDetail"]["UnitPrice"] = $item['unit_price'];
+        $line_item["ItemBasedExpenseLineDetail"]["Qty"] = $item['quantity'];
+        $Line[] = $line_item;
+    }
+    $data["line"] = $Line;
     $bill = Bill::create([
-        "DocNumber" => $data->reference_number,
-        "DueDate" => $data->due_date,
+	    "DocNumber" => $data['reference_number'],
+	    "TxnDate"=>$data['date_created'],
+        "DueDate" => $data['due_date'],
+        "GlobalTaxCalculation" => "NotApplicable",
+        "ExchangeRate"=>100,
+        "CurrencyRef" => [
+                        "value" => $data['currency_code'],
+                        ],
         "Line" => $Line,
         "VendorRef" => [
             "value" => $vendor[0]->Id,
@@ -161,29 +141,58 @@ class BillServices {
 
 
     $response = $this->dataService->Add($bill);
-    ///print_r($response);
-			$error = $this->dataService->getLastError();
-			if ($error) {
-				Log::info("LogBill |Error|Request =>|Error Response".$error->getHttpStatusCode()."|
-					".$error->getOAuthHelperError()."|".$error->getResponseBody());
-                return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
-} else {
-    # code...
-    // Echo some formatted output
-    return ['status'=>true,"payment_id"=>$response->Id,"message"=>"Successfully created a Bill", "code" => 200];
-}
+	$error = $this->dataService->getLastError();
+	if ($error) {
+        $data['status'] = 5;
+        $this->storeBill($data,$response = null ,$error->getIntuitErrorDetail());
 
-    // $name = $request["VendorName"];
-
-    // $Vendor = $this->dataService->Query("SELECT * FROM Vendor WHERE DispalyName = '$name ");
-
-    // if(!$Vendor){
-    //     return ["status"=>false,"message" => "Vendor by name $name Not Found", "code" => 404];
-    // }
+		Log::info("LogBill |Error|Request =>|Error Response".$error->getHttpStatusCode()."|
+		".$error->getOAuthHelperError()."|".$error->getResponseBody());
+        return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
+    } else  if ($response) {
+        $response_data['Id'] = $response->Id;
+        $response_data['SyncToken'] = $response->Id;
+        $response_data['CreatedDate'] = $response->MetaData->CreateTime;
 
 
+        $data['Id'] = $response->Id;
+        $data['status'] = 2; // success, happy path
+        $this->storeBill($data,$response_data, $error = null);
 
-}
+        return ['status'=>true,"payment_id"=>$response->Id,"message"=>"Successfully created a Bill", "code" => 200];
+    }
+    else{
+        ///No error and no response
+        //could have failed or succeeded but no error or response
+        //TODO before re-push check if payment  created
+        $data['status'] = 3;
+        $this->storeBill($data);
+    }
+    }
+
+
+    public function storeBill($data,$response = null, $error = null){
+	    return;
+        return DB_Bill::create([
+            'vendor_name' => $data["vendor_name"],
+            'reference_number' => $data["reference_number"],
+            'due_date' => $data["due_date"],
+            'date_created' => $data["date_created"],
+            'client_id' => $this->data['user_id'],
+            'status' => $data["status"] ?? 0,
+            'response_message' => $error,
+            'qb_id' => $response["Id"] ?? 0,
+            'line_items' =>json_encode( $data["line"], true),
+            'response' => json_encode($response, true),
+        ]);
+     }
+
+ public function show($data){
+        //Query Open Invoices
+        $result = $this->dataService->Query("SELECT * FROM Bill ");
+        return $result;
+     }
+
 
 
 

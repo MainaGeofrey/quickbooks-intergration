@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\quickBooks\customer\CustomerController;
+use App\Http\Controllers\Api\quickBooks\balance\BalanceController;
 use App\Http\Controllers\Api\quickBooks\Bill\BillController;
 use App\Http\Controllers\Api\quickBooks\Vendor\VendorController;
 use App\Http\Controllers\Api\quickBooks\payment\PaymentController;
@@ -27,13 +28,17 @@ Route::get('/', function () {
             'message' => 'API resource found here!'
 ],404);});
 
-Route::group(['middleware' => ['auth:api']], function ()   {
+Route::group(['middleware' => ['auth','qb.auth']], function ()   {
 
 	Route::prefix('v1')->group(function () {
 		Route::prefix('customer')->group(function () {
             Route::get('all', [CustomerController ::class, 'index'])->name('customer.all');
             Route::post('create', [CustomerController ::class, 'store'])->name('customer.create');
             Route::post('show', [CustomerController ::class, 'show'])->name('customer.show');
+        });
+        Route::prefix('balance')->group(function () {
+            Route::get('total', [BalanceController ::class, 'index'])->name('balance.total');
+            Route::post('show', [BalanceController ::class, 'show'])->name('balance.show');
         });
 
         Route::prefix('invoice')->group(function () {
