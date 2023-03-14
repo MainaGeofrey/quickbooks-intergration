@@ -97,7 +97,6 @@ class PaymentServices {
 
 
         $payment_amount = $data["amount"];
-		$paid_amount = $payment_amount;
         if($invoices)
         {
 		foreach ($invoices as $key =>$invoice) {
