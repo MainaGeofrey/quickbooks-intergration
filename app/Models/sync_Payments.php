@@ -28,6 +28,7 @@ class sync_Payments extends Model
         'status',
         'deleted_at',
         'line_items',
+        'customer_qb',
 
     ];
 }
