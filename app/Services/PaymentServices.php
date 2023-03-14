@@ -149,7 +149,7 @@ class PaymentServices {
                 return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
             } else  if ($response) {
                 $response_data['Id'] = $response->Id;
-                $response_data['SyncToken'] = $response->Id;
+                $response_data['SyncToken'] = $response->SyncToken;
                 $response_data['CreatedDate'] = $response->MetaData->CreateTime;
                 $response_data['UnappliedAmt'] = $response->UnappliedAmt;
                 //$data["response"]['UnappliedAmt'] = $response->UnappliedAmt;
