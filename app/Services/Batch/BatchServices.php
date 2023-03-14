@@ -124,6 +124,9 @@ class BatchServices {
         //Failed Payments
         $this->payload_ids = array_diff($this->payload_ids, $this->response_ids);
         print_r($this->payload_ids);
+        if(!empty($this->payload_ids)){
+            
+        }
 
     }
 
