@@ -28,10 +28,10 @@ class ScheduleQB extends Command
     public function handle(): void
     {
         //
-        Log::info("new rats");
+        //Log::info("new rats");
     }
 
     public function fetchPayment(){
-      
+
     }
 }

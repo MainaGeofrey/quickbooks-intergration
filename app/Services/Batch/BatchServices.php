@@ -19,7 +19,8 @@ use QuickBooksOnline\API\Facades\Payment;
 class BatchServices {
     protected $dataService;
     protected $data;
-
+    protected $payload_ids = [];
+    protected $response_ids = [];
     protected  $batch;
     public function __construct($request){
         $this->data["user_id"] = 12;// Utils::getApiUser($request);
@@ -27,7 +28,6 @@ class BatchServices {
 
         $this->dataService = $dataService->getDataService();
 
-        $this->batch = $this->dataService->CreateNewBatch();
     }
 
 
@@ -38,119 +38,151 @@ class BatchServices {
     }
 
     public function storeBatch(){
+        $status = [1,3];
+        foreach($status as $state){
+            $this->batch = $this->dataService->CreateNewBatch();
 
-       $payments = DB::table('sync_payments')->where('status', 5)
-       ->where('qb_id', 0)
-       ->orderBy('payment_id', 'desc')
-       ->select('account_name','reference_number','date_time','amount','mobile_number','line_items','notes','payment_id')
-       ->chunk(2, function ( $payments) {
-        print_r(count($payments));
-           foreach ($payments as $payment) {
-                $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$payment->account_name' ");
-                if(!$customer){
-                    print_r("null");
-                // return ["message" => "Account number $name Not Found", "code" => 404];
+            DB::table('sync_payments')->where('status', $state)
+            ->where('qb_id', 0)
+            ->orderBy('payment_id', 'asc')
+            ->select('account_name','reference_number','date_time','amount','mobile_number','line_items','notes','payment_id')
+            ->chunk(30, function ( $payments) {
+                foreach ($payments as $payment) {
+                    $this->payload_ids[] = $payment->payment_id;
+                        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$payment->account_name' ");
+                        if(!$customer){
+                            print_r("null");
+                        // return ["message" => "Account number $name Not Found", "code" => 404];
+                        }
+
+                    /*  $payload = [
+                            "CustomerRef"=>
+                            [
+                                "value" =>$customer[0]->Id,
+                                "name" =>$payment->account_name,
+                            ],
+                            "Line" => $payment->line_items,
+                            "TotalAmt" => $payment->amount,
+                            "PaymentRefNum" => $payment->reference_number,
+                            "TxnDate" => $payment->date_time,
+                            "PrivateNote" => $payment->notes,
+                            "CustomField" => $payment->mobile_number,
+                        ];
+                        $payload = Payment::create($payload); */
+
+                        $payload = $this->processPayment($payment, $customer);
+
+                        $this->batch->AddEntity($payload, $payment->payment_id, "Create");
+
                 }
-                print_r("true");
-                $payload = [
-                    "CustomerRef"=>
-                    [
-                        "value" =>$customer[0]->Id,
-                        "name" =>$payment->account_name,
-                    ],
-                    "Line" => $payment->line_items,
-                    "TotalAmt" => $payment->amount,
-                    "PaymentRefNum" => $payment->reference_number,
-                    "TxnDate" => $payment->date_time,
-                    "PrivateNote" => $payment->notes,
-                    "CustomField" => $payment->mobile_number,
-                ];
-                $payload = Payment::create($payload);
 
-                $this->batch->AddEntity($payload, "CreatePayment", "Create");
-                print_r("true");
-           }
-           print_r("trueB");
+                $this->batch->ExecuteWithRequestID($this->generateRandomString());
 
-           $this->batch->ExecuteWithRequestID($this->generateRandomString());
+                $error = $this->batch->getLastError();
+                if ($error) {
+                    /*if($state == 5){
+                    } */
+                   /* DB::table('sync_payments')
+                    ->where('payment_id',$payment->payment_id )
+                    ->update([
+                    'status' => 5,
+                    'response_message' => $error,
+                    'line_items' =>json_encode( $payload->Line, true),
+                    //'response' => json_encode($response, true),
+                ]); */
+                }
+                else{
+                    foreach($this->batch->intuitBatchItemResponses as $batchItemResponse){
+                        $this->response_ids[] = $batchItemResponse->batchItemId;
 
-           $error = $this->batch->getLastError();
-           if ($error) {
-         /*  echo "The Status code is: " . $error->getHttpStatusCode() . "\n";
-           echo "The Helper message is: " . $error->getOAuthHelperError() . "\n";
-           echo "The Response message is: " . $error->getResponseBody() . "\n"; */
-           return ["message" => $error->getResponseBody(), "status" => $error->getHttpStatusCode()];
-           //exit();
-           }
-           else{
-                DB::table('sync_payments')
-                   ->where('payment_id', $payment->payment_id)
-                   ->update([
-                    'status' => 2,
-                    'qb_id' => 01
-                ]);
+                        $response['Id'] = $batchItemResponse->entity->Id;
+                        $response['SyncToken'] = $batchItemResponse->entity->SyncToken;
+                        $response['CreatedDate'] = $batchItemResponse->entity->MetaData->CreateTime;
+                        $response['UnappliedAmt'] = $batchItemResponse->entity->UnappliedAmt;
 
-                //break;
-           }
-           $batchItemResponse_createPayment= $this->batch->intuitBatchItemResponses["CreatePayment"];
-           if($batchItemResponse_createPayment->isSuccess()){
-           $createdInvoice = $batchItemResponse_createPayment->getResult();
-           echo "Create Payment success!:\n";
-           //$xmlBody = XmlObjectSerializer::getPostXmlFromArbitraryEntity($createdInvoice, $something);
-           //echo $xmlBody . "\n";
+                      /*  DB::table('sync_payments')
+                        ->where('payment_id', $batchItemResponse->batchItemId)
+                        ->update([
+                        'status' => 2,
+                        'qb_id' => $batchItemResponse->entity->Id,
+                        'response_message' => $error,
+                        //'qb_id' => $response["Id"] ?? 0,
+                        'line_items' =>json_encode( $payload->Line, true),
+                        'response' => json_encode($response, true),
+                    ]); */
 
-           print_r($createdInvoice);
-           }
-       });
+                    Log::info("LogPaymentInBatchPayment | payment created response |Request->".json_encode($this->data)."|Response =>".json_encode($batchItemResponse));
 
+                    }
+                }
 
-       /* $error = $this->dataService->getLastError();
-        if ($error) {
-            $data['status'] = 5;
-
-            Log::info("LogInvoice |Error|Request =>".json_encode($invoice)."|Error Response".$error->getHttpStatusCode()."|
-                ".$error->getOAuthHelperError()."|".$error->getResponseBody());
-            return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
-        } else if ($response) {
-            $response_data['Id'] = $response->Id;
-            $response_data['SyncToken'] = $response->Id;
-            $response_data['CreatedDate'] = $response->MetaData->CreateTime;
-
-            $data['Id'] = $response->Id;
-            $data['status'] = 2; // success, happy path
-
-            return ['status'=>true,"invoice_id"=>$response->Id,"message"=>"Successfully created an invoice.", "code" => 200];
+                Log::info($batchItemResponse->batchItemId);
+            });
+            //Log::info("LogPaymentInBatchPayment | payment created response |Request->".json_encode($this->data)."|Response =>".json_encode($batchItemResponse));
         }
-        else{
-            //TODO before re-push check if invoice  created
-            $data['status'] = 3;
-        } */
+
+        //Failed Payments
+        $this->payload_ids = array_diff($this->payload_ids, $this->response_ids);
+        print_r($this->payload_ids);
+
     }
 
-    private function processPayment($data){
-        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$data->account_name' ");
-        if(!$customer){
-            print_r("null");
-           // return ["message" => "Account number $name Not Found", "code" => 404];
-        }
-        $payload = [
-            "CustomerRef"=>
-            [
-                "value" =>$customer[0]->Id,
-                "name" =>$data->account_name,
-            ],
-            "Line" => $data->line_items,
-            "TotalAmt" => $data->amount,
-            "PaymentRefNum" => $data->reference_number,
-            "TxnDate" => $data->date_time,
-            "PrivateNote" => $data->notes,
-            "CustomField" => $data->mobile_number,
-        ];
-        $payment = Payment::create($payload);
 
-        return $payment;
-    }
-    public function storeBatchTets(){
+    public function processPayment($data, $customer){
+        $id = $customer[0]->Id;
+        $invoices = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$id' and Balance > '0' ");
+        $lineItems = [];
+
+
+        $payment_amount = $data->amount;
+		//$paid_amount = $payment_amount;
+        if($invoices)
+        {
+		foreach ($invoices as $key =>$invoice) {
+            $payment_amount_for_invoice = min($payment_amount, $invoice->Balance); // make sure payment doesn't exceed amount due
+                $lineItems[] = [
+                    "Amount"=> $payment_amount_for_invoice,
+                    "LinkedTxn" => [
+                        [
+                            "TxnId" => $invoice->Id,
+                           "TxnType"=> "Invoice"
+                        ]]
+                    ];
+            $payment_amount -= $payment_amount_for_invoice;
+            if ($payment_amount <= 0) {
+                break;
+            }
+        }
+        }
+		try{
+			$payload = [
+                "CustomerRef"=>
+                [
+                    "value" =>$customer[0]->Id,
+                    "name" =>$data->account_name,
+                ],
+                "Line" => $lineItems,
+                "TotalAmt" => $data->amount,
+                "PaymentRefNum" => $data->reference_number,
+                "TxnDate" => $data->date_time,
+                "PrivateNote" => $data->notes,
+                "CustomField" => $data->mobile_number,
+            ];
+
+			return Payment::create($payload);
+
+            //$data["line"] = $lineItems;
+
+
+           // Log::info("LogPayment | payment request payload created ".json_encode($payload));
+
+		} catch (\Throwable $th) {
+			Log::Error("LogPayment|Error".json_encode($payload)."|Error Response =>".$th);
+          // return ["status" => false, "message" => $th->getMessage(), "code" => 422];
+        }
+     }
+
+    public function storeBatchTest(){
 
         $theResourceObj = Invoice::create([
             "Line" => [
