@@ -22,6 +22,8 @@ class BatchServices {
     protected $payload_ids = [];
     protected $response_ids = [];
     protected  $batch;
+
+    protected $distinct;
     public function __construct($request){
         $this->data["user_id"] = 12;// Utils::getApiUser($request);
         $dataService = new DataServiceHelper($this->data);
@@ -41,34 +43,29 @@ class BatchServices {
         $status = [1,3];
         foreach($status as $state){
             $this->batch = $this->dataService->CreateNewBatch();
+            $this->distinct = [];
 
-            DB::table('sync_payments')->where('status', $state)
+            DB::table('sync_payments')
+            ->where('status', $state)
             ->where('qb_id', 0)
             ->orderBy('payment_id', 'asc')
+            //->unique('account_name')
             ->select('account_name','customer_qb','reference_number','date_time','amount','mobile_number','line_items','notes','payment_id')
             ->chunk(30, function ( $payments) {
                 foreach ($payments as $payment) {
                     $this->payload_ids[] = $payment->payment_id;
+                    print_r($this->distinct);
+                    if(in_array($payment->customer_qb, $this->distinct)){
+                        continue;
+                    }
+                    $this->distinct[] = $payment->customer_qb;
+                    print_r($this->distinct);
                        /* $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$payment->account_name' ");
                         if(!$customer){
                             print_r("null");
                         // return ["message" => "Account number $name Not Found", "code" => 404];
                         } */
 
-                    /*  $payload = [
-                            "CustomerRef"=>
-                            [
-                                "value" =>$payment->customer_qb,
-                                "name" =>$payment->account_name,
-                            ],
-                            "Line" => $payment->line_items,
-                            "TotalAmt" => $payment->amount,
-                            "PaymentRefNum" => $payment->reference_number,
-                            "TxnDate" => $payment->date_time,
-                            "PrivateNote" => $payment->notes,
-                            "CustomField" => $payment->mobile_number,
-                        ];
-                        $payload = Payment::create($payload); */
 
                         $payload = $this->processPayment($payment);
 
@@ -100,7 +97,7 @@ class BatchServices {
                         $response['CreatedDate'] = $batchItemResponse->entity->MetaData->CreateTime;
                         $response['UnappliedAmt'] = $batchItemResponse->entity->UnappliedAmt;
 
-                      /*  DB::table('sync_payments')
+                        DB::table('sync_payments')
                         ->where('payment_id', $batchItemResponse->batchItemId)
                         ->update([
                         'status' => 2,
@@ -109,7 +106,7 @@ class BatchServices {
                         //'qb_id' => $response["Id"] ?? 0,
                         'line_items' =>json_encode( $payload->Line, true),
                         'response' => json_encode($response, true),
-                    ]); */
+                    ]);
 
                     Log::info("LogPaymentInBatchPayment | payment created response |Request->".json_encode($this->data)."|Response =>".json_encode($batchItemResponse));
 

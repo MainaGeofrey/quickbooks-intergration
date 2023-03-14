@@ -97,7 +97,6 @@ class PaymentServices {
 
 
         $payment_amount = $data["amount"];
-		$paid_amount = $payment_amount;
         if($invoices)
         {
 		foreach ($invoices as $key =>$invoice) {
@@ -120,7 +119,7 @@ class PaymentServices {
 			$payload = [
                 "CustomerRef"=>
                 [
-                    "value" =>$data['id'],
+                    "value" =>2000000000000000,
                     "name" => $data["name"],
                 ],
                 "Line" => $lineItems,
