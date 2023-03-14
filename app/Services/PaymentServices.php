@@ -189,6 +189,8 @@ class PaymentServices {
             'qb_id' => $response["Id"] ?? 0,
             'line_items' =>json_encode( $data["line"], true),
             'response' => json_encode($response, true),
+
+            'customer_qb' => $data["id"],
         ]);
      }
 

@@ -45,20 +45,20 @@ class BatchServices {
             DB::table('sync_payments')->where('status', $state)
             ->where('qb_id', 0)
             ->orderBy('payment_id', 'asc')
-            ->select('account_name','reference_number','date_time','amount','mobile_number','line_items','notes','payment_id')
+            ->select('account_name','customer_qb','reference_number','date_time','amount','mobile_number','line_items','notes','payment_id')
             ->chunk(30, function ( $payments) {
                 foreach ($payments as $payment) {
                     $this->payload_ids[] = $payment->payment_id;
-                        $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$payment->account_name' ");
+                       /* $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$payment->account_name' ");
                         if(!$customer){
                             print_r("null");
                         // return ["message" => "Account number $name Not Found", "code" => 404];
-                        }
+                        } */
 
                     /*  $payload = [
                             "CustomerRef"=>
                             [
-                                "value" =>$customer[0]->Id,
+                                "value" =>$payment->customer_qb,
                                 "name" =>$payment->account_name,
                             ],
                             "Line" => $payment->line_items,
@@ -70,7 +70,7 @@ class BatchServices {
                         ];
                         $payload = Payment::create($payload); */
 
-                        $payload = $this->processPayment($payment, $customer);
+                        $payload = $this->processPayment($payment);
 
                         $this->batch->AddEntity($payload, $payment->payment_id, "Create");
 
@@ -125,14 +125,14 @@ class BatchServices {
         $this->payload_ids = array_diff($this->payload_ids, $this->response_ids);
         print_r($this->payload_ids);
         if(!empty($this->payload_ids)){
-            
+
         }
 
     }
 
 
-    public function processPayment($data, $customer){
-        $id = $customer[0]->Id;
+    public function processPayment($data){
+        $id = $data->customer_qb;
         $invoices = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$id' and Balance > '0' ");
         $lineItems = [];
 
@@ -161,7 +161,7 @@ class BatchServices {
 			$payload = [
                 "CustomerRef"=>
                 [
-                    "value" =>$customer[0]->Id,
+                    "value" =>$data->customer_qb,
                     "name" =>$data->account_name,
                 ],
                 "Line" => $lineItems,
