@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\Batch\BatchServices;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -29,6 +30,8 @@ class ScheduleQB extends Command
     {
         //
         //Log::info("new rats");
+        $payment = new BatchServices();
+        $payment();
     }
 
     public function fetchPayment(){

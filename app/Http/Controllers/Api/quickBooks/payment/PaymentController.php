@@ -17,10 +17,10 @@ class PaymentController extends Controller
 
 
     public function index(Request $request){
-        $payment = new BatchServices($request);
-        $payment->storeBatch();
+        $payment = new PaymentServices($request);
+        $data = $payment->index();
 
-        //return response()->json($data);
+        return response()->json($data);
     }
     public function store(Request $request){
         $payment = new PaymentServices($request);

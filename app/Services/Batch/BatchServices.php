@@ -23,53 +23,82 @@ class BatchServices {
     protected $response_ids = [];
     protected  $batch;
 
+    protected $clients = [];
+
     protected $distinct;
-    public function __construct($request){
-        $this->data["user_id"] = 12;// Utils::getApiUser($request);
-        $dataService = new DataServiceHelper($this->data);
+    public function __invoke(){
+        $clients[] =  DB::table('users')
+        ->join('sync_payments', 'users.id', '=', 'sync_payments.client_id')
+        ->where('users.status', '=', 1)
+        ->select('users.id')
+        ->distinct()
+        ->get()
+        ->toArray();
 
-        $this->dataService = $dataService->getDataService();
+        $this->clients = array_merge(...$clients);
+
+        $this->clients = array_map(function ($client) {
+            return $client->id;
+        }, $this->clients);
+
+
+        foreach($this->clients as $client){
+            try{
+                $this->data["user_id"] = $client;
+                $dataService = new DataServiceHelper($this->data);
+
+                $data["dataService"] = $dataService->getValidQBConfig();
+
+                if( $data["dataService"]["code"]== 404){
+                    Log::info("LogBatchPaymentFail |CLIENT ID ".json_encode($client)."|QUICKBOOKS AUTHENTICATION FAILURE");
+                    continue;
+                }
+                else{
+
+                    $this->dataService = $dataService->getDataService();
+                    $this->storeBatch($client);
+                }
+            }
+            catch(\Exception $e){
+                continue;
+            }
+        }
 
     }
 
 
-    public function index(){
-
-
-        return  $this->dataService->Query("SELECT * FROM Payment ");
-    }
-
-    public function storeBatch(){
+    public function storeBatch($client){
         $status = [1,3];
         foreach($status as $state){
             $this->batch = $this->dataService->CreateNewBatch();
             $this->distinct = [];
 
+
             DB::table('sync_payments')
             ->where('status', $state)
             ->where('qb_id', 0)
+            ->where('client_id', $client)
             ->orderBy('payment_id', 'asc')
             //->unique('account_name')
-            ->select('account_name','customer_qb','reference_number','date_time','amount','mobile_number','line_items','notes','payment_id')
+            ->select('client_id','account_name','customer_qb','reference_number','date_time','amount','mobile_number','line_items','notes','payment_id')
             ->chunk(30, function ( $payments) {
                 foreach ($payments as $payment) {
-                    $this->payload_ids[] = $payment->payment_id;
                     print_r($this->distinct);
+
+                    //allow only one payment for each customer in batch
                     if(in_array($payment->customer_qb, $this->distinct)){
                         continue;
                     }
                     $this->distinct[] = $payment->customer_qb;
                     print_r($this->distinct);
-                       /* $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$payment->account_name' ");
-                        if(!$customer){
-                            print_r("null");
-                        // return ["message" => "Account number $name Not Found", "code" => 404];
-                        } */
+
+                    //payments in batch
+                    $this->payload_ids[] = $payment->payment_id;
 
 
-                        $payload = $this->processPayment($payment);
+                    $payload = $this->processPayment($payment);
 
-                        $this->batch->AddEntity($payload, $payment->payment_id, "Create");
+                    $this->batch->AddEntity($payload, $payment->payment_id, "Create");
 
                 }
 
@@ -77,19 +106,15 @@ class BatchServices {
 
                 $error = $this->batch->getLastError();
                 if ($error) {
-                    /*if($state == 5){
+                   /* if($error->getOAuthHelperError()){
+                        Log::info("LogBatchPaymentFail |CLIENT ID ".json_encode($payment->client_id)."|QUICKBOOKS AUTHENTICATION FAILED.");
                     } */
-                   /* DB::table('sync_payments')
-                    ->where('payment_id',$payment->payment_id )
-                    ->update([
-                    'status' => 5,
-                    'response_message' => $error,
-                    'line_items' =>json_encode( $payload->Line, true),
-                    //'response' => json_encode($response, true),
-                ]); */
+                    Log::info("LogBatchPaymentFail |CLIENT ID ".json_encode($payment->client_id)."|QUICKBOOKS ERROR|".json_encode($error->getResponseBody())."CODE|".$error->getHttpStatusCode());
+                    throw $error;
                 }
                 else{
                     foreach($this->batch->intuitBatchItemResponses as $batchItemResponse){
+                        //payments in the response batch
                         $this->response_ids[] = $batchItemResponse->batchItemId;
 
                         $response['Id'] = $batchItemResponse->entity->Id;
@@ -108,7 +133,7 @@ class BatchServices {
                         'response' => json_encode($response, true),
                     ]);
 
-                    Log::info("LogPaymentInBatchPayment | payment created response |Request->".json_encode($this->data)."|Response =>".json_encode($batchItemResponse));
+                    Log::info("LogPaymentInBatchPayment | payment created response |Request->".json_encode($payment->client_id)."|Response =>".json_encode($batchItemResponse));
 
                     }
                 }
@@ -125,6 +150,7 @@ class BatchServices {
 
         }
 
+        //return true;
     }
 
 
