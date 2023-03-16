@@ -92,7 +92,7 @@ class BatchServices {
                     $this->distinct[] = $payment->customer_qb;
                     print_r($this->distinct);
 
-                    //payments in batch
+                    //payments in batch||batch ID
                     $this->payload_ids[] = $payment->payment_id;
 
 
@@ -114,7 +114,7 @@ class BatchServices {
                 }
                 else{
                     foreach($this->batch->intuitBatchItemResponses as $batchItemResponse){
-                        //payments in the response batch
+                        //payments in the response batch||batch ID
                         $this->response_ids[] = $batchItemResponse->batchItemId;
 
                         $response['Id'] = $batchItemResponse->entity->Id;
@@ -146,6 +146,7 @@ class BatchServices {
         //Failed Payments
         $this->payload_ids = array_diff($this->payload_ids, $this->response_ids);
         print_r($this->payload_ids);
+        //TODO update to status 3 if one else status 5
         if(!empty($this->payload_ids)){
 
         }
