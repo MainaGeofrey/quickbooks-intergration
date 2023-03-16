@@ -70,14 +70,14 @@ class BillServices {
     {
         return [
             'status' => false,
-            'errors' => "The vendor Name does not exist in quickbooks. create or confirm the correct details",
+            'errors' => "The vendor Name ".$data->vendor_name." does not exist in quickbooks. create or confirm the correct details",
             'code' => 401
         ];
     }
 
     $line_items = [];
-    $item_names = array_column($data->line_items,"item_name");
-
+//    $item_names = array_column($data->line_items,"item_name");
+ $item_names = array_unique(array_column($data->line_items,"item_name"));
     $sql_products = "select * from Item where Name in ('".join("','",$item_names)."')";
     $items = $this->dataService->Query($sql_products);
 
@@ -97,7 +97,7 @@ class BillServices {
             $line_items[$item->Name]=$item->Id;
         }
 
-    if(sizeOf($line_items) <> sizeOf($data->line_items))
+    if(sizeOf($line_items) <> sizeOf($line_items))
     {
         return [
             'status' => false,
@@ -159,7 +159,7 @@ class BillServices {
         $data['status'] = 2; // success, happy path
         $this->storeBill($data,$response_data, $error = null);
 
-        return ['status'=>true,"payment_id"=>$response->Id,"message"=>"Successfully created a Bill", "code" => 200];
+        return ['status'=>true,"bill_id"=>$response->Id,"message"=>"Successfully created a Bill", "code" => 200];
     }
     else{
         ///No error and no response

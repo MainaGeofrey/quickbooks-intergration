@@ -103,6 +103,7 @@ class RegisteredUserController extends Controller
             ]);
             DB::commit();
         } catch (\Throwable $th) {
+            //Log::info($th);
             DB::rollBack();
             return response()->json(["message"=>" User creation failed", "code"=>422]);
 

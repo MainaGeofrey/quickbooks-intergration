@@ -2,7 +2,7 @@
 namespace App\Services;
 
 use App\Helpers\Utils;
-use App\Models\Payments;
+use App\Models\sync_Payments;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -97,7 +97,6 @@ class PaymentServices {
 
 
         $payment_amount = $data["amount"];
-		$paid_amount = $payment_amount;
         if($invoices)
         {
 		foreach ($invoices as $key =>$invoice) {
@@ -149,7 +148,7 @@ class PaymentServices {
                 return ['status'=>false,'message'=>'We have received an Error'.$error->getIntuitErrorDetail(),'code'=>$error->getHttpStatusCode()];
             } else  if ($response) {
                 $response_data['Id'] = $response->Id;
-                $response_data['SyncToken'] = $response->Id;
+                $response_data['SyncToken'] = $response->SyncToken;
                 $response_data['CreatedDate'] = $response->MetaData->CreateTime;
                 $response_data['UnappliedAmt'] = $response->UnappliedAmt;
                 //$data["response"]['UnappliedAmt'] = $response->UnappliedAmt;
@@ -175,7 +174,7 @@ class PaymentServices {
 
 
      public function storePayment($data,$response = null, $error = null){
-        return Payments::create([
+        return sync_Payments::create([
             'account_name' => $data["account_name"],
             'reference_number' => $data["reference_number"],
             'date_time' => $data["date_time"],
@@ -189,6 +188,8 @@ class PaymentServices {
             'qb_id' => $response["Id"] ?? 0,
             'line_items' =>json_encode( $data["line"], true),
             'response' => json_encode($response, true),
+
+            'customer_qb' => $data["id"],
         ]);
      }
 

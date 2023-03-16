@@ -26,12 +26,13 @@ class DataServiceHelper {
         $this->config = config("quickbooks");
     }
 
-    public function getDataService(){
+    public function getDataService() {
+
         $qb_token = QBConfig::where("user_id", $this->data["user_id"])->first();
 
         if($qb_token){
             //update config
-            Log::info('QB_ACCESS_TOKEN_VALID');
+            Log::info('DATASERVICE|GET DATASERVICE|QUICKBOOKS CONFIGURATION PARAMETERS FOUND');
             $access_token = $qb_token->access_token;
             $refresh_token = $qb_token->refresh_token;
             $expires_in = $qb_token->expires_in;
@@ -49,7 +50,7 @@ class DataServiceHelper {
                     'QBORealmID' => $qb_token->realm_id,
                     "expires_in"=>  $expires_in
                 ));
-                Log::info("DataService | DATA SERVICE OBJECT CREATED SUCCESSFULLY  ");
+                Log::info("DATASERVICE|DATA SERVICE OBJECT CREATED SUCCESSFULLY  ");
 
                 //$dataService->disableLog();
                 $dataService->setLogLocation(storage_path('logs/quickbooks.log'));
@@ -62,21 +63,23 @@ class DataServiceHelper {
                 return $dataService;
 
             } catch (\Throwable $th) {
-                Log::info("DataService | DATA SERVICE OBJECT NOT CREATED  ".json_encode($th->getMessage()));
+                Log::info("DATASERVICE|DATA SERVICE OBJECT NOT CREATED  ".json_encode($th->getMessage()));
 
                 throw $th;
 
                 //return ["message" => $th->getMessage(),"status" =>false, "code" => 200];
             }
         }
+        else{
+            Log::info("DATASERVICE|CLIENT ID ".json_encode($this->data['user_id'])." QUICKBOOKS CONFIGURATION PARAMETERS NOT FOUND");
+        }
     }
     public function getValidQBConfig()
     {
         $qb_token = QBConfig::where("user_id", $this->data["user_id"])->first();
 
-
         if($qb_token){
-            //update config
+            Log::info('DATASERVICE|VALIDATE|QUICKBOOKS CONFIGURATION PARAMETERS FOUND');
             $this->config["refresh_token"] = $qb_token->refresh_token;
             $this->config["qb_client_id"] = $qb_token->qb_client_id;
             $this->config["client_secret"] = $qb_token->client_secret;
@@ -89,7 +92,7 @@ class DataServiceHelper {
 
             if( $date1 < $date2 ) {
                 //token is expired
-                Log::info("QB_TOKEN_EXPIRED");
+                Log::info("DATASERVICE|QB_TOKEN_EXPIRED");
                 //$config["refresh_token"] = $qb_token->refresh_token;
 
                 $newAccessTokenObj = $this->refreshToken($this->config);
@@ -105,14 +108,14 @@ class DataServiceHelper {
                         $refresh_token = $newAccessTokenObj->getRefreshToken();
                         $expires_in = $newAccessTokenObj->getAccessTokenExpiresAt();
 
-                        Log::info("QB_ACCESS_TOKEN_UPDATED");
+                        Log::info("DATASERVICE|QB_ACCESS_TOKEN_UPDATED");
 
                         try{
-                            Log::info("QB_ACCESS_TOKEN_UPDATED_DB_SAVE");
+                            Log::info("DATASERVICE|QB_ACCESS_TOKEN_UPDATED_DB_SAVE");
                           /*  QBConfig::create([
                                 "user_id" => $this->data['user_id'],
                                 "access_token" => $access_token,
-                                "refresh_token" => $refresh_token,
+                                "refresh_token" => $refresh_token,DataService |
                                 "expires_in" => $expires_in,
                                 "realm_id" => $config["QBORealmID"],
                                 "qb_client_id" => $config["qb_client_id"],
@@ -128,25 +131,26 @@ class DataServiceHelper {
 
                         }
                         catch(\Exception $exception){
-                            Log::info("QB_ACCESS_TOKEN_UPDATED_DB_SAVE".$exception->getMessage());
+                            Log::info("DATASERVICE|QB_ACCESS_TOKEN_UPDATED_DB_SAVE".$exception->getMessage());
                         }
 
                     }
                     catch(\Exception $exception){
                         //Log::info($exception->getMessage());
-                        Log::info("QB_ACCESS_TOKEN_REFRESH_FAIL".$exception->getMessage());
+                        Log::info("DATASERVICE|QB_ACCESS_TOKEN_REFRESH_FAIL".$exception->getMessage());
                         return ["message" => $exception->getMessage(), "code" => 404];
                     }
 
             }
             else{
-                Log::info('QB_ACCESS_TOKEN_VALID');
+                Log::info('DATASERVICE|VALIDATE|QUICKBOOKS ACCESS TOKENS VALIDATED');
 
                 return ["message" => "Refresh Token Valid", "code" => 200];
 
-            }
+            }            Log::info("DATASERVICE|CLIENT ID ".json_encode($this->data['user_id'])." QUICKBOOKS CONFIGURATION PARAMETERS NOT FOUND");
         }
         else{
+            Log::info("DATASERVICE|CLIENT ID ".json_encode($this->data['user_id'])." QUICKBOOKS CONFIGURATION PARAMETERS NOT FOUND");
             return ["message" => "Client QuickBooks Configuration Not Found", "code" => 404];
         }
         return ["message" => "Refresh Token Valid", "code" => 200];
