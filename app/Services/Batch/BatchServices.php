@@ -54,12 +54,12 @@ class BatchServices {
             ->chunk(30, function ( $payments) {
                 foreach ($payments as $payment) {
                     $this->payload_ids[] = $payment->payment_id;
-                    print_r($this->distinct);
+                   // print_r($this->distinct);
                     if(in_array($payment->customer_qb, $this->distinct)){
                         continue;
                     }
                     $this->distinct[] = $payment->customer_qb;
-                    print_r($this->distinct);
+                  //  print_r($this->distinct);
                        /* $customer = $this->dataService->Query("SELECT * FROM Customer WHERE DisplayName = '$payment->account_name' ");
                         if(!$customer){
                             print_r("null");
@@ -76,7 +76,8 @@ class BatchServices {
                 $this->batch->ExecuteWithRequestID($this->generateRandomString());
 
                 $error = $this->batch->getLastError();
-                if ($error) {
+		if ($error) {
+			print_r($error->getResponseBody());
                     /*if($state == 5){
                     } */
                    /* DB::table('sync_payments')

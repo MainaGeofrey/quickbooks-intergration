@@ -60,7 +60,7 @@ class InvoiceServices {
 
 
         $line_items = [];
-        $item_names = array_column($data->line_items,"item_name");
+        $item_names = array_unique(array_column($data->line_items,"item_name"));
 
         $sql_products = "select * from Item where Name in ('".join("','",$item_names)."')";
         $items = $this->dataService->Query($sql_products);
@@ -79,9 +79,10 @@ class InvoiceServices {
         foreach($items as $item)
 	{
             $line_items[$item->Name]=$item->Id;
-        }
+	}
 
-        if(sizeOf($line_items) <> sizeOf($data->line_items))
+
+        if(sizeOf($line_items) <> sizeOf($item_names))
         {
             return [
                 'status' => false,
@@ -119,7 +120,8 @@ class InvoiceServices {
             $invoice = Invoice::create([
                 "Line" => $Line,
                 "DocNumber" => $data["reference_number"],
-                "GlobalTaxCalculation" => "NotApplicable",
+		"GlobalTaxCalculation" => "NotApplicable",
+		"ExchangeRate"=>100,
 		        "CurrencyRef" => [
                        "value" => $data['currency_code'],
         //..             "name" => "Philippine Peso"
@@ -177,7 +179,7 @@ class InvoiceServices {
 
     public function show($data){
         //Query Open Invoices
-        $result = $this->dataService->Query("SELECT * FROM Invoice WHERE CustomerRef = '$data->id' ");
+        $result = $this->dataService->Query("SELECT * FROM Invoice WHERE Id  ");
         return $result;
      }
 
